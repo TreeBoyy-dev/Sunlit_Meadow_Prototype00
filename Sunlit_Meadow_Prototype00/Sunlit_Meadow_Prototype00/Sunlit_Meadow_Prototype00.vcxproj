@@ -130,9 +130,37 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Block.cpp" />
+    <ClCompile Include="BlockMesh.cpp" />
+    <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="InitPipeline.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\SDL3-3.4.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="Mat4.cpp" />
+    <ClCompile Include="Materials.cpp" />
+    <ClCompile Include="MinableBLock.cpp" />
+    <ClCompile Include="StoneBlocks.cpp" />
+    <ClCompile Include="Vectors.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="App_Init.h" />
+    <ClInclude Include="App_Render.h" />
+    <ClInclude Include="App_Update.h" />
+    <ClInclude Include="Block.h" />
+    <ClInclude Include="BlockMesh.h" />
+    <ClInclude Include="Materials.h" />
+    <ClInclude Include="StoneBlocks.h" />
+    <ClInclude Include="DataStructures.h" />
+    <ClInclude Include="Globals.h" />
+    <ClInclude Include="InitPipeline.h" />
+    <ClInclude Include="Mat4.h" />
+    <ClInclude Include="MinableBlock.h" />
+    <ClInclude Include="Vectors.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="shader.glsl.frag" />
+    <None Include="shader.glsl.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
