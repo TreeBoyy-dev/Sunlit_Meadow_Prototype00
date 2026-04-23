@@ -149,6 +149,7 @@
     <ClInclude Include="App_Update.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="BlockMesh.h" />
+    <ClInclude Include="chunk.h" />
     <ClInclude Include="Materials.h" />
     <ClInclude Include="StoneBlocks.h" />
     <ClInclude Include="DataStructures.h" />

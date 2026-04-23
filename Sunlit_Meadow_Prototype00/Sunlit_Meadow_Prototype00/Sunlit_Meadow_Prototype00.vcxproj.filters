@@ -13,11 +13,20 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Blocks">
+    <Filter Include="Header Files\world">
+      <UniqueIdentifier>{8fe32d31-1c47-4d21-b9fd-4a64dad71261}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\world\Blocks">
       <UniqueIdentifier>{fe7a9d34-7285-40ec-ab0f-fc9559960001}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Blocks">
+    <Filter Include="Source Files\world">
+      <UniqueIdentifier>{6d47d5f4-d1d0-4f17-a421-e78a3f4c6c57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\world\Blocks">
       <UniqueIdentifier>{1843f697-653d-4e03-9bcf-cf5aadc732cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\world\worldStorage">
+      <UniqueIdentifier>{d4549a15-9474-4c40-b216-01dfa9818058}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -37,19 +46,19 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Block.cpp">
-      <Filter>Source Files\Blocks</Filter>
+      <Filter>Source Files\world\Blocks</Filter>
     </ClCompile>
     <ClCompile Include="MinableBLock.cpp">
-      <Filter>Source Files\Blocks</Filter>
+      <Filter>Source Files\world\Blocks</Filter>
     </ClCompile>
     <ClCompile Include="StoneBlocks.cpp">
-      <Filter>Source Files\Blocks</Filter>
+      <Filter>Source Files\world\Blocks</Filter>
     </ClCompile>
     <ClCompile Include="Materials.cpp">
-      <Filter>Source Files\Blocks</Filter>
+      <Filter>Source Files\world\Blocks</Filter>
     </ClCompile>
     <ClCompile Include="BlockMesh.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\world</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -75,22 +84,25 @@
       <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="Block.h">
-      <Filter>Header Files\Blocks</Filter>
+      <Filter>Header Files\world\Blocks</Filter>
     </ClInclude>
     <ClInclude Include="StoneBlocks.h">
-      <Filter>Header Files\Blocks</Filter>
+      <Filter>Header Files\world\Blocks</Filter>
     </ClInclude>
     <ClInclude Include="MinableBlock.h">
-      <Filter>Header Files\Blocks</Filter>
+      <Filter>Header Files\world\Blocks</Filter>
     </ClInclude>
     <ClInclude Include="Materials.h">
-      <Filter>Header Files\Blocks</Filter>
-    </ClInclude>
-    <ClInclude Include="BlockMesh.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\world\Blocks</Filter>
     </ClInclude>
     <ClInclude Include="App_Init.h">
       <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockMesh.h">
+      <Filter>Header Files\world</Filter>
+    </ClInclude>
+    <ClInclude Include="chunk.h">
+      <Filter>Header Files\world\worldStorage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

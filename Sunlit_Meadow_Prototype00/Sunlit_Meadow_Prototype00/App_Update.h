@@ -110,10 +110,8 @@ SDL_AppResult App_Update(void* appstate)
 
     frame_count++;
     frame_count = frame_count % ARR_SIZE;
-    if (frame_count % 240 == 0 && 0) {
+    if (frame_count % 480 == 0) {
         SDL_Log("FPS: %.1f", fps);
-        SDL_Log("camera pos: %.1f, %.1f, %.1f", camera.position.x, camera.position.y, camera.position.z);
-        SDL_Log("camera tar: %.1f, %.1f, %.1f", camera.forward.x, camera.forward.y, camera.forward.z);
     }
 
     float speed = 90.0f * (float)SDL_PI_F / 180.0f;   // deg/sec → rad/sec

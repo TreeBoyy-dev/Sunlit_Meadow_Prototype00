@@ -5,6 +5,7 @@
 
 #include "Globals.h"
 #include "InitPipeline.h"
+#include "Materials.h"
 
 SDL_AppResult App_Init(void* appstate)
 {
@@ -49,13 +50,14 @@ SDL_AppResult App_Init(void* appstate)
 
     App_InitPipeline(state);
 
+    Uint32 layerCount = (Uint32)MATERIAL_COUNT;
     SDL_GPUTextureCreateInfo texInfo = {
     .type = SDL_GPU_TEXTURETYPE_2D_ARRAY,
     .format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM,
     .usage = SDL_GPU_TEXTUREUSAGE_SAMPLER,
     .width = 32,
     .height = 32,
-    .layer_count_or_depth = 3,
+    .layer_count_or_depth = layerCount,
     .num_levels = 1,
     .sample_count = SDL_GPU_SAMPLECOUNT_1,
     .props = 0
@@ -69,11 +71,12 @@ SDL_AppResult App_Init(void* appstate)
     }
 
     std::vector<Block> blocks;
-
-    blocks.push_back(Cobblestone_MinableBLock({ 0,0,0 }));
-    blocks.push_back(Cobblestone_MinableBLock({ 0,0,1 }));
-    blocks.push_back(Cobblestone_MinableBLock({ 0,1,0 }));
-    blocks.push_back(Cobblestone_MinableBLock({ 1,0,0 }));
+     
+    blocks.push_back(Cobblestone_MinableBLock({  0, 0, 0 }));
+    blocks.push_back(Cobblestone_MinableBLock({  1, 0, 0 }));
+    blocks.push_back(Cobblestone_MinableBLock({ -1, 0, 0 }));
+    blocks.push_back(Cobblestone_MinableBLock({  0,-1, 0 }));
+    blocks.push_back(Diorite_MinableBLock    ({  0,-2, 0 }));
 
     blockMesh.init(
         state,

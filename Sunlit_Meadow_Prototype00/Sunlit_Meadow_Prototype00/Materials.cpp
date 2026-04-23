@@ -138,7 +138,7 @@ bool UploadTextureArrayLayers(
         SDL_Log("Failed to load Texture: cobblestone");
         return false;
     }
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "cobblestone.png", BLOCK_DIORITE))
+    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "diorite.png", BLOCK_DIORITE))
     {
         SDL_Log("Failed to load Texture: diorite");
         return false;
