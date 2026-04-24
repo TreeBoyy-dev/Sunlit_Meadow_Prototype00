@@ -1,5 +1,9 @@
 #include "Block.h"
 
+Block::Block(){
+    transperent = false;
+}
+
 Block::Block(
     BlockCoordinates position,
     Material materialUP,
@@ -17,11 +21,16 @@ Block::Block(
     materialSOUTH(materialSOUTH),
     materialWEST(materialWEST)
 {
+    transperent = false;
 }
 
 BlockCoordinates Block::getPosition()
 {
     return position;
+}
+bool Block::getTransperency()
+{
+    return transperent;
 }
 
 Material Block::getMaterialUP()

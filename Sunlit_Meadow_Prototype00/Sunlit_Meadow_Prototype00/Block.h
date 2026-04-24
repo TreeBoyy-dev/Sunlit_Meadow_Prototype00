@@ -16,6 +16,7 @@ struct BlockCoordinates {
 class Block {
 private:
     BlockCoordinates position;
+    bool transperent;
 
     Material materialUP;
     Material materialDOWN;
@@ -25,6 +26,7 @@ private:
     Material materialWEST;
 
 public:
+    Block();
     Block(
         BlockCoordinates position,
         Material materialUP,
@@ -36,6 +38,7 @@ public:
     );
 
     BlockCoordinates getPosition();
+    bool getTransperency();
 
     Material getMaterialUP();
     Material getMaterialDOWN();

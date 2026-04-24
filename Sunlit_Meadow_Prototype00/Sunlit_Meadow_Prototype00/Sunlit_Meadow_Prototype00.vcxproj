@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="BlockMesh.cpp" />
+    <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="InitPipeline.cpp" />
     <ClCompile Include="main.cpp">
@@ -140,8 +141,10 @@
     <ClCompile Include="Mat4.cpp" />
     <ClCompile Include="Materials.cpp" />
     <ClCompile Include="MinableBLock.cpp" />
+    <ClCompile Include="Region.cpp" />
     <ClCompile Include="StoneBlocks.cpp" />
     <ClCompile Include="Vectors.cpp" />
+    <ClCompile Include="WorldManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App_Init.h" />
@@ -151,6 +154,7 @@
     <ClInclude Include="BlockMesh.h" />
     <ClInclude Include="chunk.h" />
     <ClInclude Include="Materials.h" />
+    <ClInclude Include="Region.h" />
     <ClInclude Include="StoneBlocks.h" />
     <ClInclude Include="DataStructures.h" />
     <ClInclude Include="Globals.h" />
@@ -158,6 +162,7 @@
     <ClInclude Include="Mat4.h" />
     <ClInclude Include="MinableBlock.h" />
     <ClInclude Include="Vectors.h" />
+    <ClInclude Include="WorldManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.glsl.frag" />
