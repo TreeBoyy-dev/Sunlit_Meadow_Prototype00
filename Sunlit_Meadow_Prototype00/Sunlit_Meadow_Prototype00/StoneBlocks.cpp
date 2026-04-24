@@ -1,10 +1,10 @@
 #include "StoneBlocks.h"
 #include "Materials.h"
 
-Cobblestone_MinableBLock::Cobblestone_MinableBLock(
+Cobblestone_MinableBlock::Cobblestone_MinableBlock(
     BlockCoordinates position
 )
-    : MinableBLock(
+    : MinableBlock(
         position,
         100.0f,
         PICKAXE,
@@ -17,10 +17,10 @@ Cobblestone_MinableBLock::Cobblestone_MinableBLock(
     )
 {
 }
-Diorite_MinableBLock::Diorite_MinableBLock(
+Diorite_MinableBlock::Diorite_MinableBlock(
     BlockCoordinates position
 )
-    : MinableBLock(
+    : MinableBlock(
         position,
         100.0f,
         PICKAXE,

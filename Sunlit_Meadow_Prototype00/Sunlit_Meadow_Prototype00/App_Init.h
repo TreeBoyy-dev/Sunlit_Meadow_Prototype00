@@ -70,19 +70,8 @@ SDL_AppResult App_Init(void* appstate)
         return SDL_APP_FAILURE;
     }
 
-    std::vector<Block> blocks;
-     
-    blocks.push_back(Cobblestone_MinableBLock({  0, 0, 0 }));
-    blocks.push_back(Cobblestone_MinableBLock({  1, 0, 0 }));
-    blocks.push_back(Cobblestone_MinableBLock({ -1, 0, 0 }));
-    blocks.push_back(Cobblestone_MinableBLock({  0,-1, 0 }));
-    blocks.push_back(Diorite_MinableBLock    ({  0,-2, 0 }));
-
-    blockMesh.init(
-        state,
-        blocks,
-        textureArray
-    );
+    testChunk.generateChunk();
+    testChunk.initMeshes(state, textureArray);
 
     SDL_GPUSamplerCreateInfo sampler_info = {};
     state->sampler = SDL_CreateGPUSampler(state->gpu, &sampler_info);

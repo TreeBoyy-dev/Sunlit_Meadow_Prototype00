@@ -27,16 +27,18 @@ bool Chunk::initMeshes(
 		}
 	}
 
-	opaqueMesh.init(
+	if (!opaqueMesh.init(
 		state,
 		opaqueblocks,
 		textureArray
-	);
-	transparentMesh.init(
+	)) return false;
+	if (!transparentMesh.init(
 		state,
 		transparentblocks,
 		textureArray
-	);
+	))return false;
+
+	return true;
 }
 bool Chunk::drawMeshes(
 	AppState* state,
@@ -56,6 +58,7 @@ bool Chunk::drawMeshes(
 		pass,
 		ubo
 	);
+	return true;
 }
 void Chunk::destroyMeshes(AppState* state) {
 	opaqueMesh.destroy(state);
@@ -84,12 +87,26 @@ void Chunk::generateShape(Block blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], Chun
 			for (int z = 0; z < CHUNK_SIZE; z++) {
 				int zAbs = chunkCoordinates.z + z;
 
-				if (zAbs > 0 && zAbs < 3)
-				{
-					blocks[x][y][z] = Cobblestone_MinableBLock({ xAbs, yAbs, zAbs });
+				if (zAbs == 1 || zAbs == 2) {
+					blocks[x][y][z] = Cobblestone_MinableBlock({ xAbs, yAbs, zAbs });
 				}
-				else
-				{
+				else if (zAbs == 3) {
+					if (rand() % 2 == 0)
+						blocks[x][y][z] = Cobblestone_MinableBlock({ xAbs, yAbs, zAbs });
+					else
+						blocks[x][y][z] = Diorite_MinableBlock({ xAbs, yAbs, zAbs });
+				}
+				else if (zAbs == 4) {
+					int r = rand() % 3;
+
+					if (r == 0)
+						blocks[x][y][z] = Cobblestone_MinableBlock({ xAbs, yAbs, zAbs });
+					else if (r == 1)
+						blocks[x][y][z] = Diorite_MinableBlock({ xAbs, yAbs, zAbs });
+					else
+						blocks[x][y][z] = Block();
+				}
+				else {
 					blocks[x][y][z] = Block();
 				}
 			}

@@ -9,12 +9,12 @@ typedef enum {
 	EXPLOSION,
 }BlockDamageType;
 
-class MinableBLock : public Block {
+class MinableBlock : public Block {
 private:
 	float health;
 	BlockDamageType weakness;
 public:
-    MinableBLock(
+    MinableBlock(
         BlockCoordinates position,
         float health,
         BlockDamageType weakness,

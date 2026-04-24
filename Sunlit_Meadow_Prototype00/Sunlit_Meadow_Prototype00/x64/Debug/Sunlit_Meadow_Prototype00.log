@@ -1,2 +1,5 @@
 ﻿  main.cpp
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\App_Render.h(27,30): warning C4305: 'argument': truncation from 'double' to 'float'
+  (compiling source file 'main.cpp')
+  
   Sunlit_Meadow_Prototype00.vcxproj -> C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\x64\Debug\Sunlit_Meadow_Prototype00.exe

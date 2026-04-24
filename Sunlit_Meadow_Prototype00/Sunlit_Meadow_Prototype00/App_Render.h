@@ -24,7 +24,7 @@ SDL_AppResult App_Render(void* appstate)
 
     Mat4 modelMat = mat4Mul(
         mat4Translate(0.0f, 0.0f, 0.0f),
-        mat4Rotate(0.0f, 0.0f, 0.0f) //state->rotation
+        mat4Rotate(-3.1415962/2, 0.0f, 0.0f) //state->rotation
     );
     UBO ubo = {
         .mvp = mat4Mul(state->projMat, mat4Mul(viewMat, modelMat)),
@@ -53,7 +53,7 @@ SDL_AppResult App_Render(void* appstate)
             &depth_target
         );
 
-        blockMesh.draw(
+        testChunk.drawMeshes(
             state,
             cmd,
             pass,

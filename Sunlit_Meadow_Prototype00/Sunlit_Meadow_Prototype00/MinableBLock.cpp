@@ -1,6 +1,6 @@
-#include "MinableBLock.h"
+#include "MinableBlock.h"
 
-MinableBLock::MinableBLock(
+MinableBlock::MinableBlock(
     BlockCoordinates position,
     float health,
     BlockDamageType weakness,

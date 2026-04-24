@@ -1,7 +1,7 @@
 #include "DataStructures.h"
 #include "Globals.h"
 #include "Vectors.h"
-#include "BlockMesh.h"
+#include "Chunk.h"
 
 // --- Camera ---
 Camera camera = {
@@ -20,5 +20,5 @@ float lst_dt[ARR_SIZE] = { 0 };
 int frame_count = 0;
 float sum = 0.0;
 
-// --- Block Mesh ---
-BlockMesh blockMesh;
+// --- Chunks ---
+Chunk testChunk({ 0, 0, 0 });

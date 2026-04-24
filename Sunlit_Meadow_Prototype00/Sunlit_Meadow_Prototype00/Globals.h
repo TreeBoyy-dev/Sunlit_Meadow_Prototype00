@@ -2,7 +2,7 @@
 
 #include "DataStructures.h"
 #include "Vectors.h"
-#include "BlockMesh.h"
+#include "Chunk.h"
 
 // --- Camera ---
 extern Camera camera;
@@ -16,5 +16,5 @@ extern float lst_dt[];
 extern int frame_count;
 extern float sum;
 
-// --- Block Mesh ---
-extern BlockMesh blockMesh;
+// --- Chunks ---
+extern Chunk testChunk;

@@ -2,12 +2,12 @@
 
 #include "MinableBlock.h"
 
-class Cobblestone_MinableBLock : public MinableBLock {
+class Cobblestone_MinableBlock : public MinableBlock {
 public:
-	Cobblestone_MinableBLock(BlockCoordinates position);
+	Cobblestone_MinableBlock(BlockCoordinates position);
 };
 
-class Diorite_MinableBLock : public MinableBLock {
+class Diorite_MinableBlock : public MinableBlock {
 public:
-	Diorite_MinableBLock(BlockCoordinates position);
+	Diorite_MinableBlock(BlockCoordinates position);
 };
