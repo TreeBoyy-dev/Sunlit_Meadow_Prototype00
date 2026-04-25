@@ -17,6 +17,7 @@ class Block {
 private:
     BlockCoordinates position;
     bool transperent;
+    bool isAir;
 
     Material materialUP;
     Material materialDOWN;
@@ -39,6 +40,7 @@ public:
 
     BlockCoordinates getPosition();
     bool getTransperency();
+    bool getIsAir();
 
     Material getMaterialUP();
     Material getMaterialDOWN();

@@ -6,7 +6,6 @@
 //chunksize in blocks -> side of a cube
 #define CHUNK_SIZE 16
 
-// worldcoordinates /CHUNK_SIZE
 struct ChunkCoord {
     int x, y, z;
     bool operator==(const ChunkCoord& other) const {
@@ -36,10 +35,13 @@ private:
     bool drawOpaqueMesh;
     bool drawTransparentMesh;
 public:
+    Chunk();
     Chunk(ChunkCoord chunkCoordinates);
 
     bool generateChunk();
-    void generateShape(Block blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], ChunkCoord chunkCoordinates);
+
+    bool getIsGenerated();
+    ChunkCoord getChunkCoordinates();
 
     bool initMeshes(
         AppState* state,
@@ -52,4 +54,8 @@ public:
         const UBO& ubo
     );
     void destroyMeshes(AppState* state);
+
+private:
+    void generateShape(Block blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], ChunkCoord chunkCoordinates);
+
 };

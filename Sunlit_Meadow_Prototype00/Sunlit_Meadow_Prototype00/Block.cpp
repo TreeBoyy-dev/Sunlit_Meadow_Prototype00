@@ -2,6 +2,7 @@
 
 Block::Block(){
     transperent = false;
+    isAir = true;
 }
 
 Block::Block(
@@ -22,6 +23,7 @@ Block::Block(
     materialWEST(materialWEST)
 {
     transperent = false;
+    isAir = false;
 }
 
 BlockCoordinates Block::getPosition()
@@ -31,6 +33,10 @@ BlockCoordinates Block::getPosition()
 bool Block::getTransperency()
 {
     return transperent;
+}
+bool Block::getIsAir()
+{
+    return isAir;
 }
 
 Material Block::getMaterialUP()

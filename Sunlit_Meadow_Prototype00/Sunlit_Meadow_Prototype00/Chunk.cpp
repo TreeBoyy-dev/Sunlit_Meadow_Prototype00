@@ -1,6 +1,13 @@
 #include "Chunk.h"
 #include "StoneBlocks.h"
 
+Chunk::Chunk() :
+	chunkCoordinates({0,0,0}),
+	isGenerated(false),
+	drawOpaqueMesh(false),
+	drawTransparentMesh(false)
+{}
+
 Chunk::Chunk(ChunkCoord chunkCoordinates) :
 	chunkCoordinates(chunkCoordinates),
 	isGenerated(false),
@@ -18,25 +25,46 @@ bool Chunk::initMeshes(
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int y = 0; y < CHUNK_SIZE; y++) {
 			for (int z = 0; z < CHUNK_SIZE; z++) {
+				Block& b = blocks[x][y][z];
+				if (b.getIsAir()) continue;  // skip air — don't put in either list
 
-				if (blocks[x][y][z].getTransperency())
-					transparentblocks.push_back(blocks[x][y][z]);
+				if (b.getTransperency())
+					transparentblocks.push_back(b);
 				else
-					opaqueblocks.push_back(blocks[x][y][z]);
+					opaqueblocks.push_back(b);
 			}
 		}
 	}
-
-	if (!opaqueMesh.init(
-		state,
-		opaqueblocks,
-		textureArray
-	)) return false;
-	if (!transparentMesh.init(
-		state,
-		transparentblocks,
-		textureArray
-	))return false;
+	if (opaqueblocks.size() > 0) {
+		drawOpaqueMesh = true;
+		if (!opaqueMesh.init(
+			state,
+			opaqueblocks,
+			textureArray
+		)) {
+			//return false;
+			SDL_Log("failed to init opaqueMesh at %d|%d|%d",
+				chunkCoordinates.x,
+				chunkCoordinates.y,
+				chunkCoordinates.z
+			);
+		}
+	}
+	if (transparentblocks.size() > 0) {
+		drawTransparentMesh = true;
+		if (!transparentMesh.init(
+			state,
+			transparentblocks,
+			textureArray
+		)) {
+			//return false;
+			SDL_Log("failed to init transparentMesh at %d|%d|%d",
+				chunkCoordinates.x,
+				chunkCoordinates.y,
+				chunkCoordinates.z
+			);
+		}
+	}
 
 	return true;
 }
@@ -46,13 +74,13 @@ bool Chunk::drawMeshes(
 	SDL_GPURenderPass* pass,
 	const UBO& ubo
 ) {
-	opaqueMesh.draw(
+	if(drawOpaqueMesh) opaqueMesh.draw(
 		state,
 		cmd,
 		pass,
 		ubo
 	);
-	transparentMesh.draw(
+	if (drawTransparentMesh) transparentMesh.draw(
 		state,
 		cmd,
 		pass,
@@ -65,6 +93,12 @@ void Chunk::destroyMeshes(AppState* state) {
 	transparentMesh.destroy(state);
 }
 
+bool Chunk::getIsGenerated() {
+	return isGenerated;
+}
+ChunkCoord Chunk::getChunkCoordinates() {
+	return chunkCoordinates;
+}
 
 bool Chunk::generateChunk() {
 
@@ -81,11 +115,11 @@ bool Chunk::generateChunk() {
 void Chunk::generateShape(Block blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], ChunkCoord chunkCoordinates)
 {
 	for (int x = 0; x < CHUNK_SIZE; x++) {
-		int xAbs = chunkCoordinates.x + x;
+		int xAbs = chunkCoordinates.x * CHUNK_SIZE + x;
 		for (int y = 0; y < CHUNK_SIZE; y++) {
-			int yAbs = chunkCoordinates.y + y;
+			int yAbs = chunkCoordinates.y * CHUNK_SIZE + y;
 			for (int z = 0; z < CHUNK_SIZE; z++) {
-				int zAbs = chunkCoordinates.z + z;
+				int zAbs = chunkCoordinates.z * CHUNK_SIZE + z;
 
 				if (zAbs == 1 || zAbs == 2) {
 					blocks[x][y][z] = Cobblestone_MinableBlock({ xAbs, yAbs, zAbs });

@@ -53,7 +53,7 @@ SDL_AppResult App_Render(void* appstate)
             &depth_target
         );
 
-        testChunk.drawMeshes(
+        testManager.drawChunks(
             state,
             cmd,
             pass,

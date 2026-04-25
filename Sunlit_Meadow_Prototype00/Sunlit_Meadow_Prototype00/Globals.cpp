@@ -1,7 +1,7 @@
 #include "DataStructures.h"
 #include "Globals.h"
 #include "Vectors.h"
-#include "Chunk.h"
+#include "WorldManager.h"
 
 // --- Camera ---
 Camera camera = {
@@ -11,7 +11,7 @@ Camera camera = {
 Vec2 mouseMovement = {
 	0.0f, 0.0f
 };
-const float MAX_CAMERA_SPEED_MOVE = 3.0f;
+const float MAX_CAMERA_SPEED_MOVE = 10.0f;
 const float MAX_CAMERA_SPEED_LOOK = 0.03f;
 
 // --- Calc FPS ---
@@ -20,5 +20,6 @@ float lst_dt[ARR_SIZE] = { 0 };
 int frame_count = 0;
 float sum = 0.0;
 
-// --- Chunks ---
-Chunk testChunk({ 0, 0, 0 });
+// --- WorldManager ---
+WorldManager testManager;
+extern const int RENDER_DISTANCE = 2;

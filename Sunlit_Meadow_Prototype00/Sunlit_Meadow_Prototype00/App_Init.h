@@ -70,8 +70,8 @@ SDL_AppResult App_Init(void* appstate)
         return SDL_APP_FAILURE;
     }
 
-    testChunk.generateChunk();
-    testChunk.initMeshes(state, textureArray);
+    testManager.calcVisibleChunksList(RENDER_DISTANCE);
+    testManager.updateRenderList({ 1.0, 1.0, 1.0 }, RENDER_DISTANCE, state, textureArray);
 
     SDL_GPUSamplerCreateInfo sampler_info = {};
     state->sampler = SDL_CreateGPUSampler(state->gpu, &sampler_info);

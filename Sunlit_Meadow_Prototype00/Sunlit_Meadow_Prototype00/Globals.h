@@ -2,7 +2,7 @@
 
 #include "DataStructures.h"
 #include "Vectors.h"
-#include "Chunk.h"
+#include "WorldManager.h"
 
 // --- Camera ---
 extern Camera camera;
@@ -16,5 +16,6 @@ extern float lst_dt[];
 extern int frame_count;
 extern float sum;
 
-// --- Chunks ---
-extern Chunk testChunk;
+// --- WorldManager ---
+extern WorldManager testManager;
+extern const int RENDER_DISTANCE;

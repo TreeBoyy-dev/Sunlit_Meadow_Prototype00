@@ -54,7 +54,6 @@ private:
         const Vec3& v1,
         const Vec3& v2,
         const Vec3& v3,
-        const Vec3& normal,
         int materialIndex
     );
 

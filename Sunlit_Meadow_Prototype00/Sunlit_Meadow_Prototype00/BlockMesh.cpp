@@ -41,7 +41,6 @@ void BlockMesh::addFace(
     const Vec3& v1,
     const Vec3& v2,
     const Vec3& v3,
-    const Vec3& normal,
     int materialIndex
 )
 {
@@ -90,27 +89,27 @@ void BlockMesh::buildMesh(std::vector<Block>& blocks)
         Vec3 p011 = { x,     y + 1, z + 1 };
 
         if (!hasBlock(pos.x, pos.y + 1, pos.z)) {
-            addFace(p011, p111, p110, p010, { 0.0f, 1.0f, 0.0f }, block.getMaterialUP());
+            addFace(p011, p111, p110, p010, block.getMaterialUP());
         }
 
         if (!hasBlock(pos.x, pos.y - 1, pos.z)) {
-            addFace(p000, p100, p101, p001, { 0.0f, -1.0f, 0.0f }, block.getMaterialDOWN());
+            addFace(p000, p100, p101, p001, block.getMaterialDOWN());
         }
 
         if (!hasBlock(pos.x, pos.y, pos.z - 1)) {
-            addFace(p100, p000, p010, p110, { 0.0f, 0.0f, -1.0f }, block.getMaterialNORTH());
+            addFace(p100, p000, p010, p110, block.getMaterialNORTH());
         }
 
         if (!hasBlock(pos.x, pos.y, pos.z + 1)) {
-            addFace(p001, p101, p111, p011, { 0.0f, 0.0f, 1.0f }, block.getMaterialSOUTH());
+            addFace(p001, p101, p111, p011, block.getMaterialSOUTH());
         }
 
         if (!hasBlock(pos.x + 1, pos.y, pos.z)) {
-            addFace(p101, p100, p110, p111, { 1.0f, 0.0f, 0.0f }, block.getMaterialEAST());
+            addFace(p101, p100, p110, p111, block.getMaterialEAST());
         }
 
         if (!hasBlock(pos.x - 1, pos.y, pos.z)) {
-            addFace(p000, p001, p011, p010, { -1.0f, 0.0f, 0.0f }, block.getMaterialWEST());
+            addFace(p000, p001, p011, p010, block.getMaterialWEST());
         }
     }
 
