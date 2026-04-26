@@ -1,23 +1,24 @@
 #pragma once
-#define SDL_MAIN_HANDLED
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_main.h>
-
+#include <string>
 #include "Materials.h"
 
 class Block {
-private:
-    Uint16 id;
-    std::string name;
-    bool transperent;
-
-    bool hasSlab;
-
-    BlockModel model;
-
 public:
-    Block(id, name, model, transperent, hasSlab);
+    uint16_t    id;
+    std::string name;
+    bool        transparent;
+    bool        hasSlab;
+    bool        hasStair;
+    bool        hasWall;
+    BlockModel  model;
 
-    bool getTransperency();
-    void getModel(pointerToVertecies, pointertoIndecies, Texture);
+    Block(
+        uint8_t id,
+        std::string name,
+        BlockModel model,
+        bool transparent = false,
+        bool hasSlab = false,
+        bool hasStair = false,
+        bool hasWall = false
+    );
 };

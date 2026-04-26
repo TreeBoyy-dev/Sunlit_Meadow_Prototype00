@@ -1,15 +1,54 @@
 #include "BlockManager.h"
+#include <stdexcept>
 
-void BlockManager::initBlockManager() {
+void BlockManager::registerBlock(
+    const std::string& name,
+    BlockModel model,
+    bool transparent,
+    bool hasSlab,
+    bool hasStair,
+    bool hasWall
+){
 
-	//for each block in the game:
-	// - initialize the block with its respective data like model, name, unique id etc. 
-	//		(model hold vertecies, indecies, textures, so everthing to display the block)
-	// - add the block to a list of blocks
+    uint16_t id = nextId++;
 
-	//after all blocks are initialized:
-	// - iterate through list:
-	//   > create a block for each alternative varients for every block that has one
-	//	   for example: if(block.hasSLab) newBlock = Slab(data of initial block);
+    auto newBlock = std::make_unique<Block>(id, name, model, transparent, hasSlab, hasStair, hasWall);
+    Block* ptr = newBlock.get();
 
+    blocksById[id] = ptr;
+    blocksByName[name] = ptr;
+
+    blocks.push_back(std::move(newBlock));
+}
+
+void BlockManager::init() {
+    // --- Register base blocks ---
+    registerBlock("Air", {}, /*transparent=*/true);
+    registerBlock("Grass", grassModel, false, /*hasSlab=*/true, /*hasStair=*/true, /*hasWall=*/false);
+    registerBlock("Stone", stoneModel, false, true, true, true);
+    registerBlock("Wood",  woodModel,  false, true, true);
+
+    // --- Auto-generate variants ---
+    // Snapshot current blocks (avoid mutating map while iterating)
+    std::vector<Block> baseBlocks;
+    for (auto& [id, block] : blocksById)
+        baseBlocks.push_back(block);
+
+    for (const Block& b : baseBlocks) {
+        if (b.hasSlab)  registerBlock(b.name + "_Slab",  slabModelFrom (b.model));
+        if (b.hasStair) registerBlock(b.name + "_Stair", stairModelFrom(b.model));
+        if (b.hasWall)  registerBlock(b.name + "_Wall",  wallModelFrom (b.model));
+    }
+}
+
+const Block& BlockManager::getById(uint8_t id) const {
+    auto it = blocksById.find(id);
+    if (it == blocksById.end()) throw std::runtime_error("Unknown block id");
+    return it->second;
+}
+
+const Block& BlockManager::getByName(const std::string& name) const {
+    auto it = blocksByName.find(name);
+    if (it == blocksByName.end()) throw std::runtime_error("Unknown block name");
+    return blocksById.at(it->second);
 }
