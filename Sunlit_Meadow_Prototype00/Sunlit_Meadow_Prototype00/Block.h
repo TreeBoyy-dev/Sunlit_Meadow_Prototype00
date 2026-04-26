@@ -5,47 +5,19 @@
 
 #include "Materials.h"
 
-struct BlockCoordinates {
-	int x, y, z;
-    bool operator==(const BlockCoordinates& other) const
-    {
-        return x == other.x && y == other.y && z == other.z;
-    }
-};
-
 class Block {
 private:
-    BlockCoordinates position;
+    Uint16 id;
+    std::string name;
     bool transperent;
-    bool isAir;
 
-    Material materialUP;
-    Material materialDOWN;
-    Material materialNORTH;
-    Material materialEAST;
-    Material materialSOUTH;
-    Material materialWEST;
+    bool hasSlab;
+
+    BlockModel model;
 
 public:
-    Block();
-    Block(
-        BlockCoordinates position,
-        Material materialUP,
-        Material materialDOWN,
-        Material materialNORTH,
-        Material materialEAST,
-        Material materialSOUTH,
-        Material materialWEST
-    );
+    Block(id, name, model, transperent, hasSlab);
 
-    BlockCoordinates getPosition();
     bool getTransperency();
-    bool getIsAir();
-
-    Material getMaterialUP();
-    Material getMaterialDOWN();
-    Material getMaterialNORTH();
-    Material getMaterialEAST();
-    Material getMaterialSOUTH();
-    Material getMaterialWEST();
+    void getModel(pointerToVertecies, pointertoIndecies, Texture);
 };

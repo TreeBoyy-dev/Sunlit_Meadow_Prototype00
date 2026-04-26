@@ -131,6 +131,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="BlockManager.cpp" />
     <ClCompile Include="BlockMesh.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="Globals.cpp" />
@@ -151,6 +152,7 @@
     <ClInclude Include="App_Render.h" />
     <ClInclude Include="App_Update.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="BlockManager.h" />
     <ClInclude Include="BlockMesh.h" />
     <ClInclude Include="chunk.h" />
     <ClInclude Include="Materials.h" />

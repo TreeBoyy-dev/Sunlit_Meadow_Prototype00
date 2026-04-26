@@ -72,6 +72,9 @@
     <ClCompile Include="WorldManager.cpp">
       <Filter>Source Files\world\worldData</Filter>
     </ClCompile>
+    <ClCompile Include="BlockManager.cpp">
+      <Filter>Source Files\world\Blocks</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h">
@@ -121,6 +124,9 @@
     </ClInclude>
     <ClInclude Include="WorldManager.h">
       <Filter>Header Files\world\worldData</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockManager.h">
+      <Filter>Header Files\world\Blocks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
