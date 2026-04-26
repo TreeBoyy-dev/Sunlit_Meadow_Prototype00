@@ -20,11 +20,11 @@ SDL_AppResult App_Render(void* appstate)
         return SDL_APP_FAILURE;
     }
 
-    Mat4 viewMat = mat4LookAt(camera.position, camera.lookTarget, { 0.0f, 1.0f, 0.0f });
+    Mat4 viewMat = mat4LookAt(camera.position, camera.lookTarget, { 0.0f, 0.0f, -1.0f });
 
     Mat4 modelMat = mat4Mul(
         mat4Translate(0.0f, 0.0f, 0.0f),
-        mat4Rotate(-3.1415962/2, 0.0f, 0.0f) //state->rotation
+        mat4Rotate(0.0f, 0.0f, 0.0f) //mat4Rotate(-3.1415962/2, 0.0f, 0.0f)
     );
     UBO ubo = {
         .mvp = mat4Mul(state->projMat, mat4Mul(viewMat, modelMat)),

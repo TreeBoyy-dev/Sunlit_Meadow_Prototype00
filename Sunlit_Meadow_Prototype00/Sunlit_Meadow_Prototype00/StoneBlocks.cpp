@@ -33,3 +33,19 @@ Diorite_MinableBlock::Diorite_MinableBlock(
     )
 {
 }
+Dirt_MinableBlock::Dirt_MinableBlock(
+    BlockCoordinates position
+)
+    : MinableBlock(
+        position,
+        100.0f,
+        PICKAXE,
+        BLOCK_DIRT,
+        BLOCK_DIRT,
+        BLOCK_DIRT,
+        BLOCK_DIRT,
+        BLOCK_DIRT,
+        BLOCK_DIRT
+    )
+{
+}

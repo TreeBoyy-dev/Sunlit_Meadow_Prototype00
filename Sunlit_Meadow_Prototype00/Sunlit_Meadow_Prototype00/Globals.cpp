@@ -22,4 +22,6 @@ float sum = 0.0;
 
 // --- WorldManager ---
 WorldManager testManager;
-extern const int RENDER_DISTANCE = 2;
+extern const int RENDER_DISTANCE = 3;
+
+extern ChunkCoord prevPlayerChunkCoords = { 0,0,0 };

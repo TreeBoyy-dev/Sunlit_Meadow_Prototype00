@@ -121,14 +121,14 @@ void Chunk::generateShape(Block blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], Chun
 			for (int z = 0; z < CHUNK_SIZE; z++) {
 				int zAbs = chunkCoordinates.z * CHUNK_SIZE + z;
 
-				if (zAbs == 1 || zAbs == 2) {
+				if (zAbs <=2) {
 					blocks[x][y][z] = Cobblestone_MinableBlock({ xAbs, yAbs, zAbs });
 				}
 				else if (zAbs == 3) {
 					if (rand() % 2 == 0)
 						blocks[x][y][z] = Cobblestone_MinableBlock({ xAbs, yAbs, zAbs });
 					else
-						blocks[x][y][z] = Diorite_MinableBlock({ xAbs, yAbs, zAbs });
+						blocks[x][y][z] = Dirt_MinableBlock({ xAbs, yAbs, zAbs });
 				}
 				else if (zAbs == 4) {
 					int r = rand() % 3;
@@ -136,10 +136,13 @@ void Chunk::generateShape(Block blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], Chun
 					if (r == 0)
 						blocks[x][y][z] = Cobblestone_MinableBlock({ xAbs, yAbs, zAbs });
 					else if (r == 1)
-						blocks[x][y][z] = Diorite_MinableBlock({ xAbs, yAbs, zAbs });
+						blocks[x][y][z] = Dirt_MinableBlock({ xAbs, yAbs, zAbs });
 					else
 						blocks[x][y][z] = Block();
 				}
+				//else if (zAbs > 20) {
+				//	blocks[x][y][z] = Diorite_MinableBlock({ xAbs, yAbs, zAbs });
+				//}
 				else {
 					blocks[x][y][z] = Block();
 				}

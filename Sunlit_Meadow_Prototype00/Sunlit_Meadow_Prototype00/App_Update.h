@@ -1,8 +1,10 @@
 #pragma once
 
+#include "WorldManager.h"
+
 bool updateCamera(float dt) {
-    camera.yaw -= mouseMovement.u * -MAX_CAMERA_SPEED_LOOK;
-    camera.pitch -= mouseMovement.v * -MAX_CAMERA_SPEED_LOOK;
+    camera.yaw   -= mouseMovement.u * -MAX_CAMERA_SPEED_LOOK;
+    camera.pitch += mouseMovement.v * -MAX_CAMERA_SPEED_LOOK;
     mouseMovement.u = 0;
     mouseMovement.v = 0;
 
@@ -15,9 +17,9 @@ bool updateCamera(float dt) {
     float pitchRad = camera.pitch * (3.14159265f / 180.0f);
 
     camera.forward = {
-        cosf(pitchRad) * sinf(yawRad),
-        sinf(pitchRad),
-        -cosf(pitchRad) * cosf(yawRad)
+        cosf(pitchRad) * cosf(yawRad),  // x
+        cosf(pitchRad) * sinf(yawRad),  // y
+        sinf(pitchRad)                  // z is up
     };
 
     camera.lookTarget = {
@@ -34,16 +36,16 @@ bool updateCamera(float dt) {
     // Forward direction on ground plane only
     Vec3 flatForward = {
         camera.forward.x,
+        camera.forward.y,
         0.0f,
-        camera.forward.z
     };
     flatForward = vec3Normalize(flatForward);
 
     // Right vector on ground plane
     Vec3 flatRight = {
-        flatForward.z,
-        0.0f,
-        -flatForward.x
+        flatForward.y,
+        -flatForward.x,
+        0.0f
     };
     flatRight = vec3Normalize(flatRight);
 
@@ -52,31 +54,31 @@ bool updateCamera(float dt) {
     if (keyStates[SDL_SCANCODE_W])     
     movement = {
         movement.x + flatForward.x,
-        movement.y,
-        movement.z + flatForward.z
+        movement.y + flatForward.y,
+        movement.z 
     };
     if (keyStates[SDL_SCANCODE_S])     
     movement = {
         movement.x - flatForward.x,
-        movement.y,
-        movement.z - flatForward.z
+        movement.y - flatForward.y,
+        movement.z
     };
     if (keyStates[SDL_SCANCODE_A])
     movement = {
         movement.x + flatRight.x,
-        movement.y,
-        movement.z + flatRight.z
+        movement.y + flatRight.y,
+        movement.z
     };
     if (keyStates[SDL_SCANCODE_D])
     movement = {
         movement.x - flatRight.x,
-        movement.y,
-        movement.z - flatRight.z
+        movement.y - flatRight.y,
+        movement.z
     };
 
     // Vertical movement stays world-relative
-    if (keyStates[SDL_SCANCODE_SPACE])  movement.y += -1.0f;
-    if (keyStates[SDL_SCANCODE_LSHIFT]) movement.y += 1.0f;
+    if (keyStates[SDL_SCANCODE_SPACE])  movement.z +=  1.0f;
+    if (keyStates[SDL_SCANCODE_LSHIFT]) movement.z += -1.0f;
 
     if (movement.x != 0.0f || movement.y != 0.0f || movement.z != 0.0f) {
         movement = vec3Normalize(movement);
@@ -120,6 +122,13 @@ SDL_AppResult App_Update(void* appstate)
     if (!updateCamera(dt))
         return SDL_APP_FAILURE;
 
+
+    ChunkCoord playerChunkCoords = getPlayerChunkCoord(camera.position);
+
+    if (playerChunkCoords != prevPlayerChunkCoords) {
+        testManager.updateRenderList(camera.position, RENDER_DISTANCE, state, state->textureArray);
+    }
+    prevPlayerChunkCoords = playerChunkCoords;
 
     return SDL_APP_CONTINUE;
 }

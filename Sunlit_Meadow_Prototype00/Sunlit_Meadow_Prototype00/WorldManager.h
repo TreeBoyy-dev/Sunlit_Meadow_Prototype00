@@ -9,6 +9,8 @@
 #include "Chunk.h"
 #include "Region.h"
 
+ChunkCoord getPlayerChunkCoord(Vec3 playerPosition);
+
 class WorldManager {
 private:
 	std::unordered_map<RegionCoord, std::unique_ptr<Region>, RegionCoordHash> regions;	//std::unordered_map<ChunkCoord, Chunk, ChunkCoordHash> loadedChunks;

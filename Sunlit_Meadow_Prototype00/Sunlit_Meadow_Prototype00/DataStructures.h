@@ -31,6 +31,8 @@ typedef struct {
     SDL_GPUTexture* depth_texture;
     SDL_GPUSampler* sampler;
 
+    SDL_GPUTexture* textureArray;
+
     Uint64  lastTicks;      /* timestamp at end of previous frame   */
     float   rotation;       /* current rotation angle (radians)     */
     Mat4    projMat;        /* projection matrix, computed at init  */

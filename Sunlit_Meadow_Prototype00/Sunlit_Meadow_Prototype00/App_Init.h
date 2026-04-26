@@ -62,16 +62,16 @@ SDL_AppResult App_Init(void* appstate)
     .sample_count = SDL_GPU_SAMPLECOUNT_1,
     .props = 0
     };
-    SDL_GPUTexture* textureArray = SDL_CreateGPUTexture(state->gpu, &texInfo);
+    state->textureArray = SDL_CreateGPUTexture(state->gpu, &texInfo);
 
-    if (!UploadTextureArrayLayers(state, textureArray))
+    if (!UploadTextureArrayLayers(state, state->textureArray))
     {
         SDL_Log("failed loading textures");
         return SDL_APP_FAILURE;
     }
 
     testManager.calcVisibleChunksList(RENDER_DISTANCE);
-    testManager.updateRenderList({ 1.0, 1.0, 1.0 }, RENDER_DISTANCE, state, textureArray);
+    testManager.updateRenderList(camera.position, RENDER_DISTANCE, state, state->textureArray);
 
     SDL_GPUSamplerCreateInfo sampler_info = {};
     state->sampler = SDL_CreateGPUSampler(state->gpu, &sampler_info);

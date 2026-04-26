@@ -19,3 +19,5 @@ extern float sum;
 // --- WorldManager ---
 extern WorldManager testManager;
 extern const int RENDER_DISTANCE;
+
+extern ChunkCoord prevPlayerChunkCoords;

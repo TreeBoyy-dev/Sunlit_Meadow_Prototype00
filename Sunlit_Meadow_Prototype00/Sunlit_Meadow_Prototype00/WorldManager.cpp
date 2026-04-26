@@ -26,11 +26,8 @@ void WorldManager::updateRenderList(
 	AppState* state,
 	SDL_GPUTexture* textureArray
 ) {
-	ChunkCoord playerChunkPos = {
-		(int)std::floor(playerPosition.x / CHUNK_SIZE),
-		(int)std::floor(playerPosition.y / CHUNK_SIZE),
-		(int)std::floor(playerPosition.z / CHUNK_SIZE)
-	};
+	ChunkCoord playerChunkPos = getPlayerChunkCoord(playerPosition);
+	SDL_Log("%d, %d, %d", playerChunkPos.x, playerChunkPos.y, playerChunkPos.z);
 
 	renderList.clear();
 
@@ -93,3 +90,12 @@ Region* WorldManager::getRegion(RegionCoord regionCoordinates) {
 
 	return it->second.get();
 }
+
+ChunkCoord getPlayerChunkCoord(Vec3 playerPosition) {
+	return {
+		(int)std::floor(playerPosition.x / CHUNK_SIZE),
+		(int)std::floor(playerPosition.y / CHUNK_SIZE),
+		(int)std::floor(playerPosition.z / CHUNK_SIZE)
+	};
+}
+
