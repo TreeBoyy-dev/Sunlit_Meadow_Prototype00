@@ -1,2 +1,662 @@
-﻿  Globals.cpp
-  Sunlit_Meadow_Prototype00.vcxproj -> C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\x64\Debug\Sunlit_Meadow_Prototype00.exe
+﻿  Block.cpp
+  BlockManager.cpp
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,17): error C3646: 'model': unknown override specifier
+  (compiling source file 'Block.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,5): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+  (compiling source file 'Block.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(19,9): error C2061: syntax error: identifier 'BlockModel'
+  (compiling source file 'Block.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.cpp(3,44): error C2061: syntax error: identifier 'BlockModel'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.cpp(8,44): error C2065: 'model': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.cpp(8,38): error C2614: 'Block': illegal member initialization: 'model' is not a base or member
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,17): error C3646: 'model': unknown override specifier
+  (compiling source file 'BlockManager.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,5): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+  (compiling source file 'BlockManager.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(19,9): error C2061: syntax error: identifier 'BlockModel'
+  (compiling source file 'BlockManager.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.h(22,9): error C2061: syntax error: identifier 'BlockModel'
+  (compiling source file 'BlockManager.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(7,5): error C2061: syntax error: identifier 'BlockModel'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(16,55): error C2065: 'model': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(16,62): error C2065: 'transparent': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(16,75): error C2065: 'hasSlab': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(16,84): error C2065: 'hasStair': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(16,94): error C2065: 'hasWall': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(28,5): error C2660: 'BlockManager::registerBlock': function does not take 3 arguments
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(5,20):
+      see declaration of 'BlockManager::registerBlock'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(28,5):
+      while trying to match the argument list '(const char [4], initializer list, bool)'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(29,28): error C2065: 'grassModel': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(30,28): error C2065: 'stoneModel': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(31,28): error C2065: 'woodModel': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(40,84): error C2039: 'model': is not a member of 'Block'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(40,68): error C3861: 'slabModelFrom': identifier not found
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(41,85): error C2039: 'model': is not a member of 'Block'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(41,68): error C3861: 'stairModelFrom': identifier not found
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(42,84): error C2039: 'model': is not a member of 'Block'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockManager.cpp(42,68): error C3861: 'wallModelFrom': identifier not found
+  BlockMesh.cpp
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,17): error C3646: 'model': unknown override specifier
+  (compiling source file 'BlockMesh.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,5): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+  (compiling source file 'BlockMesh.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(19,9): error C2061: syntax error: identifier 'BlockModel'
+  (compiling source file 'BlockMesh.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(14,28): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+  (compiling source file 'BlockMesh.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(14,50): error C2143: syntax error: missing ',' before '&'
+  (compiling source file 'BlockMesh.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(16,43): error C2065: 'b': undeclared identifier
+  (compiling source file 'BlockMesh.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(17,43): error C2065: 'b': undeclared identifier
+  (compiling source file 'BlockMesh.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(18,43): error C2065: 'b': undeclared identifier
+  (compiling source file 'BlockMesh.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,24): error C2065: 'BlockCoordinates': undeclared identifier
+  (compiling source file 'BlockMesh.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,10): error C2923: 'std::unordered_set': 'BlockCoordinates' is not a valid template type argument for parameter '_Kty'
+  (compiling source file 'BlockMesh.cpp')
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,24):
+      see declaration of 'BlockCoordinates'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,10): error C2976: 'std::unordered_set': too few template arguments
+  (compiling source file 'BlockMesh.cpp')
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,60): error C2955: 'std::unordered_set': use of class template requires template argument list
+  (compiling source file 'BlockMesh.cpp')
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(29,14): error C2039: 'clear': is not a member of 'std::unordered_set'
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(36,21): error C2039: 'find': is not a member of 'std::unordered_set'
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(36,51): error C2039: 'end': is not a member of 'std::unordered_set'
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(68,14): error C2039: 'clear': is not a member of 'std::unordered_set'
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(71,18): error C2039: 'insert': is not a member of 'std::unordered_set'
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(71,31): error C2039: 'getPosition': is not a member of 'Block'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(75,9): error C2065: 'BlockCoordinates': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(75,26): error C2146: syntax error: missing ';' before identifier 'pos'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(75,26): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(75,38): error C2039: 'getPosition': is not a member of 'Block'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(77,26): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(78,26): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(79,26): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(91,23): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(91,30): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(91,41): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(91,14): error C2660: 'BlockMesh::hasBlock': function does not take 1 arguments
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(34,17):
+      see declaration of 'BlockMesh::hasBlock'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(91,14):
+      while trying to match the argument list '()'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(92,51): error C2039: 'getMaterialUP': is not a member of 'Block'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(92,13): error C2660: 'BlockMesh::addFace': function does not take 4 arguments
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(39,17):
+      see declaration of 'BlockMesh::addFace'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(92,13):
+      while trying to match the argument list '(Vec3, Vec3, Vec3, Vec3)'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(95,23): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(95,30): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(95,41): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(95,14): error C2660: 'BlockMesh::hasBlock': function does not take 1 arguments
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(34,17):
+      see declaration of 'BlockMesh::hasBlock'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(95,14):
+      while trying to match the argument list '()'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(96,51): error C2039: 'getMaterialDOWN': is not a member of 'Block'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(96,13): error C2660: 'BlockMesh::addFace': function does not take 4 arguments
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(39,17):
+      see declaration of 'BlockMesh::addFace'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(96,13):
+      while trying to match the argument list '(Vec3, Vec3, Vec3, Vec3)'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(99,23): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(99,30): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(99,37): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(99,14): error C2660: 'BlockMesh::hasBlock': function does not take 1 arguments
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(34,17):
+      see declaration of 'BlockMesh::hasBlock'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(99,14):
+      while trying to match the argument list '()'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(100,51): error C2039: 'getMaterialNORTH': is not a member of 'Block'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(100,13): error C2660: 'BlockMesh::addFace': function does not take 4 arguments
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(39,17):
+      see declaration of 'BlockMesh::addFace'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(100,13):
+      while trying to match the argument list '(Vec3, Vec3, Vec3, Vec3)'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(103,23): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(103,30): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(103,37): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(103,14): error C2660: 'BlockMesh::hasBlock': function does not take 1 arguments
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(34,17):
+      see declaration of 'BlockMesh::hasBlock'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(103,14):
+      while trying to match the argument list '()'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(104,51): error C2039: 'getMaterialSOUTH': is not a member of 'Block'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(104,13): error C2660: 'BlockMesh::addFace': function does not take 4 arguments
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(39,17):
+      see declaration of 'BlockMesh::addFace'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(104,13):
+      while trying to match the argument list '(Vec3, Vec3, Vec3, Vec3)'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(107,23): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(107,34): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(107,41): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(107,14): error C2660: 'BlockMesh::hasBlock': function does not take 1 arguments
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(34,17):
+      see declaration of 'BlockMesh::hasBlock'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(107,14):
+      while trying to match the argument list '()'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(108,51): error C2039: 'getMaterialEAST': is not a member of 'Block'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(108,13): error C2660: 'BlockMesh::addFace': function does not take 4 arguments
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(39,17):
+      see declaration of 'BlockMesh::addFace'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(108,13):
+      while trying to match the argument list '(Vec3, Vec3, Vec3, Vec3)'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(111,23): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(111,34): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(111,41): error C2065: 'pos': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(111,14): error C2660: 'BlockMesh::hasBlock': function does not take 1 arguments
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(34,17):
+      see declaration of 'BlockMesh::hasBlock'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(111,14):
+      while trying to match the argument list '()'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(112,51): error C2039: 'getMaterialWEST': is not a member of 'Block'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(112,13): error C2660: 'BlockMesh::addFace': function does not take 4 arguments
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(39,17):
+      see declaration of 'BlockMesh::addFace'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.cpp(112,13):
+      while trying to match the argument list '(Vec3, Vec3, Vec3, Vec3)'
+  
+  Chunk.cpp
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,17): error C3646: 'model': unknown override specifier
+  (compiling source file 'Chunk.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,5): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+  (compiling source file 'Chunk.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(19,9): error C2061: syntax error: identifier 'BlockModel'
+  (compiling source file 'Chunk.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(14,28): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+  (compiling source file 'Chunk.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(14,50): error C2143: syntax error: missing ',' before '&'
+  (compiling source file 'Chunk.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(16,43): error C2065: 'b': undeclared identifier
+  (compiling source file 'Chunk.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(17,43): error C2065: 'b': undeclared identifier
+  (compiling source file 'Chunk.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(18,43): error C2065: 'b': undeclared identifier
+  (compiling source file 'Chunk.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,24): error C2065: 'BlockCoordinates': undeclared identifier
+  (compiling source file 'Chunk.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,10): error C2923: 'std::unordered_set': 'BlockCoordinates' is not a valid template type argument for parameter '_Kty'
+  (compiling source file 'Chunk.cpp')
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,24):
+      see declaration of 'BlockCoordinates'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,10): error C2976: 'std::unordered_set': too few template arguments
+  (compiling source file 'Chunk.cpp')
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,60): error C2955: 'std::unordered_set': use of class template requires template argument list
+  (compiling source file 'Chunk.cpp')
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBlock.h(18,9): error C2061: syntax error: identifier 'BlockCoordinates'
+  (compiling source file 'Chunk.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(7,27): error C2061: syntax error: identifier 'BlockCoordinates'
+  (compiling source file 'Chunk.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(12,23): error C2061: syntax error: identifier 'BlockCoordinates'
+  (compiling source file 'Chunk.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(17,20): error C2061: syntax error: identifier 'BlockCoordinates'
+  (compiling source file 'Chunk.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(9,1): error C2512: 'Block': no appropriate default constructor available
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(70,1): error C2512: 'std::unordered_set': no appropriate default constructor available
+  (compiling source file 'Chunk.cpp')
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(70,1):
+      This diagnostic occurred in the compiler generated function 'BlockMesh::BlockMesh(void)'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(9,1):
+      see reference to function 'BlockMesh::BlockMesh(void)'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(16,1): error C2512: 'Block': no appropriate default constructor available
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(29,11): error C2039: 'getIsAir': is not a member of 'Block'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(31,11): error C2039: 'getTransperency': is not a member of 'Block'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(125,48): error C2440: '<function-style-cast>': cannot convert from 'initializer list' to 'Cobblestone_MinableBlock'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(125,48):
+      'Cobblestone_MinableBlock::Cobblestone_MinableBlock': no overloaded function could convert all the argument types
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(8,1):
+          could be 'Cobblestone_MinableBlock::Cobblestone_MinableBlock(Cobblestone_MinableBlock &&)'
+              C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(125,48):
+              'Cobblestone_MinableBlock::Cobblestone_MinableBlock(Cobblestone_MinableBlock &&)': cannot convert argument 1 from 'initializer list' to 'Cobblestone_MinableBlock &&'
+                  C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(125,49):
+                  Reason: cannot convert from 'initializer list' to 'Cobblestone_MinableBlock'
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(8,1):
+          or       'Cobblestone_MinableBlock::Cobblestone_MinableBlock(const Cobblestone_MinableBlock &)'
+              C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(125,48):
+              'Cobblestone_MinableBlock::Cobblestone_MinableBlock(const Cobblestone_MinableBlock &)': cannot convert argument 1 from 'initializer list' to 'const Cobblestone_MinableBlock &'
+                  C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(125,49):
+                  Reason: cannot convert from 'initializer list' to 'const Cobblestone_MinableBlock'
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(125,48):
+          while trying to match the argument list '(initializer list)'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(129,49): error C2440: '<function-style-cast>': cannot convert from 'initializer list' to 'Cobblestone_MinableBlock'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(129,49):
+      'Cobblestone_MinableBlock::Cobblestone_MinableBlock': no overloaded function could convert all the argument types
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(8,1):
+          could be 'Cobblestone_MinableBlock::Cobblestone_MinableBlock(Cobblestone_MinableBlock &&)'
+              C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(129,49):
+              'Cobblestone_MinableBlock::Cobblestone_MinableBlock(Cobblestone_MinableBlock &&)': cannot convert argument 1 from 'initializer list' to 'Cobblestone_MinableBlock &&'
+                  C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(129,50):
+                  Reason: cannot convert from 'initializer list' to 'Cobblestone_MinableBlock'
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(8,1):
+          or       'Cobblestone_MinableBlock::Cobblestone_MinableBlock(const Cobblestone_MinableBlock &)'
+              C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(129,49):
+              'Cobblestone_MinableBlock::Cobblestone_MinableBlock(const Cobblestone_MinableBlock &)': cannot convert argument 1 from 'initializer list' to 'const Cobblestone_MinableBlock &'
+                  C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(129,50):
+                  Reason: cannot convert from 'initializer list' to 'const Cobblestone_MinableBlock'
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(129,49):
+          while trying to match the argument list '(initializer list)'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(131,42): error C2440: '<function-style-cast>': cannot convert from 'initializer list' to 'Dirt_MinableBlock'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(131,42):
+      'Dirt_MinableBlock::Dirt_MinableBlock': no overloaded function could convert all the argument types
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(18,1):
+          could be 'Dirt_MinableBlock::Dirt_MinableBlock(Dirt_MinableBlock &&)'
+              C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(131,42):
+              'Dirt_MinableBlock::Dirt_MinableBlock(Dirt_MinableBlock &&)': cannot convert argument 1 from 'initializer list' to 'Dirt_MinableBlock &&'
+                  C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(131,43):
+                  Reason: cannot convert from 'initializer list' to 'Dirt_MinableBlock'
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(18,1):
+          or       'Dirt_MinableBlock::Dirt_MinableBlock(const Dirt_MinableBlock &)'
+              C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(131,42):
+              'Dirt_MinableBlock::Dirt_MinableBlock(const Dirt_MinableBlock &)': cannot convert argument 1 from 'initializer list' to 'const Dirt_MinableBlock &'
+                  C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(131,43):
+                  Reason: cannot convert from 'initializer list' to 'const Dirt_MinableBlock'
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(131,42):
+          while trying to match the argument list '(initializer list)'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(137,49): error C2440: '<function-style-cast>': cannot convert from 'initializer list' to 'Cobblestone_MinableBlock'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(137,49):
+      'Cobblestone_MinableBlock::Cobblestone_MinableBlock': no overloaded function could convert all the argument types
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(8,1):
+          could be 'Cobblestone_MinableBlock::Cobblestone_MinableBlock(Cobblestone_MinableBlock &&)'
+              C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(137,49):
+              'Cobblestone_MinableBlock::Cobblestone_MinableBlock(Cobblestone_MinableBlock &&)': cannot convert argument 1 from 'initializer list' to 'Cobblestone_MinableBlock &&'
+                  C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(137,50):
+                  Reason: cannot convert from 'initializer list' to 'Cobblestone_MinableBlock'
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(8,1):
+          or       'Cobblestone_MinableBlock::Cobblestone_MinableBlock(const Cobblestone_MinableBlock &)'
+              C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(137,49):
+              'Cobblestone_MinableBlock::Cobblestone_MinableBlock(const Cobblestone_MinableBlock &)': cannot convert argument 1 from 'initializer list' to 'const Cobblestone_MinableBlock &'
+                  C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(137,50):
+                  Reason: cannot convert from 'initializer list' to 'const Cobblestone_MinableBlock'
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(137,49):
+          while trying to match the argument list '(initializer list)'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(139,42): error C2440: '<function-style-cast>': cannot convert from 'initializer list' to 'Dirt_MinableBlock'
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(139,42):
+      'Dirt_MinableBlock::Dirt_MinableBlock': no overloaded function could convert all the argument types
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(18,1):
+          could be 'Dirt_MinableBlock::Dirt_MinableBlock(Dirt_MinableBlock &&)'
+              C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(139,42):
+              'Dirt_MinableBlock::Dirt_MinableBlock(Dirt_MinableBlock &&)': cannot convert argument 1 from 'initializer list' to 'Dirt_MinableBlock &&'
+                  C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(139,43):
+                  Reason: cannot convert from 'initializer list' to 'Dirt_MinableBlock'
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(18,1):
+          or       'Dirt_MinableBlock::Dirt_MinableBlock(const Dirt_MinableBlock &)'
+              C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(139,42):
+              'Dirt_MinableBlock::Dirt_MinableBlock(const Dirt_MinableBlock &)': cannot convert argument 1 from 'initializer list' to 'const Dirt_MinableBlock &'
+                  C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(139,43):
+                  Reason: cannot convert from 'initializer list' to 'const Dirt_MinableBlock'
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(139,42):
+          while trying to match the argument list '(initializer list)'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(141,30): error C2512: 'Block': no appropriate default constructor available
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(141,30):
+      'Block::Block': no appropriate default constructor available
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(141,30):
+          while trying to match the argument list '()'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(147,29): error C2512: 'Block': no appropriate default constructor available
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(147,29):
+      'Block::Block': no appropriate default constructor available
+          C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(147,29):
+          while trying to match the argument list '()'
+  
+  Globals.cpp
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,17): error C3646: 'model': unknown override specifier
+  (compiling source file 'Globals.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,5): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+  (compiling source file 'Globals.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(19,9): error C2061: syntax error: identifier 'BlockModel'
+  (compiling source file 'Globals.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(14,28): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+  (compiling source file 'Globals.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(14,50): error C2143: syntax error: missing ',' before '&'
+  (compiling source file 'Globals.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(16,43): error C2065: 'b': undeclared identifier
+  (compiling source file 'Globals.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(17,43): error C2065: 'b': undeclared identifier
+  (compiling source file 'Globals.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(18,43): error C2065: 'b': undeclared identifier
+  (compiling source file 'Globals.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,24): error C2065: 'BlockCoordinates': undeclared identifier
+  (compiling source file 'Globals.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,10): error C2923: 'std::unordered_set': 'BlockCoordinates' is not a valid template type argument for parameter '_Kty'
+  (compiling source file 'Globals.cpp')
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,24):
+      see declaration of 'BlockCoordinates'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,10): error C2976: 'std::unordered_set': too few template arguments
+  (compiling source file 'Globals.cpp')
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,60): error C2955: 'std::unordered_set': use of class template requires template argument list
+  (compiling source file 'Globals.cpp')
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+  
+  MinableBLock.cpp
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,17): error C3646: 'model': unknown override specifier
+  (compiling source file 'MinableBLock.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,5): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+  (compiling source file 'MinableBLock.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(19,9): error C2061: syntax error: identifier 'BlockModel'
+  (compiling source file 'MinableBLock.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBlock.h(18,9): error C2061: syntax error: identifier 'BlockCoordinates'
+  (compiling source file 'MinableBLock.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBLock.cpp(3,15): error C7550: 'MinableBlock::{ctor}': the qualified name in this context names a constructor, not a type
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBLock.cpp(4,5): error C2065: 'BlockCoordinates': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBLock.cpp(4,22): error C2146: syntax error: missing ')' before identifier 'position'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBLock.cpp(15,17): error C2143: syntax error: missing ')' before ','
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBLock.cpp(15,9): error C2512: 'Block': no appropriate default constructor available
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBLock.cpp(16,9): error C2512: 'Block': no appropriate default constructor available
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBLock.cpp(17,9): error C2512: 'Block': no appropriate default constructor available
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBLock.cpp(18,9): error C2512: 'Block': no appropriate default constructor available
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBLock.cpp(19,9): error C2512: 'Block': no appropriate default constructor available
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBLock.cpp(20,9): error C2512: 'Block': no appropriate default constructor available
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBLock.cpp(22,5): error C2059: syntax error: ')'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBLock.cpp(21,9): error C2512: 'Block': no appropriate default constructor available
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(5,7):
+      see declaration of 'Block'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBLock.cpp(25,1): error C2143: syntax error: missing ';' before '{'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBLock.cpp(26,1): error C2059: syntax error: '}'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBLock.cpp(26,1): error C2143: syntax error: missing ';' before '}'
+  Region.cpp
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,17): error C3646: 'model': unknown override specifier
+  (compiling source file 'Region.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,5): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+  (compiling source file 'Region.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(19,9): error C2061: syntax error: identifier 'BlockModel'
+  (compiling source file 'Region.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(14,28): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+  (compiling source file 'Region.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(14,50): error C2143: syntax error: missing ',' before '&'
+  (compiling source file 'Region.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(16,43): error C2065: 'b': undeclared identifier
+  (compiling source file 'Region.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(17,43): error C2065: 'b': undeclared identifier
+  (compiling source file 'Region.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(18,43): error C2065: 'b': undeclared identifier
+  (compiling source file 'Region.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,24): error C2065: 'BlockCoordinates': undeclared identifier
+  (compiling source file 'Region.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,10): error C2923: 'std::unordered_set': 'BlockCoordinates' is not a valid template type argument for parameter '_Kty'
+  (compiling source file 'Region.cpp')
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,24):
+      see declaration of 'BlockCoordinates'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,10): error C2976: 'std::unordered_set': too few template arguments
+  (compiling source file 'Region.cpp')
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,60): error C2955: 'std::unordered_set': use of class template requires template argument list
+  (compiling source file 'Region.cpp')
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+  
+  StoneBlocks.cpp
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,17): error C3646: 'model': unknown override specifier
+  (compiling source file 'StoneBlocks.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,5): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+  (compiling source file 'StoneBlocks.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(19,9): error C2061: syntax error: identifier 'BlockModel'
+  (compiling source file 'StoneBlocks.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\MinableBlock.h(18,9): error C2061: syntax error: identifier 'BlockCoordinates'
+  (compiling source file 'StoneBlocks.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(7,27): error C2061: syntax error: identifier 'BlockCoordinates'
+  (compiling source file 'StoneBlocks.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(12,23): error C2061: syntax error: identifier 'BlockCoordinates'
+  (compiling source file 'StoneBlocks.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.h(17,20): error C2061: syntax error: identifier 'BlockCoordinates'
+  (compiling source file 'StoneBlocks.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(4,27): error C7550: 'Cobblestone_MinableBlock::{ctor}': the qualified name in this context names a constructor, not a type
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(5,5): error C2065: 'BlockCoordinates': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(5,22): error C2146: syntax error: missing ')' before identifier 'position'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(8,17): error C2143: syntax error: missing ')' before ','
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(9,9): error C2059: syntax error: 'constant'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(17,5): error C2059: syntax error: ')'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(18,1): error C2143: syntax error: missing ';' before '{'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(18,1): error C2447: '{': missing function header (old-style formal list?)
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(20,23): error C7550: 'Diorite_MinableBlock::{ctor}': the qualified name in this context names a constructor, not a type
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(21,5): error C2065: 'BlockCoordinates': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(21,22): error C2146: syntax error: missing ')' before identifier 'position'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(24,17): error C2143: syntax error: missing ')' before ','
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(24,9): error C2086: 'MinableBlock position': redefinition
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(8,9):
+      see declaration of 'position'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(25,9): error C2059: syntax error: 'constant'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(33,5): error C2059: syntax error: ')'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(34,1): error C2143: syntax error: missing ';' before '{'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(34,1): error C2447: '{': missing function header (old-style formal list?)
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(36,20): error C7550: 'Dirt_MinableBlock::{ctor}': the qualified name in this context names a constructor, not a type
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(37,5): error C2065: 'BlockCoordinates': undeclared identifier
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(37,22): error C2146: syntax error: missing ')' before identifier 'position'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(40,17): error C2143: syntax error: missing ')' before ','
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(40,9): error C2086: 'MinableBlock position': redefinition
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(8,9):
+      see declaration of 'position'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(41,9): error C2059: syntax error: 'constant'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(49,5): error C2059: syntax error: ')'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(50,1): error C2143: syntax error: missing ';' before '{'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\StoneBlocks.cpp(50,1): error C2447: '{': missing function header (old-style formal list?)
+  WorldManager.cpp
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,17): error C3646: 'model': unknown override specifier
+  (compiling source file 'WorldManager.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(13,5): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+  (compiling source file 'WorldManager.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Block.h(19,9): error C2061: syntax error: identifier 'BlockModel'
+  (compiling source file 'WorldManager.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(14,28): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+  (compiling source file 'WorldManager.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(14,50): error C2143: syntax error: missing ',' before '&'
+  (compiling source file 'WorldManager.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(16,43): error C2065: 'b': undeclared identifier
+  (compiling source file 'WorldManager.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(17,43): error C2065: 'b': undeclared identifier
+  (compiling source file 'WorldManager.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(18,43): error C2065: 'b': undeclared identifier
+  (compiling source file 'WorldManager.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,24): error C2065: 'BlockCoordinates': undeclared identifier
+  (compiling source file 'WorldManager.cpp')
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,10): error C2923: 'std::unordered_set': 'BlockCoordinates' is not a valid template type argument for parameter '_Kty'
+  (compiling source file 'WorldManager.cpp')
+      C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,24):
+      see declaration of 'BlockCoordinates'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,10): error C2976: 'std::unordered_set': too few template arguments
+  (compiling source file 'WorldManager.cpp')
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+  
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\BlockMesh.h(63,60): error C2955: 'std::unordered_set': use of class template requires template argument list
+  (compiling source file 'WorldManager.cpp')
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.50.35717\include\unordered_set(59,7):
+      see declaration of 'std::unordered_set'
+  
+  Generating Code...

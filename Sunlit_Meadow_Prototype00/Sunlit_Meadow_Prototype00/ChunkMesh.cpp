@@ -1,6 +1,6 @@
-#include "BlockMesh.h"
+#include "ChunkMesh.h"
 
-bool BlockMesh::init(
+bool ChunkMesh::init(
     AppState* state,
     std::vector<Block>& blocks,
     SDL_GPUTexture* textureArrayIn
@@ -12,7 +12,7 @@ bool BlockMesh::init(
     return uploadToGPU(state);
 }
 
-void BlockMesh::destroy(AppState* state)
+void ChunkMesh::destroy(AppState* state)
 {
     if (vertexBuffer) {
         SDL_ReleaseGPUBuffer(state->gpu, vertexBuffer);
@@ -31,12 +31,12 @@ void BlockMesh::destroy(AppState* state)
     textureArray = nullptr;
 }
 
-bool BlockMesh::hasBlock(int x, int y, int z) const
+bool ChunkMesh::hasBlock(int x, int y, int z) const
 {
     return blockSet.find({ x, y, z }) != blockSet.end();
 }
 
-void BlockMesh::addFace(
+void ChunkMesh::addFace(
     const Vec3& v0,
     const Vec3& v1,
     const Vec3& v2,
@@ -61,7 +61,7 @@ void BlockMesh::addFace(
     indices.push_back(startIndex + 3);
 }
 
-void BlockMesh::buildMesh(std::vector<Block>& blocks)
+void ChunkMesh::buildMesh(std::vector<Block>& blocks)
 {
     vertices.clear();
     indices.clear();
@@ -116,7 +116,7 @@ void BlockMesh::buildMesh(std::vector<Block>& blocks)
     numIndices = (uint32_t)indices.size();
 }
 
-bool BlockMesh::uploadToGPU(AppState* state)
+bool ChunkMesh::uploadToGPU(AppState* state)
 {
     if (vertices.empty() || indices.empty()) {
         SDL_Log("Block mesh is empty");
@@ -212,7 +212,7 @@ bool BlockMesh::uploadToGPU(AppState* state)
     return true;
 }
 
-void BlockMesh::draw(
+void ChunkMesh::draw(
     AppState* state,
     SDL_GPUCommandBuffer* cmd,
     SDL_GPURenderPass* pass,

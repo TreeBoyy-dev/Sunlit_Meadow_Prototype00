@@ -21,7 +21,7 @@ struct BlockCoordHasher
     }
 };
 
-class BlockMesh
+class ChunkMesh
 {
 public:
     bool init(

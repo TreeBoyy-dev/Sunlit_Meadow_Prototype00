@@ -3,6 +3,7 @@
 #include "DataStructures.h"
 #include "Vectors.h"
 #include "WorldManager.h"
+#include "BlockManager.h"
 
 // --- Camera ---
 extern Camera camera;
@@ -21,3 +22,6 @@ extern WorldManager testManager;
 extern const int RENDER_DISTANCE;
 
 extern ChunkCoord prevPlayerChunkCoords;
+
+// --- BlockManager ---
+extern BlockManager blockManager;

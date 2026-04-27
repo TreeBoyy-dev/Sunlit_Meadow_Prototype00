@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Block.h"
-#include "BlockMesh.h"
+#include "BlockManager.h"
+#include "Globals.h"
+#include "ChunkMesh.h"
 
 //chunksize in blocks -> side of a cube
 #define CHUNK_SIZE 16
@@ -25,13 +26,13 @@ class Chunk {
 private:
     bool isGenerated;
     ChunkCoord chunkCoordinates;
-	Block blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+	Uint16 blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 	//Biome* biome;
 	//Zone* zone;
 	//Layer* layer;
 
-	BlockMesh opaqueMesh;
-	BlockMesh transparentMesh;
+	ChunkMesh opaqueMesh;
+	ChunkMesh transparentMesh;
     bool drawOpaqueMesh;
     bool drawTransparentMesh;
 public:

@@ -60,7 +60,7 @@
     <ClCompile Include="Materials.cpp">
       <Filter>Source Files\world\Blocks</Filter>
     </ClCompile>
-    <ClCompile Include="BlockMesh.cpp">
+    <ClCompile Include="ChunkMesh.cpp">
       <Filter>Source Files\world</Filter>
     </ClCompile>
     <ClCompile Include="Chunk.cpp">
@@ -73,6 +73,9 @@
       <Filter>Source Files\world\worldData</Filter>
     </ClCompile>
     <ClCompile Include="BlockManager.cpp">
+      <Filter>Source Files\world\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockModel.cpp">
       <Filter>Source Files\world\Blocks</Filter>
     </ClCompile>
   </ItemGroup>
@@ -113,7 +116,7 @@
     <ClInclude Include="App_Init.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="BlockMesh.h">
+    <ClInclude Include="ChunkMesh.h">
       <Filter>Header Files\world</Filter>
     </ClInclude>
     <ClInclude Include="chunk.h">
@@ -126,6 +129,9 @@
       <Filter>Header Files\world\worldData</Filter>
     </ClInclude>
     <ClInclude Include="BlockManager.h">
+      <Filter>Header Files\world\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockModel.h">
       <Filter>Header Files\world\Blocks</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,5 +1,6 @@
 #include "Chunk.h"
 #include "StoneBlocks.h"
+#include "Globals.h"
 
 Chunk::Chunk() :
 	chunkCoordinates({0,0,0}),
@@ -19,14 +20,13 @@ bool Chunk::initMeshes(
 	AppState* state,
 	SDL_GPUTexture* textureArray
 ) {
-	std::vector<Block> opaqueblocks;
-	std::vector<Block> transparentblocks;
+	std::vector<Uint16> opaqueblocks;
+	std::vector<Uint16> transparentblocks;
 
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int y = 0; y < CHUNK_SIZE; y++) {
 			for (int z = 0; z < CHUNK_SIZE; z++) {
-				Block& b = blocks[x][y][z];
-				if (b.getIsAir()) continue;  // skip air — don't put in either list
+				Block* b= blockManager.getById(blocks[x][y][z]);
 
 				if (b.getTransperency())
 					transparentblocks.push_back(b);

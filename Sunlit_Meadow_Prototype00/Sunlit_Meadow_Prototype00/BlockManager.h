@@ -4,9 +4,9 @@
 #include <memory>
 #include <string>
 #include "Block.h"
+#include "BlockModel.h"
 
 class BlockManager {
-private:
 private:
     // Single owner — all Block objects live here
     std::vector<std::unique_ptr<Block>> blocks;
@@ -30,6 +30,6 @@ private:
 public:
     void init();
 
-    const Block& getById(uint8_t id)          const;
-    const Block& getByName(const std::string& name) const;
+    Block* getById(uint16_t id);
+    Block* getByName(const std::string& name);
 };

@@ -132,7 +132,8 @@
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="BlockManager.cpp" />
-    <ClCompile Include="BlockMesh.cpp" />
+    <ClCompile Include="BlockModel.cpp" />
+    <ClCompile Include="ChunkMesh.cpp" />
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="InitPipeline.cpp" />
@@ -153,7 +154,8 @@
     <ClInclude Include="App_Update.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="BlockManager.h" />
-    <ClInclude Include="BlockMesh.h" />
+    <ClInclude Include="BlockModel.h" />
+    <ClInclude Include="ChunkMesh.h" />
     <ClInclude Include="chunk.h" />
     <ClInclude Include="Materials.h" />
     <ClInclude Include="Region.h" />

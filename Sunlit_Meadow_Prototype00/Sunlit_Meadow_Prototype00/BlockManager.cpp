@@ -1,5 +1,7 @@
 #include "BlockManager.h"
+#include "BlockModel.h"
 #include <stdexcept>
+#include <vector>
 
 void BlockManager::registerBlock(
     const std::string& name,
@@ -12,7 +14,16 @@ void BlockManager::registerBlock(
 
     uint16_t id = nextId++;
 
-    auto newBlock = std::make_unique<Block>(id, name, model, transparent, hasSlab, hasStair, hasWall);
+    auto newBlock = std::make_unique<Block>(
+        id,
+        name,
+        model,
+        transparent,
+        hasSlab,
+        hasStair,
+        hasWall
+    );
+    //auto newBlock = std::make_unique<Block>;
     Block* ptr = newBlock.get();
 
     blocksById[id] = ptr;
@@ -24,7 +35,7 @@ void BlockManager::registerBlock(
 void BlockManager::init() {
     // --- Register base blocks ---
     registerBlock("Air", {}, /*transparent=*/true);
-    registerBlock("Grass", grassModel, false, /*hasSlab=*/true, /*hasStair=*/true, /*hasWall=*/false);
+    registerBlock("Grass", BlockModel(), false, /*hasSlab=*/true, /*hasStair=*/true, /*hasWall=*/false);
     registerBlock("Stone", stoneModel, false, true, true, true);
     registerBlock("Wood",  woodModel,  false, true, true);
 
@@ -32,23 +43,21 @@ void BlockManager::init() {
     // Snapshot current blocks (avoid mutating map while iterating)
     std::vector<Block> baseBlocks;
     for (auto& [id, block] : blocksById)
-        baseBlocks.push_back(block);
+        baseBlocks.push_back(*block);
 
-    for (const Block& b : baseBlocks) {
-        if (b.hasSlab)  registerBlock(b.name + "_Slab",  slabModelFrom (b.model));
-        if (b.hasStair) registerBlock(b.name + "_Stair", stairModelFrom(b.model));
-        if (b.hasWall)  registerBlock(b.name + "_Wall",  wallModelFrom (b.model));
+    for (Block& b : baseBlocks) {
+        if (b.getHasSlab())  registerBlock(b.getName() + "_Slab",  slabModelFrom(b.model));
+        if (b.getHasStair()) registerBlock(b.getName() + "_Stair", stairModelFrom(b.model));
+        if (b.getHasWall())  registerBlock(b.getName() + "_Wall",  wallModelFrom(b.model));
     }
 }
 
-const Block& BlockManager::getById(uint8_t id) const {
+Block* BlockManager::getById(uint16_t id) {
     auto it = blocksById.find(id);
-    if (it == blocksById.end()) throw std::runtime_error("Unknown block id");
-    return it->second;
+    return it != blocksById.end() ? it->second : nullptr;
 }
 
-const Block& BlockManager::getByName(const std::string& name) const {
+Block* BlockManager::getByName(const std::string& name) {
     auto it = blocksByName.find(name);
-    if (it == blocksByName.end()) throw std::runtime_error("Unknown block name");
-    return blocksById.at(it->second);
+    return it != blocksByName.end() ? it->second : nullptr;
 }

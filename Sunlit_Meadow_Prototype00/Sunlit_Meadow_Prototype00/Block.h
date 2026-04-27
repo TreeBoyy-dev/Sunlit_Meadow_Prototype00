@@ -3,7 +3,7 @@
 #include "Materials.h"
 
 class Block {
-public:
+private:
     uint16_t    id;
     std::string name;
     bool        transparent;
@@ -12,6 +12,7 @@ public:
     bool        hasWall;
     BlockModel  model;
 
+public:
     Block(
         uint8_t id,
         std::string name,
@@ -21,4 +22,10 @@ public:
         bool hasStair = false,
         bool hasWall = false
     );
+
+    bool isTransparent();
+    bool getHasSlab();
+    bool getHasStair();
+    bool getHasWall();
+    std::string getName();
 };
