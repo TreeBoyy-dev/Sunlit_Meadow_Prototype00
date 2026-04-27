@@ -142,9 +142,7 @@
     </ClCompile>
     <ClCompile Include="Mat4.cpp" />
     <ClCompile Include="Materials.cpp" />
-    <ClCompile Include="MinableBLock.cpp" />
     <ClCompile Include="Region.cpp" />
-    <ClCompile Include="StoneBlocks.cpp" />
     <ClCompile Include="Vectors.cpp" />
     <ClCompile Include="WorldManager.cpp" />
   </ItemGroup>
@@ -156,15 +154,14 @@
     <ClInclude Include="BlockManager.h" />
     <ClInclude Include="BlockModel.h" />
     <ClInclude Include="ChunkMesh.h" />
-    <ClInclude Include="chunk.h" />
+    <ClInclude Include="Chunk.h" />
+    <ClInclude Include="ChunkTypes.h" />
     <ClInclude Include="Materials.h" />
     <ClInclude Include="Region.h" />
-    <ClInclude Include="StoneBlocks.h" />
     <ClInclude Include="DataStructures.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="InitPipeline.h" />
     <ClInclude Include="Mat4.h" />
-    <ClInclude Include="MinableBlock.h" />
     <ClInclude Include="Vectors.h" />
     <ClInclude Include="WorldManager.h" />
   </ItemGroup>

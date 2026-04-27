@@ -1,5 +1,4 @@
 #include "Chunk.h"
-#include "StoneBlocks.h"
 #include "Globals.h"
 
 Chunk::Chunk() :
@@ -20,18 +19,27 @@ bool Chunk::initMeshes(
 	AppState* state,
 	SDL_GPUTexture* textureArray
 ) {
-	std::vector<Uint16> opaqueblocks;
-	std::vector<Uint16> transparentblocks;
+	std::vector<LocationalBlockID> opaqueblocks;
+	std::vector<LocationalBlockID> transparentblocks;
 
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int y = 0; y < CHUNK_SIZE; y++) {
 			for (int z = 0; z < CHUNK_SIZE; z++) {
-				Block* b= blockManager.getById(blocks[x][y][z]);
 
-				if (b.getTransperency())
-					transparentblocks.push_back(b);
-				else
-					opaqueblocks.push_back(b);
+				LocationalBlockID absLocationalBlockID = {
+					x + chunkCoordinates.x * CHUNK_SIZE,
+					y + chunkCoordinates.y * CHUNK_SIZE,
+					z + chunkCoordinates.z * CHUNK_SIZE,
+					blockIDs[x][y][z]
+				};
+				Block* block = blockManager.getById(blockIDs[x][y][z]);
+
+				if (block == nullptr)
+					SDL_Log("Block = nullptr in Chunk init meshes!!!");
+				else if (!block->isTransparent())
+					opaqueblocks.push_back(absLocationalBlockID);
+				else if (block->getName() != "air")
+					transparentblocks.push_back(absLocationalBlockID);
 			}
 		}
 	}
@@ -103,7 +111,7 @@ ChunkCoord Chunk::getChunkCoordinates() {
 bool Chunk::generateChunk() {
 
 	//generate shape: air/stone
-	generateShape(blocks, chunkCoordinates);
+	generateShape(blockIDs, chunkCoordinates);
 
 	//generate biomes
 
@@ -112,7 +120,7 @@ bool Chunk::generateChunk() {
 	return true;
 }
 
-void Chunk::generateShape(Block blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], ChunkCoord chunkCoordinates)
+void Chunk::generateShape(Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], ChunkCoord chunkCoordinates)
 {
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		int xAbs = chunkCoordinates.x * CHUNK_SIZE + x;
@@ -121,31 +129,37 @@ void Chunk::generateShape(Block blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], Chun
 			for (int z = 0; z < CHUNK_SIZE; z++) {
 				int zAbs = chunkCoordinates.z * CHUNK_SIZE + z;
 
+				Block* block;
 				if (zAbs <=2) {
-					blocks[x][y][z] = Cobblestone_MinableBlock({ xAbs, yAbs, zAbs });
+					block = blockManager.getByName("cobble_stone");
 				}
 				else if (zAbs == 3) {
 					if (rand() % 2 == 0)
-						blocks[x][y][z] = Cobblestone_MinableBlock({ xAbs, yAbs, zAbs });
+						block = blockManager.getByName("cobble_stone");
 					else
-						blocks[x][y][z] = Dirt_MinableBlock({ xAbs, yAbs, zAbs });
+						block = blockManager.getByName("diorite");
 				}
 				else if (zAbs == 4) {
 					int r = rand() % 3;
 
 					if (r == 0)
-						blocks[x][y][z] = Cobblestone_MinableBlock({ xAbs, yAbs, zAbs });
+						block = blockManager.getByName("cobble_stone");
 					else if (r == 1)
-						blocks[x][y][z] = Dirt_MinableBlock({ xAbs, yAbs, zAbs });
+						block = blockManager.getByName("diorite");
 					else
-						blocks[x][y][z] = Block();
+						block = blockManager.getByName("dirt");
 				}
-				//else if (zAbs > 20) {
-				//	blocks[x][y][z] = Diorite_MinableBlock({ xAbs, yAbs, zAbs });
-				//}
+				else if (zAbs > 20) {
+					block = blockManager.getByName("diorite");
+				}
 				else {
-					blocks[x][y][z] = Block();
+					block = blockManager.getByName("air");
 				}
+
+				if (block != nullptr)
+					blockIDs[x][y][z] = block->getID();
+				else
+					SDL_Log("Block = nullptr in Chunk generation!!!");
 			}
 		}
 	}

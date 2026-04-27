@@ -4,6 +4,7 @@
 #include "Vectors.h"
 #include "WorldManager.h"
 #include "BlockManager.h"
+#include "ChunkTypes.h"
 
 // --- Camera ---
 extern Camera camera;

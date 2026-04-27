@@ -70,10 +70,10 @@ SDL_AppResult App_Init(void* appstate)
         return SDL_APP_FAILURE;
     }
 
+    blockManager.init();
+
     testManager.calcVisibleChunksList(RENDER_DISTANCE);
     testManager.updateRenderList(camera.position, RENDER_DISTANCE, state, state->textureArray);
-
-    blockManager.init();
 
     SDL_GPUSamplerCreateInfo sampler_info = {};
     state->sampler = SDL_CreateGPUSampler(state->gpu, &sampler_info);

@@ -112,9 +112,6 @@ SDL_AppResult App_Update(void* appstate)
 
     frame_count++;
     frame_count = frame_count % ARR_SIZE;
-    if (frame_count % 480 == 0) {
-        SDL_Log("FPS: %.1f", fps);
-    }
 
     float speed = 90.0f * (float)SDL_PI_F / 180.0f;   // deg/sec → rad/sec
     state->rotation += speed * dt;
@@ -129,6 +126,16 @@ SDL_AppResult App_Update(void* appstate)
         testManager.updateRenderList(camera.position, RENDER_DISTANCE, state, state->textureArray);
     }
     prevPlayerChunkCoords = playerChunkCoords;
+
+    char buffer[256];
+    snprintf(buffer, sizeof(buffer),
+        "FPS: %4.1f, Player Position: %3.1f : %3.1f : %3.1f, Player Chunk: %d : %d : %d",
+        fps,
+        camera.position.x, camera.position.y, camera.position.z,
+        playerChunkCoords.x, playerChunkCoords.y, playerChunkCoords.z
+    );
+
+    SDL_SetWindowTitle(state->window, buffer);
 
     return SDL_APP_CONTINUE;
 }

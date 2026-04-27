@@ -1,32 +1,17 @@
 #pragma once
 
 #include "BlockManager.h"
-#include "Globals.h"
 #include "ChunkMesh.h"
+#include "ChunkTypes.h"
 
-//chunksize in blocks -> side of a cube
+//chunksize in blockIDs -> side of a cube
 #define CHUNK_SIZE 16
-
-struct ChunkCoord {
-    int x, y, z;
-    bool operator==(const ChunkCoord& other) const {
-        return x == other.x && y == other.y && z == other.z;
-    }
-};
-
-struct ChunkCoordHash {
-    size_t operator()(const ChunkCoord& c) const {
-        return std::hash<int>()(c.x) ^
-            (std::hash<int>()(c.y) << 1) ^
-            (std::hash<int>()(c.z) << 2);
-    }
-};
 
 class Chunk {
 private:
     bool isGenerated;
     ChunkCoord chunkCoordinates;
-	Uint16 blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 	//Biome* biome;
 	//Zone* zone;
 	//Layer* layer;
@@ -57,6 +42,6 @@ public:
     void destroyMeshes(AppState* state);
 
 private:
-    void generateShape(Block blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], ChunkCoord chunkCoordinates);
+    void generateShape(Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], ChunkCoord chunkCoordinates);
 
 };

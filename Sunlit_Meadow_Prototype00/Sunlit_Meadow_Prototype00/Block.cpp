@@ -1,17 +1,28 @@
 #include "Block.h"
+#include "BlockModel.h"
 
 Block::Block(
-    uint8_t id,
+    Uint16 id,
     std::string name,
     BlockModel model,
-    bool transparent = false,
-    bool hasSlab = false,
-    bool hasStair = false,
-    bool hasWall = false)
+    bool transparent,
+    bool hasSlab,
+    bool hasStair,
+    bool hasWall)
     : id(id), name(std::move(name)), model(model),
     transparent(transparent),
     hasSlab(hasSlab), hasStair(hasStair), hasWall(hasWall) {
 }
+
+void Block::generateMeshFromModel(
+    std::vector<VertexData>& vertices,
+    std::vector<Uint16>& indices,
+    AdjacencyInfo            adj,
+    int x, int y, int z
+) {
+    model.generateMesh(vertices, indices, adj, x, y, z);
+}
+
 
 bool Block::isTransparent() {
     return transparent;
@@ -27,4 +38,7 @@ bool Block::getHasWall() {
 }
 std::string Block::getName() {
     return name;
+}
+Uint16 Block::getID() {
+    return id;
 }

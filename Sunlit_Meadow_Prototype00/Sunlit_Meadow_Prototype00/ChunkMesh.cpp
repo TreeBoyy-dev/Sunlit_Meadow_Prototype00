@@ -1,8 +1,11 @@
 #include "ChunkMesh.h"
+#include "BlockModel.h"
+#include "Block.h"
+#include "Globals.h"
 
 bool ChunkMesh::init(
     AppState* state,
-    std::vector<Block>& blocks,
+    std::vector<LocationalBlockID>& blocks,
     SDL_GPUTexture* textureArrayIn
 )
 {
@@ -36,81 +39,32 @@ bool ChunkMesh::hasBlock(int x, int y, int z) const
     return blockSet.find({ x, y, z }) != blockSet.end();
 }
 
-void ChunkMesh::addFace(
-    const Vec3& v0,
-    const Vec3& v1,
-    const Vec3& v2,
-    const Vec3& v3,
-    int materialIndex
-)
-{
-    uint16_t startIndex = (uint16_t)vertices.size();
-    float mat = (float)materialIndex;
-    SDL_FColor white = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-    vertices.push_back({ v0, { 0.0f, 0.0f }, white, mat });
-    vertices.push_back({ v1, { 1.0f, 0.0f }, white, mat });
-    vertices.push_back({ v2, { 1.0f, 1.0f }, white, mat });
-    vertices.push_back({ v3, { 0.0f, 1.0f }, white, mat });
-
-    indices.push_back(startIndex + 0);
-    indices.push_back(startIndex + 1);
-    indices.push_back(startIndex + 2);
-    indices.push_back(startIndex + 0);
-    indices.push_back(startIndex + 2);
-    indices.push_back(startIndex + 3);
-}
-
-void ChunkMesh::buildMesh(std::vector<Block>& blocks)
+void ChunkMesh::buildMesh(std::vector<LocationalBlockID>& blocks)
 {
     vertices.clear();
     indices.clear();
     blockSet.clear();
 
-    for (Block& block : blocks) {
-        blockSet.insert(block.getPosition());
+    for (LocationalBlockID& block : blocks) {
+        blockSet.insert(block);
     }
 
-    for (Block& block : blocks) {
-        BlockCoordinates pos = block.getPosition();
+    for (LocationalBlockID& block : blocks) {
+        float x = (float)block.x;
+        float y = (float)block.y;
+        float z = (float)block.z;
 
-        float x = (float)pos.x;
-        float y = (float)pos.y;
-        float z = (float)pos.z;
+        Block* b = blockManager.getById(block.id);
 
-        Vec3 p000 = { x,     y,     z };
-        Vec3 p100 = { x + 1, y,     z };
-        Vec3 p110 = { x + 1, y + 1, z };
-        Vec3 p010 = { x,     y + 1, z };
-
-        Vec3 p001 = { x,     y,     z + 1 };
-        Vec3 p101 = { x + 1, y,     z + 1 };
-        Vec3 p111 = { x + 1, y + 1, z + 1 };
-        Vec3 p011 = { x,     y + 1, z + 1 };
-
-        if (!hasBlock(pos.x, pos.y + 1, pos.z)) {
-            addFace(p011, p111, p110, p010, block.getMaterialUP());
-        }
-
-        if (!hasBlock(pos.x, pos.y - 1, pos.z)) {
-            addFace(p000, p100, p101, p001, block.getMaterialDOWN());
-        }
-
-        if (!hasBlock(pos.x, pos.y, pos.z - 1)) {
-            addFace(p100, p000, p010, p110, block.getMaterialNORTH());
-        }
-
-        if (!hasBlock(pos.x, pos.y, pos.z + 1)) {
-            addFace(p001, p101, p111, p011, block.getMaterialSOUTH());
-        }
-
-        if (!hasBlock(pos.x + 1, pos.y, pos.z)) {
-            addFace(p101, p100, p110, p111, block.getMaterialEAST());
-        }
-
-        if (!hasBlock(pos.x - 1, pos.y, pos.z)) {
-            addFace(p000, p001, p011, p010, block.getMaterialWEST());
-        }
+        AdjacencyInfo adj = {
+            hasBlock(block.x,     block.y + 1, block.z),
+            hasBlock(block.x,     block.y - 1, block.z),
+            hasBlock(block.x,     block.y,     block.z - 1),
+            hasBlock(block.x,     block.y,     block.z + 1),
+            hasBlock(block.x + 1, block.y,     block.z),
+            hasBlock(block.x - 1, block.y,     block.z),
+        };
+        b->generateMeshFromModel(vertices, indices, adj, block.x, block.y, block.z);
     }
 
     numIndices = (uint32_t)indices.size();
@@ -135,7 +89,7 @@ bool ChunkMesh::uploadToGPU(AppState* state)
 
     SDL_GPUBufferCreateInfo ibInfo = {
         .usage = SDL_GPU_BUFFERUSAGE_INDEX,
-        .size = (Uint32)(indices.size() * sizeof(uint16_t)),
+        .size = (Uint32)(indices.size() * sizeof(Uint16)),
     };
     indexBuffer = SDL_CreateGPUBuffer(state->gpu, &ibInfo);
     if (!indexBuffer) {
@@ -151,7 +105,7 @@ bool ChunkMesh::uploadToGPU(AppState* state)
 
     SDL_GPUTransferBufferCreateInfo transferIBInfo = {
         .usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD,
-        .size = (Uint32)(indices.size() * sizeof(uint16_t)),
+        .size = (Uint32)(indices.size() * sizeof(Uint16)),
     };
     SDL_GPUTransferBuffer* transferIB = SDL_CreateGPUTransferBuffer(state->gpu, &transferIBInfo);
 
@@ -165,7 +119,7 @@ bool ChunkMesh::uploadToGPU(AppState* state)
     SDL_UnmapGPUTransferBuffer(state->gpu, transferVB);
 
     void* ibMapped = SDL_MapGPUTransferBuffer(state->gpu, transferIB, false);
-    SDL_memcpy(ibMapped, indices.data(), indices.size() * sizeof(uint16_t));
+    SDL_memcpy(ibMapped, indices.data(), indices.size() * sizeof(Uint16));
     SDL_UnmapGPUTransferBuffer(state->gpu, transferIB);
 
     SDL_GPUCommandBuffer* cmd = SDL_AcquireGPUCommandBuffer(state->gpu);
@@ -194,7 +148,7 @@ bool ChunkMesh::uploadToGPU(AppState* state)
     bufferRegion = {
         .buffer = indexBuffer,
         .offset = 0,
-        .size = (Uint32)(indices.size() * sizeof(uint16_t)),
+        .size = (Uint32)(indices.size() * sizeof(Uint16)),
     };
     SDL_UploadToGPUBuffer(
         copyPass,

@@ -12,10 +12,10 @@ private:
     std::vector<std::unique_ptr<Block>> blocks;
 
     // Two indexes — both point into the vector above, no copies
-    std::unordered_map<uint16_t,    Block*> blocksById;
+    std::unordered_map<Uint16,      Block*> blocksById;
     std::unordered_map<std::string, Block*> blocksByName;
 
-    uint16_t nextId = 0;
+    Uint16 nextId = 0;
 
     // Internal: register a block and auto-assign ID
     void registerBlock(
@@ -30,6 +30,6 @@ private:
 public:
     void init();
 
-    Block* getById(uint16_t id);
+    Block* getById(Uint16 id);
     Block* getByName(const std::string& name);
 };

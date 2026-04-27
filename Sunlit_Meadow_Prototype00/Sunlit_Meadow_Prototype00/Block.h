@@ -1,10 +1,12 @@
 #pragma once
 #include <string>
 #include "Materials.h"
+#include "BlockModel.h"
+#include "DataStructures.h"
 
 class Block {
 private:
-    uint16_t    id;
+    Uint16    id;
     std::string name;
     bool        transparent;
     bool        hasSlab;
@@ -14,7 +16,7 @@ private:
 
 public:
     Block(
-        uint8_t id,
+        Uint16 id,
         std::string name,
         BlockModel model,
         bool transparent = false,
@@ -23,9 +25,17 @@ public:
         bool hasWall = false
     );
 
+    void generateMeshFromModel(
+        std::vector<VertexData>& vertices,
+        std::vector<Uint16>&   indices,
+        AdjacencyInfo            adj,
+        int x, int y, int z
+    );
+
     bool isTransparent();
     bool getHasSlab();
     bool getHasStair();
     bool getHasWall();
     std::string getName();
+    Uint16 getID();
 };

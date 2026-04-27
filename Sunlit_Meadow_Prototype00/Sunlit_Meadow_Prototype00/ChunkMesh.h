@@ -7,26 +7,14 @@
 #include <SDL3/SDL.h>
 #include "DataStructures.h"
 #include "Vectors.h"
-#include "Block.h"
-
-struct BlockCoordHasher
-{
-    std::size_t operator()(const BlockCoordinates& b) const
-    {
-        std::size_t hx = std::hash<int>{}(b.x);
-        std::size_t hy = std::hash<int>{}(b.y);
-        std::size_t hz = std::hash<int>{}(b.z);
-
-        return hx ^ (hy << 1) ^ (hz << 2);
-    }
-};
+#include "ChunkTypes.h"
 
 class ChunkMesh
 {
 public:
     bool init(
         AppState* state,
-        std::vector<Block>& blocks,
+        std::vector<LocationalBlockID>& blocks,
         SDL_GPUTexture* textureArray
     );
 
@@ -45,22 +33,14 @@ public:
     uint32_t getNumIndices() const { return numIndices; }
 
 private:
-    void buildMesh(std::vector<Block>& blocks);
+    void buildMesh(std::vector<LocationalBlockID>& blocks);
     bool uploadToGPU(AppState* state);
     bool hasBlock(int x, int y, int z) const;
 
-    void addFace(
-        const Vec3& v0,
-        const Vec3& v1,
-        const Vec3& v2,
-        const Vec3& v3,
-        int materialIndex
-    );
-
 private:
     std::vector<VertexData> vertices;
-    std::vector<uint16_t> indices;
-    std::unordered_set<BlockCoordinates, BlockCoordHasher> blockSet;
+    std::vector<Uint16> indices;
+    std::unordered_set<LocationalBlockID, LocationalBlockIDHash> blockSet;
 
     SDL_GPUBuffer* vertexBuffer = nullptr;
     SDL_GPUBuffer* indexBuffer = nullptr;

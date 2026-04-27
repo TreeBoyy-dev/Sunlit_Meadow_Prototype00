@@ -51,12 +51,6 @@
     <ClCompile Include="Block.cpp">
       <Filter>Source Files\world\Blocks</Filter>
     </ClCompile>
-    <ClCompile Include="MinableBLock.cpp">
-      <Filter>Source Files\world\Blocks</Filter>
-    </ClCompile>
-    <ClCompile Include="StoneBlocks.cpp">
-      <Filter>Source Files\world\Blocks</Filter>
-    </ClCompile>
     <ClCompile Include="Materials.cpp">
       <Filter>Source Files\world\Blocks</Filter>
     </ClCompile>
@@ -104,12 +98,6 @@
     <ClInclude Include="Block.h">
       <Filter>Header Files\world\Blocks</Filter>
     </ClInclude>
-    <ClInclude Include="StoneBlocks.h">
-      <Filter>Header Files\world\Blocks</Filter>
-    </ClInclude>
-    <ClInclude Include="MinableBlock.h">
-      <Filter>Header Files\world\Blocks</Filter>
-    </ClInclude>
     <ClInclude Include="Materials.h">
       <Filter>Header Files\world\Blocks</Filter>
     </ClInclude>
@@ -119,7 +107,7 @@
     <ClInclude Include="ChunkMesh.h">
       <Filter>Header Files\world</Filter>
     </ClInclude>
-    <ClInclude Include="chunk.h">
+    <ClInclude Include="Chunk.h">
       <Filter>Header Files\world\worldData</Filter>
     </ClInclude>
     <ClInclude Include="Region.h">
@@ -133,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="BlockModel.h">
       <Filter>Header Files\world\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkTypes.h">
+      <Filter>Header Files\world\worldData</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

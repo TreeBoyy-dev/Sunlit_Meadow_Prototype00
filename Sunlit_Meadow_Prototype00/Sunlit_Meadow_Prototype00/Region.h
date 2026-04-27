@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <memory>
 
+#include "ChunkTypes.h"
 #include "Chunk.h"
 
 #define REGION_SIZE_YX 32

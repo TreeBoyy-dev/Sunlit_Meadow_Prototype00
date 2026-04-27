@@ -18,17 +18,29 @@ private:
 
     void addFace(
         std::vector<VertexData>& vertices,
-        std::vector<uint16_t>&   indices,
+        std::vector<Uint16>&   indices,
         const Vec3               corners[4],  // 4 corners of the quad, CCW
         Material                 materialIndex
     );
 
 public:
-    BlockModel(Material topMaterial, Material bottomMaterial, Material sideMaterial);
+    BlockModel(
+        Material topMaterial,
+        Material bottomMaterial,
+        Material sideMaterial
+    );
+    BlockModel(
+        Material topBottomMaterial,
+        Material sideMaterial
+    );
+    BlockModel(
+        Material sideMaterial
+    );
 
     void generateMesh(
         std::vector<VertexData>& vertices,
-        std::vector<uint16_t>&   indices,
-        AdjacencyInfo            adj
+        std::vector<Uint16>&   indices,
+        AdjacencyInfo            adj,
+        int x, int y, int z
     );
 };

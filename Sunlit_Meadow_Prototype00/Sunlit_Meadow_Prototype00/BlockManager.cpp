@@ -12,7 +12,7 @@ void BlockManager::registerBlock(
     bool hasWall
 ){
 
-    uint16_t id = nextId++;
+    Uint16 id = nextId++;
 
     auto newBlock = std::make_unique<Block>(
         id,
@@ -34,10 +34,10 @@ void BlockManager::registerBlock(
 
 void BlockManager::init() {
     // --- Register base blocks ---
-    registerBlock("Air", {}, /*transparent=*/true);
-    registerBlock("Grass", BlockModel(), false, /*hasSlab=*/true, /*hasStair=*/true, /*hasWall=*/false);
-    registerBlock("Stone", stoneModel, false, true, true, true);
-    registerBlock("Wood",  woodModel,  false, true, true);
+    registerBlock("air",             BlockModel(BLOCK_COBBLESTONE), /*transparent=*/true);
+    registerBlock("cobble_stone",    BlockModel(BLOCK_COBBLESTONE), false, true, true, false);
+    registerBlock("diorite",         BlockModel(BLOCK_DIORITE), false, true, true, true);
+    registerBlock("dirt",            BlockModel(BLOCK_DIRT), false, true, true);
 
     // --- Auto-generate variants ---
     // Snapshot current blocks (avoid mutating map while iterating)
@@ -46,13 +46,13 @@ void BlockManager::init() {
         baseBlocks.push_back(*block);
 
     for (Block& b : baseBlocks) {
-        if (b.getHasSlab())  registerBlock(b.getName() + "_Slab",  slabModelFrom(b.model));
-        if (b.getHasStair()) registerBlock(b.getName() + "_Stair", stairModelFrom(b.model));
-        if (b.getHasWall())  registerBlock(b.getName() + "_Wall",  wallModelFrom(b.model));
+        //if (b.getHasSlab())  registerBlock(b.getName() + "_Slab",  slabModelFrom(b.model));
+        //if (b.getHasStair()) registerBlock(b.getName() + "_Stair", stairModelFrom(b.model));
+        //if (b.getHasWall())  registerBlock(b.getName() + "_Wall",  wallModelFrom(b.model));
     }
 }
 
-Block* BlockManager::getById(uint16_t id) {
+Block* BlockManager::getById(Uint16 id) {
     auto it = blocksById.find(id);
     return it != blocksById.end() ? it->second : nullptr;
 }

@@ -3,7 +3,6 @@
 #include <SDL3/SDL_main.h>
 #include <vector>
 
-#include "StoneBlocks.h"
 #include "Mat4.h"
 #include "Materials.h"
 #include "DataStructures.h"
