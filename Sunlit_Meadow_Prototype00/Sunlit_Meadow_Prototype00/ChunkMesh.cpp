@@ -57,12 +57,12 @@ void ChunkMesh::buildMesh(std::vector<LocationalBlockID>& blocks)
         Block* b = blockManager.getById(block.id);
 
         AdjacencyInfo adj = {
-            hasBlock(block.x,     block.y + 1, block.z),
-            hasBlock(block.x,     block.y - 1, block.z),
-            hasBlock(block.x,     block.y,     block.z - 1),
             hasBlock(block.x,     block.y,     block.z + 1),
+            hasBlock(block.x,     block.y,     block.z - 1),
             hasBlock(block.x + 1, block.y,     block.z),
             hasBlock(block.x - 1, block.y,     block.z),
+            hasBlock(block.x,     block.y + 1, block.z),
+            hasBlock(block.x,     block.y - 1, block.z),
         };
         b->generateMeshFromModel(vertices, indices, adj, block.x, block.y, block.z);
     }

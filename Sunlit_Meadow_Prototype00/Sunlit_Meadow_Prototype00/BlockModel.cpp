@@ -63,61 +63,63 @@ void BlockModel::generateMesh(
 {
     if (!adj.top) {
         const Vec3 corners[4] = {
-            { x + 0.0f, y + 1.0f, z + 0.0f },
-            { x + 1.0f, y + 1.0f, z + 0.0f },
+            { x + 0.0f, y + 0.0f, z + 1.0f },
+            { x + 1.0f, y + 0.0f, z + 1.0f },
             { x + 1.0f, y + 1.0f, z + 1.0f },
             { x + 0.0f, y + 1.0f, z + 1.0f },
+
         };
         addFace(vertices, indices, corners, topMaterial);
     }
 
     if (!adj.bottom) {
         const Vec3 corners[4] = {
-            { x + 0.0f, y + 0.0f, z + 1.0f },
-            { x + 1.0f, y + 0.0f, z + 1.0f },
             { x + 1.0f, y + 0.0f, z + 0.0f },
             { x + 0.0f, y + 0.0f, z + 0.0f },
+            { x + 0.0f, y + 1.0f, z + 0.0f },
+            { x + 1.0f, y + 1.0f, z + 0.0f },
         };
         addFace(vertices, indices, corners, bottomMaterial);
     }
 
-    if (!adj.front) {  // +Z
+    if (!adj.front) {
         const Vec3 corners[4] = {
-            { x + 0.0f, y + 0.0f, z + 1.0f },
             { x + 1.0f, y + 0.0f, z + 1.0f },
+            { x + 1.0f, y + 0.0f, z + 0.0f },
+            { x + 1.0f, y + 1.0f, z + 0.0f },
+            { x + 1.0f, y + 1.0f, z + 1.0f },
+        };
+        addFace(vertices, indices, corners, sideMaterial);
+    }
+
+    if (!adj.back) {
+        const Vec3 corners[4] = {
+            { x + 0.0f, y + 0.0f, z + 0.0f },
+            { x + 0.0f, y + 0.0f, z + 1.0f },
+            { x + 0.0f, y + 1.0f, z + 1.0f },
+            { x + 0.0f, y + 1.0f, z + 0.0f },
+        };
+        addFace(vertices, indices, corners, sideMaterial);
+    }
+
+    if (!adj.right) {
+        const Vec3 corners[4] = {
+            { x + 0.0f, y + 1.0f, z + 0.0f },
+            { x + 1.0f, y + 1.0f, z + 0.0f },
             { x + 1.0f, y + 1.0f, z + 1.0f },
             { x + 0.0f, y + 1.0f, z + 1.0f },
         };
         addFace(vertices, indices, corners, sideMaterial);
     }
 
-    if (!adj.back) {   // -Z
+    if (!adj.left) {
         const Vec3 corners[4] = {
-            { x + 1.0f, y + 0.0f, z + 0.0f },
-            { x + 0.0f, y + 0.0f, z + 0.0f },
-            { x + 0.0f, y + 1.0f, z + 0.0f },
-            { x + 1.0f, y + 1.0f, z + 0.0f },
-        };
-        addFace(vertices, indices, corners, sideMaterial);
-    }
-
-    if (!adj.right) {  // +X
-        const Vec3 corners[4] = {
+            { x + 0.0f, y + 0.0f, z + 1.0f },
             { x + 1.0f, y + 0.0f, z + 1.0f },
             { x + 1.0f, y + 0.0f, z + 0.0f },
-            { x + 1.0f, y + 1.0f, z + 0.0f },
-            { x + 1.0f, y + 1.0f, z + 1.0f },
+            { x + 0.0f, y + 0.0f, z + 0.0f },
         };
         addFace(vertices, indices, corners, sideMaterial);
     }
 
-    if (!adj.left) {   // -X
-        const Vec3 corners[4] = {
-            { x + 0.0f, y + 0.0f, 0.0f },
-            { x + 0.0f, y + 0.0f, 1.0f },
-            { x + 0.0f, y + 1.0f, 1.0f },
-            { x + 0.0f, y + 1.0f, 0.0f },
-        };
-        addFace(vertices, indices, corners, sideMaterial);
-    }
 }

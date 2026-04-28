@@ -130,28 +130,32 @@ void Chunk::generateShape(Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], C
 				int zAbs = chunkCoordinates.z * CHUNK_SIZE + z;
 
 				Block* block;
-				if (zAbs <=2) {
+
+				if ((x == 15 || y == 15) && zAbs <= 4) {
+					block = blockManager.getByName("diorite");
+				}
+				else if (zAbs <=2) {
 					block = blockManager.getByName("cobble_stone");
 				}
 				else if (zAbs == 3) {
 					if (rand() % 2 == 0)
 						block = blockManager.getByName("cobble_stone");
 					else
-						block = blockManager.getByName("diorite");
+						block = blockManager.getByName("dirt");
 				}
 				else if (zAbs == 4) {
 					int r = rand() % 3;
 
 					if (r == 0)
-						block = blockManager.getByName("cobble_stone");
+						block = blockManager.getByName("air");
 					else if (r == 1)
-						block = blockManager.getByName("diorite");
+						block = blockManager.getByName("cobble_stone");
 					else
 						block = blockManager.getByName("dirt");
 				}
-				else if (zAbs > 20) {
-					block = blockManager.getByName("diorite");
-				}
+				//else if (zAbs > 20) {
+					//block = blockManager.getByName("diorite");
+				//}
 				else {
 					block = blockManager.getByName("air");
 				}

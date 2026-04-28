@@ -5,7 +5,7 @@
 #include "Vectors.h"
 #include "Materials.h"
 
-// Adjacency order: Top, Bottom, Front(+Z), Back(-Z), Right(+X), Left(-X)
+// Adjacency order: Top(+Z), Bottom(-Z), Front(+X), Back(-X), Right(+Y), Left(-Y)
 struct AdjacencyInfo {
     bool top, bottom, front, back, right, left;
 };
