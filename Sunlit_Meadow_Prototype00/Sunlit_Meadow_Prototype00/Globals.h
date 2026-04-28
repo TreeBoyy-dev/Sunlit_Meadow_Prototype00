@@ -5,6 +5,7 @@
 #include "WorldManager.h"
 #include "BlockManager.h"
 #include "ChunkTypes.h"
+#include "FastNoiseLite.h"
 
 // --- Camera ---
 extern Camera camera;
@@ -26,3 +27,6 @@ extern ChunkCoord prevPlayerChunkCoords;
 
 // --- BlockManager ---
 extern BlockManager blockManager;
+
+// --- World generation related ---
+extern FastNoiseLite standartNoise;

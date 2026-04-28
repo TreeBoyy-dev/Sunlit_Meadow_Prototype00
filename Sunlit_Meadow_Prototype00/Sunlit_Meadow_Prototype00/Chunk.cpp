@@ -1,5 +1,7 @@
+#include "GenerateChunk.h"
 #include "Chunk.h"
 #include "Globals.h"
+#include "BlockManager.h"
 
 Chunk::Chunk() :
 	chunkCoordinates({0,0,0}),
@@ -108,63 +110,7 @@ ChunkCoord Chunk::getChunkCoordinates() {
 	return chunkCoordinates;
 }
 
-bool Chunk::generateChunk() {
-
-	//generate shape: air/stone
-	generateShape(blockIDs, chunkCoordinates);
-
-	//generate biomes
-
-	//generate features: grass, vegitation, structures
-
-	return true;
-}
-
-void Chunk::generateShape(Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], ChunkCoord chunkCoordinates)
-{
-	for (int x = 0; x < CHUNK_SIZE; x++) {
-		int xAbs = chunkCoordinates.x * CHUNK_SIZE + x;
-		for (int y = 0; y < CHUNK_SIZE; y++) {
-			int yAbs = chunkCoordinates.y * CHUNK_SIZE + y;
-			for (int z = 0; z < CHUNK_SIZE; z++) {
-				int zAbs = chunkCoordinates.z * CHUNK_SIZE + z;
-
-				Block* block;
-
-				if ((x == 15 || y == 15) && zAbs <= 4) {
-					block = blockManager.getByName("diorite");
-				}
-				else if (zAbs <=2) {
-					block = blockManager.getByName("cobble_stone");
-				}
-				else if (zAbs == 3) {
-					if (rand() % 2 == 0)
-						block = blockManager.getByName("cobble_stone");
-					else
-						block = blockManager.getByName("dirt");
-				}
-				else if (zAbs == 4) {
-					int r = rand() % 3;
-
-					if (r == 0)
-						block = blockManager.getByName("air");
-					else if (r == 1)
-						block = blockManager.getByName("cobble_stone");
-					else
-						block = blockManager.getByName("dirt");
-				}
-				//else if (zAbs > 20) {
-					//block = blockManager.getByName("diorite");
-				//}
-				else {
-					block = blockManager.getByName("air");
-				}
-
-				if (block != nullptr)
-					blockIDs[x][y][z] = block->getID();
-				else
-					SDL_Log("Block = nullptr in Chunk generation!!!");
-			}
-		}
-	}
+void Chunk::getChunkGenerated() {
+	generateChunk(blockIDs, chunkCoordinates);
+	isGenerated = true;
 }

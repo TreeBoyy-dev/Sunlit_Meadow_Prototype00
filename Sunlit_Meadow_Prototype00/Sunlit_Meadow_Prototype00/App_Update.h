@@ -134,7 +134,6 @@ SDL_AppResult App_Update(void* appstate)
         camera.position.x, camera.position.y, camera.position.z,
         playerChunkCoords.x, playerChunkCoords.y, playerChunkCoords.z
     );
-
     SDL_SetWindowTitle(state->window, buffer);
 
     return SDL_APP_CONTINUE;

@@ -22,7 +22,7 @@ Chunk* Region::getChunk(
         );
         Chunk& chunk = *newIt->second;
 
-        chunk.generateChunk();
+        chunk.getChunkGenerated();
 
         if (!chunk.initMeshes(state, textureArray)) {
             chunks.erase(newIt);

@@ -6,6 +6,7 @@
 #include "Globals.h"
 #include "InitPipeline.h"
 #include "Materials.h"
+#include "InitNoise.h"
 
 SDL_AppResult App_Init(void* appstate)
 {
@@ -69,6 +70,8 @@ SDL_AppResult App_Init(void* appstate)
         SDL_Log("failed loading textures");
         return SDL_APP_FAILURE;
     }
+
+    initNoise(&standartNoise);
 
     blockManager.init();
 

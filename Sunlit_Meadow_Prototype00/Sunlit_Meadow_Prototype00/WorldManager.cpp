@@ -9,7 +9,7 @@ void WorldManager::calcVisibleChunksList(int renderDistance) {
 
 	for (int x = -renderDistance; x <= renderDistance; x++) {
 		for (int y = -renderDistance; y <= renderDistance; y++) {
-			for (int z = -renderDistance; z <= renderDistance; z++) {
+			for (int z = -3; z <= 2; z++) { // !!TEMP CHANGE
 				if (sqrt(x * x + y * y + z * z) <= (double)renderDistance) {
 					ChunkCoord cords = { x, y, z };
 					visibleChunkCoordsRelative.push_back(cords);
@@ -27,7 +27,7 @@ void WorldManager::updateRenderList(
 	SDL_GPUTexture* textureArray
 ) {
 	ChunkCoord playerChunkPos = getPlayerChunkCoord(playerPosition);
-	SDL_Log("%d, %d, %d", playerChunkPos.x, playerChunkPos.y, playerChunkPos.z);
+	//SDL_Log("%d, %d, %d", playerChunkPos.x, playerChunkPos.y, playerChunkPos.z);
 
 	renderList.clear();
 

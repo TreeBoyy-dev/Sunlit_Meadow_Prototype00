@@ -1,6 +1,5 @@
 #pragma once
 
-#include "BlockManager.h"
 #include "ChunkMesh.h"
 #include "ChunkTypes.h"
 
@@ -24,7 +23,7 @@ public:
     Chunk();
     Chunk(ChunkCoord chunkCoordinates);
 
-    bool generateChunk();
+    void getChunkGenerated();
 
     bool getIsGenerated();
     ChunkCoord getChunkCoordinates();
@@ -40,8 +39,4 @@ public:
         const UBO& ubo
     );
     void destroyMeshes(AppState* state);
-
-private:
-    void generateShape(Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], ChunkCoord chunkCoordinates);
-
 };

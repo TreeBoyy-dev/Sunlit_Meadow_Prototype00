@@ -31,6 +31,15 @@
     <Filter Include="Header Files\world\worldData">
       <UniqueIdentifier>{d4549a15-9474-4c40-b216-01dfa9818058}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\WorldGen">
+      <UniqueIdentifier>{0d48f777-3e20-46ff-bcb7-f41f2bddd583}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\world\WorldGen.h">
+      <UniqueIdentifier>{4955a047-8b6a-47e0-ae66-693d6eb70681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\world\WorldGen">
+      <UniqueIdentifier>{c7438f54-7056-4ee8-8878-25b4ebceefaf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -71,6 +80,12 @@
     </ClCompile>
     <ClCompile Include="BlockModel.cpp">
       <Filter>Source Files\world\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="GenerateChunk.h">
+      <Filter>Header Files\world\WorldGen.h</Filter>
+    </ClCompile>
+    <ClCompile Include="GenerateChunk.cpp">
+      <Filter>Source Files\world\WorldGen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -124,6 +139,12 @@
     </ClInclude>
     <ClInclude Include="ChunkTypes.h">
       <Filter>Header Files\world\worldData</Filter>
+    </ClInclude>
+    <ClInclude Include="FastNoiseLite.h">
+      <Filter>Resource Files\WorldGen</Filter>
+    </ClInclude>
+    <ClInclude Include="InitNoise.h">
+      <Filter>Resource Files\WorldGen</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

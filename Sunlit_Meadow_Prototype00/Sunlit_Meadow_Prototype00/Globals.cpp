@@ -22,9 +22,12 @@ float sum = 0.0;
 
 // --- WorldManager ---
 WorldManager testManager;
-extern const int RENDER_DISTANCE = 3;
+extern const int RENDER_DISTANCE = 3; // !!hardcoded to 2 in WorldManager.cpp in calcVisibleChunksList
 
 extern ChunkCoord prevPlayerChunkCoords = { 0,0,0 };
 
 // --- BlockManager ---
 BlockManager blockManager;
+
+// --- World generation related ---
+FastNoiseLite standartNoise;
