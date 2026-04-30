@@ -17,10 +17,7 @@ Chunk::Chunk(ChunkCoord chunkCoordinates) :
 	drawTransparentMesh(false)
 {}
 
-bool Chunk::initMeshes(
-	AppState* state,
-	SDL_GPUTexture* textureArray
-) {
+void Chunk::createMeshes() {
 	std::vector<LocationalBlockID> opaqueblocks;
 	std::vector<LocationalBlockID> transparentblocks;
 
@@ -47,37 +44,31 @@ bool Chunk::initMeshes(
 	}
 	if (opaqueblocks.size() > 0) {
 		drawOpaqueMesh = true;
-		if (!opaqueMesh.init(
-			state,
-			opaqueblocks,
-			textureArray
-		)) {
-			//return false;
-			SDL_Log("failed to init opaqueMesh at %d|%d|%d",
-				chunkCoordinates.x,
-				chunkCoordinates.y,
-				chunkCoordinates.z
-			);
-		}
+		opaqueMesh.buildMesh(opaqueblocks);
 	}
 	if (transparentblocks.size() > 0) {
 		drawTransparentMesh = true;
-		if (!transparentMesh.init(
-			state,
-			transparentblocks,
-			textureArray
-		)) {
-			//return false;
-			SDL_Log("failed to init transparentMesh at %d|%d|%d",
-				chunkCoordinates.x,
-				chunkCoordinates.y,
-				chunkCoordinates.z
-			);
+		transparentMesh.buildMesh(transparentblocks);
+	}
+}
+
+
+bool Chunk::uploadMeshes(AppState* state, SDL_GPUTexture* textureArray) {
+	if (drawOpaqueMesh) {
+		if (!opaqueMesh.uploadToGPU(state, textureArray)) {
+			SDL_Log("failed to upload opaqueMesh at %d|%d|%d",
+				chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
 		}
 	}
-
+	if (drawTransparentMesh) {
+		if (!transparentMesh.uploadToGPU(state, textureArray)) {
+			SDL_Log("failed to upload transparentMesh at %d|%d|%d",
+				chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
+		}
+	}
 	return true;
 }
+
 bool Chunk::drawMeshes(
 	AppState* state,
 	SDL_GPUCommandBuffer* cmd,

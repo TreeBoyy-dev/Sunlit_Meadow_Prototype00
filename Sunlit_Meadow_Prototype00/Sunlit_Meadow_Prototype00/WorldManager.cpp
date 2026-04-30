@@ -1,101 +1,100 @@
 #include <math.h>
-
 #include "WorldManager.h"
 
 WorldManager::WorldManager() {}
 
 void WorldManager::calcVisibleChunksList(int renderDistance) {
-	visibleChunkCoordsRelative.clear();
+    visibleChunkCoordsRelative.clear();
 
-	for (int x = -renderDistance; x <= renderDistance; x++) {
-		for (int y = -renderDistance; y <= renderDistance; y++) {
-			for (int z = -3; z <= 2; z++) { // !!TEMP CHANGE
-				if (sqrt(x * x + y * y + z * z) <= (double)renderDistance) {
-					ChunkCoord cords = { x, y, z };
-					visibleChunkCoordsRelative.push_back(cords);
-					//SDL_Log("new chunk: %d, %d, %d", x, y, z);
-				}
-			}
-		}
-	}
+    for (int x = -renderDistance; x <= renderDistance; x++) {
+        for (int y = -renderDistance; y <= renderDistance; y++) {
+            for (int z = -5; z <= 1; z++) { // !!TEMP CHANGE
+                if (sqrt(x * x + y * y + z * z) <= (double)renderDistance) {
+                    visibleChunkCoordsRelative.push_back({ x, y, z });
+                }
+            }
+        }
+    }
 }
 
-void WorldManager::updateRenderList(
-	Vec3 playerPosition,
-	int renderDistance,
-	AppState* state,
-	SDL_GPUTexture* textureArray
-) {
-	ChunkCoord playerChunkPos = getPlayerChunkCoord(playerPosition);
-	//SDL_Log("%d, %d, %d", playerChunkPos.x, playerChunkPos.y, playerChunkPos.z);
+void WorldManager::update(AppState* state, SDL_GPUTexture* textureArray) {
+    m_needsRenderListUpdate = false;
 
-	renderList.clear();
+    for (auto& [coord, region] : regions) {
+        bool newChunksArrived = region->update(state, textureArray);
+        if (newChunksArrived)
+            m_needsRenderListUpdate = true;
+    }
 
-	for (const ChunkCoord& relCoord : visibleChunkCoordsRelative) {
-		// 1. absolute world-space chunk coordinate
-		ChunkCoord absChunk = {
-			relCoord.x + playerChunkPos.x,
-			relCoord.y + playerChunkPos.y,
-			relCoord.z + playerChunkPos.z
-		};
-
-		// 2. which region owns this chunk
-		RegionCoord regionCoord = {
-			(int)std::floor((float)absChunk.x / REGION_SIZE_YX),
-			(int)std::floor((float)absChunk.y / REGION_SIZE_YX),
-			(int)std::floor((float)absChunk.z / REGION_SIZE_Z)
-		};
-
-		// 3. fetch (or create) region, then chunk
-		Region* region = getRegion(regionCoord);
-		Chunk* chunk = region->getChunk(absChunk, state, textureArray);
-		if (chunk) renderList.push_back(chunk);
-	}
+    if (m_needsRenderListUpdate)
+        rebuildRenderList();
 }
+
+void WorldManager::updateRenderList(Vec3 playerPosition) {
+    m_lastPlayerChunkPos = getPlayerChunkCoord(playerPosition);
+    rebuildRenderList();
+}
+
+void WorldManager::rebuildRenderList() {
+    renderList.clear();
+
+    for (const ChunkCoord& relCoord : visibleChunkCoordsRelative) {
+        ChunkCoord absChunk = {
+            relCoord.x + m_lastPlayerChunkPos.x,
+            relCoord.y + m_lastPlayerChunkPos.y,
+            relCoord.z + m_lastPlayerChunkPos.z
+        };
+
+        RegionCoord regionCoord = {
+            (int)std::floor((float)absChunk.x / REGION_SIZE_YX),
+            (int)std::floor((float)absChunk.y / REGION_SIZE_YX),
+            (int)std::floor((float)absChunk.z / REGION_SIZE_Z)
+        };
+
+        Region* region = getRegion(regionCoord);
+        Chunk* chunk = region->getChunk(absChunk);
+        if (chunk) renderList.push_back(chunk);
+    }
+}
+
 void WorldManager::drawChunks(
-	AppState* state,
-	SDL_GPUCommandBuffer* cmd,
-	SDL_GPURenderPass* pass,
-	const UBO& ubo
+    AppState* state,
+    SDL_GPUCommandBuffer* cmd,
+    SDL_GPURenderPass* pass,
+    const UBO& ubo
 ) {
-	for (int i = 0; i < renderList.size(); i++) {
-		Chunk* chunk = renderList.at(i);
-		if (chunk != nullptr) {
-			chunk->drawMeshes(
-				state,
-				cmd,
-				pass,
-				ubo
-			);
-			//ChunkCoord coords = chunk->getChunkCoordinates();
-			//SDL_Log("rendered chunk: %d|%d|%d", coords.x, coords.y, coords.z);
-		}
-		else
-			SDL_Log("tried to draw nullptr");
-	}
+    for (Chunk* chunk : renderList) {
+        if (chunk)
+            chunk->drawMeshes(state, cmd, pass, ubo);
+        else
+            SDL_Log("tried to draw nullptr");
+    }
 }
-
 
 Region* WorldManager::getRegion(RegionCoord regionCoordinates) {
-	auto it = regions.find(regionCoordinates);
+    auto it = regions.find(regionCoordinates);
+    if (it != regions.end())
+        return it->second.get();
 
-	if (it == regions.end()) {
-		auto [newIt, inserted] = regions.emplace(
-			regionCoordinates,
-			std::make_unique<Region>(regionCoordinates)
-		);
-
-		return newIt->second.get();
-	}
-
-	return it->second.get();
+    auto [newIt, inserted] = regions.emplace(
+        regionCoordinates,
+        std::make_unique<Region>(regionCoordinates)
+    );
+    return newIt->second.get();
 }
 
 ChunkCoord getPlayerChunkCoord(Vec3 playerPosition) {
-	return {
-		(int)std::floor(playerPosition.x / CHUNK_SIZE),
-		(int)std::floor(playerPosition.y / CHUNK_SIZE),
-		(int)std::floor(playerPosition.z / CHUNK_SIZE)
-	};
+    return {
+        (int)std::floor(playerPosition.x / CHUNK_SIZE),
+        (int)std::floor(playerPosition.y / CHUNK_SIZE),
+        (int)std::floor(playerPosition.z / CHUNK_SIZE)
+    };
 }
 
+void WorldManager::destroyManager(AppState* state) {
+    for (auto& [coord, region] : regions) {
+        region->destroyRegion(state);
+    }
+    regions.clear();
+    renderList.clear();
+}

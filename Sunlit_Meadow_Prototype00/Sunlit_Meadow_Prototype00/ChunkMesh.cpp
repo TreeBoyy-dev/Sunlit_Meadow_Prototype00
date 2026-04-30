@@ -3,18 +3,6 @@
 #include "Block.h"
 #include "Globals.h"
 
-bool ChunkMesh::init(
-    AppState* state,
-    std::vector<LocationalBlockID>& blocks,
-    SDL_GPUTexture* textureArrayIn
-)
-{
-    textureArray = textureArrayIn;
-
-    buildMesh(blocks);
-    return uploadToGPU(state);
-}
-
 void ChunkMesh::destroy(AppState* state)
 {
     if (vertexBuffer) {
@@ -70,8 +58,9 @@ void ChunkMesh::buildMesh(std::vector<LocationalBlockID>& blocks)
     numIndices = (uint32_t)indices.size();
 }
 
-bool ChunkMesh::uploadToGPU(AppState* state)
+bool ChunkMesh::uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn)
 {
+    textureArray = textureArrayIn;
     if (vertices.empty() || indices.empty()) {
         SDL_Log("Block mesh is empty");
         return false;

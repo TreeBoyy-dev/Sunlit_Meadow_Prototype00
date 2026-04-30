@@ -87,6 +87,9 @@
     <ClCompile Include="GenerateChunk.cpp">
       <Filter>Source Files\world\WorldGen</Filter>
     </ClCompile>
+    <ClCompile Include="ChunkWorker.cpp">
+      <Filter>Source Files\world\WorldGen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h">
@@ -145,6 +148,12 @@
     </ClInclude>
     <ClInclude Include="InitNoise.h">
       <Filter>Resource Files\WorldGen</Filter>
+    </ClInclude>
+    <ClInclude Include="ThreadSafeQueue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkWorker.h">
+      <Filter>Header Files\world\WorldGen.h</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

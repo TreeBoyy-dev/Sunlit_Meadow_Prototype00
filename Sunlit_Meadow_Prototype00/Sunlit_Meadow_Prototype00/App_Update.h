@@ -123,9 +123,10 @@ SDL_AppResult App_Update(void* appstate)
     ChunkCoord playerChunkCoords = getPlayerChunkCoord(camera.position);
 
     if (playerChunkCoords != prevPlayerChunkCoords) {
-        testManager.updateRenderList(camera.position, RENDER_DISTANCE, state, state->textureArray);
+        testManager.updateRenderList(camera.position);
     }
     prevPlayerChunkCoords = playerChunkCoords;
+    testManager.update(state, state->textureArray);
 
     char buffer[256];
     snprintf(buffer, sizeof(buffer),

@@ -73,6 +73,8 @@ void SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
     AppState* state = (AppState*)appstate;
     if (state) {
+        testManager.destroyManager(state);
+
         if (state->pipeline)
             SDL_ReleaseGPUGraphicsPipeline(state->gpu, state->pipeline);
         if (state->gpu)

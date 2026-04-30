@@ -12,12 +12,6 @@
 class ChunkMesh
 {
 public:
-    bool init(
-        AppState* state,
-        std::vector<LocationalBlockID>& blocks,
-        SDL_GPUTexture* textureArray
-    );
-
     void destroy(AppState* state);
 
     void draw(
@@ -27,14 +21,16 @@ public:
         const UBO& ubo
     );
 
+
+    void buildMesh(std::vector<LocationalBlockID>& blocks);
+    bool uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn);
+
     SDL_GPUBuffer* getVertexBuffer() const { return vertexBuffer; }
     SDL_GPUBuffer* getIndexBuffer() const { return indexBuffer; }
     SDL_GPUTexture* getTextureArray() const { return textureArray; }
     uint32_t getNumIndices() const { return numIndices; }
 
 private:
-    void buildMesh(std::vector<LocationalBlockID>& blocks);
-    bool uploadToGPU(AppState* state);
     bool hasBlock(int x, int y, int z) const;
 
 private:

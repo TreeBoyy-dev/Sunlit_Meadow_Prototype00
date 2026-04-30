@@ -7,6 +7,7 @@
 
 #include "ChunkTypes.h"
 #include "Chunk.h"
+#include "ChunkWorker.h"
 
 #define REGION_SIZE_YX 32
 #define REGION_SIZE_Z 16
@@ -32,14 +33,16 @@ private:
     RegionCoord regionCoordinates;
 
     std::unordered_map<ChunkCoord, std::unique_ptr<Chunk>, ChunkCoordHash> chunks;
+    std::unordered_set<ChunkCoord, ChunkCoordHash> pendingChunks;
+
+    ChunkWorker m_worker;
 public:
     Region(RegionCoord regionCoordinates);
+    ~Region();
 
-    Chunk* getChunk(
-        ChunkCoord chunkCoordinates,
-        AppState* state,
-        SDL_GPUTexture* textureArray
-    );
+    Chunk* getChunk(ChunkCoord chunkCoordinates);
+    bool update(AppState* state, SDL_GPUTexture* textureArray);
+
     RegionCoord getCoordinates();
     void destroyRegion(AppState* state);
 };
