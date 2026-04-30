@@ -34,10 +34,18 @@ void BlockManager::registerBlock(
 
 void BlockManager::init() {
     // --- Register base blocks ---
-    registerBlock("air",             BlockModel(BLOCK_COBBLESTONE), /*transparent=*/true);
-    registerBlock("cobble_stone",    BlockModel(BLOCK_COBBLESTONE), false, true, true, false);
-    registerBlock("diorite",         BlockModel(BLOCK_DIORITE), false, true, true, true);
-    registerBlock("dirt",            BlockModel(BLOCK_DIRT), false, true, true);
+    registerBlock("air",            BlockModel(MATERIAL_COBBLESTONE), /*transparent=*/true);
+    registerBlock("cobble_stone",   BlockModel(MATERIAL_COBBLESTONE), false, true, true, false);
+    registerBlock("gneiss",         BlockModel(MATERIAL_GNEISS), false, true, true, false);
+    registerBlock("marble",         BlockModel(MATERIAL_MARBLE), false, true, true, false);
+    registerBlock("diorite",        BlockModel(MATERIAL_DIORITE), false, true, true, true);
+    registerBlock("dirt",           BlockModel(MATERIAL_DIRT), false, true, true);
+
+    registerBlock("birch_log",      BlockModel(MATERIAL_BIRCH_LOG_TOP, MATERIAL_BIRCH_LOG_SIDE), false, true, true);
+    registerBlock("birch_leaves",   BlockModel(MATERIAL_BIRCH_LEAVES), false, true, true);
+
+    registerBlock("chestnut_log",   BlockModel(MATERIAL_CHESTNUT_LOG_TOP, MATERIAL_CHESTNUT_LOG_SIDE), false, true, true);
+    registerBlock("chestnut_leaves",BlockModel(MATERIAL_CHESTNUT_LEAVES), false, true, true);
 
     // --- Auto-generate variants ---
     // Snapshot current blocks (avoid mutating map while iterating)

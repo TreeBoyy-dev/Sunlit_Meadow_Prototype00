@@ -132,20 +132,60 @@ bool UploadTextureArrayLayer(
 bool UploadTextureArrayLayers(
     AppState* state,
     SDL_GPUTexture* textureArray
-){
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "cobblestone.png", BLOCK_COBBLESTONE))
+) {
+    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "cobblestone.png", MATERIAL_COBBLESTONE))
     {
         SDL_Log("Failed to load Texture: cobblestone");
         return false;
     }
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "diorite.png", BLOCK_DIORITE))
+    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "diorite.png", MATERIAL_DIORITE))
     {
         SDL_Log("Failed to load Texture: diorite");
         return false;
     }
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "dirt.png", BLOCK_DIRT))
+    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "marble.png", MATERIAL_MARBLE))
+    {
+        SDL_Log("Failed to load Texture: marble");
+        return false;
+    }
+    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "gneiss.png", MATERIAL_GNEISS))
+    {
+        SDL_Log("Failed to load Texture: gneiss");
+        return false;
+    }
+    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "dirt.png", MATERIAL_DIRT))
     {
         SDL_Log("Failed to load Texture: dirt");
+        return false;
+    }
+    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "BirchLogSide.png", MATERIAL_BIRCH_LOG_SIDE))
+    {
+        SDL_Log("Failed to load Texture: BirchLogSide");
+        return false;
+    }
+    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "BirchLogTop.png", MATERIAL_BIRCH_LOG_TOP))
+    {
+        SDL_Log("Failed to load Texture: BirchLogTop");
+        return false;
+    }
+    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "BirchLeaves.png", MATERIAL_BIRCH_LEAVES))
+    {
+        SDL_Log("Failed to load Texture: BirchLeaves");
+        return false;
+    }
+    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "ChestnutLogSide.png", MATERIAL_CHESTNUT_LOG_SIDE))
+    {
+        SDL_Log("Failed to load Texture: ChestnutLogSide");
+        return false;
+    }
+    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "ChestnutLogTop.png", MATERIAL_CHESTNUT_LOG_TOP))
+    {
+        SDL_Log("Failed to load Texture: ChestnutLogTop");
+        return false;
+    }
+    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "ChestnutLeaves.png", MATERIAL_CHESTNUT_LEAVES))
+    {
+        SDL_Log("Failed to load Texture: ChestnutLeaves");
         return false;
     }
 
