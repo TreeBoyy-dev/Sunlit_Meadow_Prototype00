@@ -1,9 +1,9 @@
 
 echo Compiling shaders...
-glslc shader.glsl.vert -o shader.spv.vert
+shadercross.exe shader.vert.hlsl -o shader.vert.spv
 if %errorlevel% neq 0 ( echo Vertex shader failed. & exit /b 1 )
 
-glslc shader.glsl.frag -o shader.spv.frag
+shadercross.exe shader.frag.hlsl -o shader.frag.spv
 if %errorlevel% neq 0 ( echo Fragment shader failed. & exit /b 1 )
 
 echo Done.

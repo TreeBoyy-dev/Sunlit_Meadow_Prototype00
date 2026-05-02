@@ -8,12 +8,25 @@
 
 const SDL_GPUTextureFormat depth_texture_format = SDL_GPU_TEXTUREFORMAT_D24_UNORM;
 
-static SDL_GPUShader* loadShader(SDL_GPUDevice* gpu,
+static SDL_GPUShader* loadShader(
+    SDL_GPUDevice* gpu,
     const char* path,
-    SDL_GPUShaderStage stage,
     Uint32 num_uniform_buffers,
     Uint32 num_samplers)
 {
+    // Infer stage from file extension
+    SDL_GPUShaderStage stage;
+    if (SDL_strstr(path, ".vert.spv")) {
+        stage = SDL_GPU_SHADERSTAGE_VERTEX;
+    }
+    else if (SDL_strstr(path, ".frag.spv")) {
+        stage = SDL_GPU_SHADERSTAGE_FRAGMENT;
+    }
+    else {
+        SDL_Log("loadShader: could not infer shader stage from '%s'", path);
+        return NULL;
+    }
+
     size_t code_size = 0;
     void* code = SDL_LoadFile(path, &code_size);
     if (!code) {
@@ -45,18 +58,9 @@ SDL_AppResult App_InitPipeline(void* appstate)
 {
     AppState* state = (AppState*)appstate;
 
-    SDL_GPUShader* vert = loadShader(state->gpu,
-        "shader.spv.vert",
-        SDL_GPU_SHADERSTAGE_VERTEX,
-        1,
-        0
-    );
-    SDL_GPUShader* frag = loadShader(state->gpu,
-        "shader.spv.frag",
-        SDL_GPU_SHADERSTAGE_FRAGMENT,
-        0,
-        1
-    );
+    SDL_GPUShader* vert = loadShader(state->gpu, "shader.vert.spv", 1, 0);
+    SDL_GPUShader* frag = loadShader(state->gpu, "shader.frag.spv", 0, 1);
+    
     if (!vert || !frag) { return SDL_APP_FAILURE; }
 
     SDL_GPUVertexAttribute vertex_attrs[4] = {

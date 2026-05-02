@@ -16,20 +16,6 @@ bool updateCamera(float dt) {
     float yawRad = camera.yaw * (3.14159265f / 180.0f);
     float pitchRad = camera.pitch * (3.14159265f / 180.0f);
 
-    camera.forward = {
-        cosf(pitchRad) * cosf(yawRad),  // x
-        cosf(pitchRad) * sinf(yawRad),  // y
-        sinf(pitchRad)                  // z is up
-    };
-
-    camera.lookTarget = {
-        camera.position.x + camera.forward.x,
-        camera.position.y + camera.forward.y,
-        camera.position.z + camera.forward.z
-    };
-
-    camera.forward = vec3Normalize(camera.forward);
-
     int numkeys;
     const bool* keyStates = SDL_GetKeyboardState(&numkeys);
 
@@ -92,6 +78,20 @@ bool updateCamera(float dt) {
         camera.position.y += movement.y * movementSpeed * dt,
         camera.position.z += movement.z * movementSpeed * dt,
     };
+
+    camera.forward = {
+    cosf(pitchRad) * cosf(yawRad),  // x
+    cosf(pitchRad) * sinf(yawRad),  // y
+    sinf(pitchRad)                  // z is up
+    };
+
+    camera.lookTarget = {
+        camera.position.x + camera.forward.x,
+        camera.position.y + camera.forward.y,
+        camera.position.z + camera.forward.z
+    };
+
+    camera.forward = vec3Normalize(camera.forward);
 
     return true;
 }
