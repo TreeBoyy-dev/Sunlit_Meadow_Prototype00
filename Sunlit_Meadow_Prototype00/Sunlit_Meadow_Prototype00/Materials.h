@@ -11,6 +11,7 @@ typedef enum {
     MATERIAL_GNEISS,
     //dirt like blocks
     MATERIAL_DIRT,
+    MATERIAL_GRASS_BLOCK,
     //wood types
     MATERIAL_BIRCH_LOG_SIDE,
     MATERIAL_BIRCH_LOG_TOP,

@@ -22,7 +22,7 @@ float sum = 0.0;
 
 // --- WorldManager ---
 WorldManager testManager;
-extern const int RENDER_DISTANCE = 8; // !!hardcoded to 2 in z-axis in WorldManager.cpp in calcVisibleChunksList
+extern const int RENDER_DISTANCE = 8; // !!hardcoded to 5 in z-axis in WorldManager.cpp in calcVisibleChunksList
 
 extern ChunkCoord prevPlayerChunkCoords = { 0,0,0 };
 

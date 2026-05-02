@@ -39,7 +39,9 @@ void BlockManager::init() {
     registerBlock("gneiss",         BlockModel(MATERIAL_GNEISS), false, true, true, false);
     registerBlock("marble",         BlockModel(MATERIAL_MARBLE), false, true, true, false);
     registerBlock("diorite",        BlockModel(MATERIAL_DIORITE), false, true, true, true);
+    
     registerBlock("dirt",           BlockModel(MATERIAL_DIRT), false, true, true);
+    registerBlock("grass_block",    BlockModel(MATERIAL_GRASS_BLOCK, MATERIAL_DIRT), false, true, true);
 
     registerBlock("birch_log",      BlockModel(MATERIAL_BIRCH_LOG_TOP, MATERIAL_BIRCH_LOG_SIDE), false, true, true);
     registerBlock("birch_leaves",   BlockModel(MATERIAL_BIRCH_LEAVES), false, true, true);

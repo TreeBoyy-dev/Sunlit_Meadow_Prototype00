@@ -1,12 +1,3 @@
 ﻿  Scanning sources for module dependencies...
-  Block.cpp
-  BlockManager.cpp
-  BlockModel.cpp
-  Chunk.cpp
-  ChunkMesh.cpp
-  GenerateChunk.cpp
   Globals.cpp
-  Materials.cpp
-  Generating Code...
-  main.cpp
   Sunlit_Meadow_Prototype00.vcxproj -> C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\x64\Debug\Sunlit_Meadow_Prototype00.exe

@@ -24,7 +24,7 @@ static SDL_GPUShader* loadShader(SDL_GPUDevice* gpu,
     SDL_GPUShaderCreateInfo info = {
         .code_size = code_size,
         .code = (const Uint8*)code,
-        .entrypoint = "main",              /* name of the GLSL entry function */
+        .entrypoint = "main",
         .format = SDL_GPU_SHADERFORMAT_SPIRV,
         .stage = stage,
         .num_samplers = num_samplers,
@@ -32,7 +32,7 @@ static SDL_GPUShader* loadShader(SDL_GPUDevice* gpu,
     };
 
     SDL_GPUShader* shader = SDL_CreateGPUShader(gpu, &info);
-    SDL_free(code); /* SDL_CreateGPUShader copies the bytes; we're done here */
+    SDL_free(code);
 
     if (!shader) {
         SDL_Log("loadShader: SDL_CreateGPUShader failed for '%s': %s",

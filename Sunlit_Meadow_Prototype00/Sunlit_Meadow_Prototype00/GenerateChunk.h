@@ -9,5 +9,28 @@ bool generateChunk(
 
 void generateShape(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
-	ChunkCoord chunkCoordinates
+	ChunkCoord chunkCoordinates,
+	int heightmap[CHUNK_SIZE][CHUNK_SIZE]
+);
+
+void generateFeatures(
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
+	ChunkCoord chunkCoordinates,
+	int heightmap[CHUNK_SIZE][CHUNK_SIZE]
+);
+
+void generateFeatures_GrassAndDirt(
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
+	ChunkCoord chunkCoordinates,
+	int heightmap[CHUNK_SIZE][CHUNK_SIZE]
+);
+void generateFeatures_Trees(
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
+	ChunkCoord chunkCoordinates,
+	int heightmap[CHUNK_SIZE][CHUNK_SIZE]
+);
+void generateFeatures_Boulders(
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
+	ChunkCoord chunkCoordinates,
+	int heightmap[CHUNK_SIZE][CHUNK_SIZE]
 );

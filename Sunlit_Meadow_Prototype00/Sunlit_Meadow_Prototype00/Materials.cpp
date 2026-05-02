@@ -158,6 +158,11 @@ bool UploadTextureArrayLayers(
         SDL_Log("Failed to load Texture: dirt");
         return false;
     }
+    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "GrassBlock.png", MATERIAL_GRASS_BLOCK))
+    {
+        SDL_Log("Failed to load Texture: grass block");
+        return false;
+    }
     if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "BirchLogSide.png", MATERIAL_BIRCH_LOG_SIDE))
     {
         SDL_Log("Failed to load Texture: BirchLogSide");
