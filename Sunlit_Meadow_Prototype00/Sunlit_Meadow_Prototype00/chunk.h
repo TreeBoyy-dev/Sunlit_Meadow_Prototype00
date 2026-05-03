@@ -15,7 +15,7 @@ private:
 	//Zone* zone;
 	//Layer* layer;
 
-
+    ChunkBorderAir borderAir;
 	ChunkMesh opaqueMesh;
 	ChunkMesh transparentMesh;
     bool drawOpaqueMesh;
@@ -28,8 +28,9 @@ public:
 
     bool getIsGenerated();
     ChunkCoord getChunkCoordinates();
+    bool (*getBorderAir(ChunkCoord direction))[CHUNK_SIZE];
 
-    void createMeshes();
+    void createMeshes(ChunkBorderAir borderAir);
     bool uploadMeshes(
         AppState* state,
         SDL_GPUTexture* textureArray

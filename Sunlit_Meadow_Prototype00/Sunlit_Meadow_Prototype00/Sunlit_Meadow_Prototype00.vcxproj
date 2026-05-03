@@ -135,7 +135,8 @@
     <ClCompile Include="BlockModel.cpp" />
     <ClCompile Include="ChunkMesh.cpp" />
     <ClCompile Include="Chunk.cpp" />
-    <ClCompile Include="ChunkWorker.cpp" />
+    <ClCompile Include="ChunkGeneratorWorker.cpp" />
+    <ClCompile Include="ChunkMeshWorker.cpp" />
     <ClCompile Include="GenerateChunk.cpp" />
     <ClCompile Include="GenerateChunk.h" />
     <ClCompile Include="Globals.cpp" />
@@ -158,8 +159,9 @@
     <ClInclude Include="BlockModel.h" />
     <ClInclude Include="ChunkMesh.h" />
     <ClInclude Include="Chunk.h" />
+    <ClInclude Include="ChunkMeshWorker.h" />
     <ClInclude Include="ChunkTypes.h" />
-    <ClInclude Include="ChunkWorker.h" />
+    <ClInclude Include="ChunkGeneratorWorker.h" />
     <ClInclude Include="FastNoiseLite.h" />
     <ClInclude Include="InitNoise.h" />
     <ClInclude Include="Materials.h" />

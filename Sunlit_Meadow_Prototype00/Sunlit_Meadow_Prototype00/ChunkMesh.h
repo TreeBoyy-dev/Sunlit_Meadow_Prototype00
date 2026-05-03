@@ -22,7 +22,7 @@ public:
     );
 
 
-    void buildMesh(std::vector<LocationalBlockID>& blocks);
+    void buildMesh(std::vector<LocationalBlockID>& blocks, ChunkBorderAir borderAir);
     bool uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn);
 
     SDL_GPUBuffer* getVertexBuffer() const { return vertexBuffer; }
@@ -31,7 +31,7 @@ public:
     uint32_t getNumIndices() const { return numIndices; }
 
 private:
-    bool hasBlock(int x, int y, int z) const;
+    bool hasBlock(int x, int y, int z, ChunkBorderAir borderAir) const;
 
 private:
     std::vector<VertexData> vertices;

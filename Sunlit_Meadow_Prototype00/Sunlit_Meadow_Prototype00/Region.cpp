@@ -6,10 +6,12 @@
 Region::Region(RegionCoord regionCoordinates)
     : regionCoordinates(regionCoordinates)
 {
+    g_worker.start();
     m_worker.start();
 }
 
 Region::~Region() {
+    g_worker.stop();
     m_worker.stop();
 }
 
@@ -25,7 +27,7 @@ Chunk* Region::getChunk(ChunkCoord chunkCoordinates) {
 
     // New request — send to worker
     pendingChunks.insert(chunkCoordinates);
-    m_worker.requestChunk(chunkCoordinates);
+    g_worker.requestChunk(chunkCoordinates);
     return nullptr;
 }
 
@@ -37,7 +39,7 @@ bool Region::update(AppState* state, SDL_GPUTexture* textureArray) {
     bool addedChunks = false;
 
     while (uploadsThisFrame < MAX_UPLOADS_PER_FRAME) {
-        auto result = m_worker.tryGetChunk();
+        auto result = g_worker.tryGetChunk();
         if (!result) break;
 
         std::unique_ptr<Chunk> chunk = std::move(*result);
@@ -58,7 +60,8 @@ RegionCoord Region::getCoordinates() {
 }
 
 void Region::destroyRegion(AppState* state) {
-    m_worker.stop();   // finish any in-flight work first
+    g_worker.stop();
+    m_worker.stop();
 
     for (auto& [coord, chunk] : chunks)
         chunk->destroyMeshes(state);

@@ -32,3 +32,21 @@ struct LocationalBlockIDHash {
             (std::hash<int>()(c.z) << 2);
     }
 };
+
+struct ChunkBorderAir{
+    bool front  [CHUNK_SIZE][CHUNK_SIZE]; // x+
+    bool back   [CHUNK_SIZE][CHUNK_SIZE]; // x-
+    bool right  [CHUNK_SIZE][CHUNK_SIZE]; // y+
+    bool left   [CHUNK_SIZE][CHUNK_SIZE]; // y-
+    bool top    [CHUNK_SIZE][CHUNK_SIZE]; // z+
+    bool bottom [CHUNK_SIZE][CHUNK_SIZE]; // z-
+
+    ChunkBorderAir() {
+        memset(front, true, sizeof(front));
+        memset(back, true, sizeof(back));
+        memset(right, true, sizeof(right));
+        memset(left, true, sizeof(left));
+        memset(top, true, sizeof(top));
+        memset(bottom, true, sizeof(bottom));
+    }
+};
