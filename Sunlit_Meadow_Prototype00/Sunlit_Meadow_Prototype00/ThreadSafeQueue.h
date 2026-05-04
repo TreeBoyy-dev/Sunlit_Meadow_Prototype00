@@ -1,8 +1,10 @@
 // ThreadSafeQueue.h
 #pragma once
 #include <queue>
+#include <deque>
 #include <mutex>
 #include <optional>
+#include <functional>
 
 template<typename T>
 class ThreadSafeQueue {
@@ -39,7 +41,7 @@ class ThreadSafeQueue_2T {
 public:
     void push(T1 item1, T2 item2) {
         std::lock_guard<std::mutex> lock(m_mutex);
-        m_queue.emplace(std::move(item1), std::move(item2));
+        m_queue.emplace_back(std::move(item1), std::move(item2));
     }
 
     std::optional<std::pair<T1, T2>> try_pop() {
@@ -49,8 +51,20 @@ public:
             return std::nullopt;
 
         auto item = std::move(m_queue.front());
-        m_queue.pop();
+        m_queue.pop_front();
         return item;
+    }
+
+    template<typename Pred>
+    bool remove_if(Pred pred) {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        for (auto it = m_queue.begin(); it != m_queue.end(); ++it) {
+            if (pred(std::get<0>(*it), std::get<1>(*it))) {
+                m_queue.erase(it);
+                return true;
+            }
+        }
+        return false;
     }
 
     bool empty() const {
@@ -64,6 +78,6 @@ public:
     }
 
 private:
-    std::queue<std::pair<T1, T2>> m_queue; 
+    std::deque<std::pair<T1, T2>> m_queue;
     mutable std::mutex m_mutex;
 };

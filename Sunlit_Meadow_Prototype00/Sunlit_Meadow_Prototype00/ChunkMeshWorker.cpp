@@ -19,7 +19,7 @@ void ChunkMeshWorker::requestChunk(Chunk* chunk, ChunkBorderAir borderAir) {
 }
 
 // Returns a fully generated (but not yet mesh-init'd) Chunk, or nullopt
-std::optional<std::unique_ptr<Chunk>> ChunkMeshWorker::tryGetChunk() {
+std::optional<ChunkCoord> ChunkMeshWorker::tryGetChunk() {
     return m_outputQueue.try_pop();
 }
 
@@ -30,10 +30,17 @@ void ChunkMeshWorker::workerLoop() {
 
             chunk->createMeshes(borderAir);
 
-            m_outputQueue.push(std::unique_ptr<Chunk>(chunk));
+            m_outputQueue.push(chunk->getChunkCoordinates());
         }
         else {
             std::this_thread::sleep_for(std::chrono::microseconds(200));
         }
     }
+}
+
+bool ChunkMeshWorker::cancelRequest(ChunkCoord coord) {
+    return m_inputQueue.remove_if([&](Chunk* chunk, ChunkBorderAir&) 
+    {
+        return chunk->getChunkCoordinates() == coord;
+    });
 }

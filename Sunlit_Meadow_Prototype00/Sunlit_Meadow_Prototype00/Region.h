@@ -34,7 +34,10 @@ private:
     RegionCoord regionCoordinates;
 
     std::unordered_map<ChunkCoord, std::unique_ptr<Chunk>, ChunkCoordHash> chunks;
+
     std::unordered_set<ChunkCoord, ChunkCoordHash> pendingChunks;
+    std::unordered_set<ChunkCoord, ChunkCoordHash> pendingMeshChunks;
+    std::unordered_set<ChunkCoord, ChunkCoordHash> meshedChunks;
 
     ChunkGeneratorWorker g_worker;
     ChunkMeshWorker m_worker;
@@ -47,4 +50,9 @@ public:
 
     RegionCoord getCoordinates();
     void destroyRegion(AppState* state);
+
+private:
+    bool buildBorderAir(ChunkBorderAir* border, ChunkCoord coord);
+    void queueMeshUpdate(ChunkCoord coord);
+    bool collectMeshResults(AppState* state, SDL_GPUTexture* textureArray);
 };

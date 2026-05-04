@@ -18,7 +18,8 @@ public:
 
     void requestChunk(Chunk* chunk, ChunkBorderAir borderAir);
     // Returns a fully generated (but not yet mesh-init'd) Chunk, or nullopt
-    std::optional<std::unique_ptr<Chunk>> tryGetChunk();
+    std::optional<ChunkCoord> tryGetChunk();
+    bool cancelRequest(ChunkCoord coord);
 
 private:
     void workerLoop();
@@ -27,5 +28,5 @@ private:
     std::thread        m_thread;
 
     ThreadSafeQueue_2T<Chunk*, ChunkBorderAir>  m_inputQueue;
-    ThreadSafeQueue<std::unique_ptr<Chunk>>         m_outputQueue;
+    ThreadSafeQueue<ChunkCoord>                 m_outputQueue;
 };

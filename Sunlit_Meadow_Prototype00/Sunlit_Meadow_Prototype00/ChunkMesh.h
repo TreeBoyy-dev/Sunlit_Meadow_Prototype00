@@ -22,7 +22,10 @@ public:
     );
 
 
-    void buildMesh(std::vector<LocationalBlockID>& blocks, ChunkBorderAir borderAir);
+    void buildMesh(
+        std::vector<LocationalBlockID>& blocks,
+        ChunkBorderAir borderAir,
+        ChunkCoord chunkCoords);
     bool uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn);
 
     SDL_GPUBuffer* getVertexBuffer() const { return vertexBuffer; }
@@ -41,6 +44,6 @@ private:
     SDL_GPUBuffer* vertexBuffer = nullptr;
     SDL_GPUBuffer* indexBuffer = nullptr;
     SDL_GPUTexture* textureArray = nullptr;
-
+    ChunkCoord m_chunkCoord = { 0, 0, 0 };
     uint32_t numIndices = 0;
 };

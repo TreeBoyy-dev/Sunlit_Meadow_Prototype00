@@ -44,11 +44,11 @@ void Chunk::createMeshes(ChunkBorderAir borderAir) {
 	}
 	if (opaqueblocks.size() > 0) {
 		drawOpaqueMesh = true;
-		opaqueMesh.buildMesh(opaqueblocks, borderAir);
+		opaqueMesh.buildMesh(opaqueblocks, borderAir, chunkCoordinates);
 	}
 	if (transparentblocks.size() > 0) {
 		drawTransparentMesh = true;
-		transparentMesh.buildMesh(transparentblocks, borderAir);
+		transparentMesh.buildMesh(transparentblocks, borderAir, chunkCoordinates);
 	}
 }
 
@@ -66,6 +66,8 @@ bool Chunk::uploadMeshes(AppState* state, SDL_GPUTexture* textureArray) {
 				chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
 		}
 	}
+	SDL_Log("uploaded Meshes at %d|%d|%d",
+		chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
 	return true;
 }
 
@@ -75,23 +77,22 @@ bool Chunk::drawMeshes(
 	SDL_GPURenderPass* pass,
 	const UBO& ubo
 ) {
-	if(drawOpaqueMesh) opaqueMesh.draw(
-		state,
-		cmd,
-		pass,
-		ubo
-	);
-	if (drawTransparentMesh) transparentMesh.draw(
-		state,
-		cmd,
-		pass,
-		ubo
-	);
+	if (drawOpaqueMesh)	
+	{
+		opaqueMesh.draw(state, cmd, pass, ubo);
+	}
+	if (drawTransparentMesh)
+	{
+		transparentMesh.draw(state, cmd, pass, ubo);
+	}
 	return true;
 }
+
 void Chunk::destroyMeshes(AppState* state) {
 	opaqueMesh.destroy(state);
+	drawOpaqueMesh = false;
 	transparentMesh.destroy(state);
+	drawTransparentMesh = false;
 }
 
 bool Chunk::getIsGenerated() {

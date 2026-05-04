@@ -24,18 +24,32 @@ void ChunkMesh::destroy(AppState* state)
 
 bool ChunkMesh::hasBlock(int x, int y, int z, ChunkBorderAir borderAir) const
 {
-    if (x == CHUNK_SIZE) return !borderAir.front [y][z]; // x+
-    if (x == -1)         return !borderAir.back  [y][z]; // x-
-    if (y == CHUNK_SIZE) return !borderAir.right [x][z]; // y+
-    if (y == -1)         return !borderAir.left  [x][z]; // y-
-    if (z == CHUNK_SIZE) return !borderAir.top   [x][y]; // z+
-    if (z == -1)         return !borderAir.bottom[x][y]; // z-
+    const int baseX = m_chunkCoord.x * CHUNK_SIZE;
+    const int baseY = m_chunkCoord.y * CHUNK_SIZE;
+    const int baseZ = m_chunkCoord.z * CHUNK_SIZE;
+
+    // Convert to local coords for safe array indexing (always 0..CHUNK_SIZE-1)
+    const int lx = x - baseX;
+    const int ly = y - baseY;
+    const int lz = z - baseZ;
+
+    if (x == baseX + CHUNK_SIZE) return !borderAir.front[ly][lz]; // x+
+    if (x == baseX - 1)          return !borderAir.back[ly][lz];  // x-
+    if (y == baseY + CHUNK_SIZE) return !borderAir.right[lx][lz]; // y+
+    if (y == baseY - 1)          return !borderAir.left[lx][lz];  // y-
+    if (z == baseZ + CHUNK_SIZE) return !borderAir.top[lx][ly];   // z+
+    if (z == baseZ - 1)          return !borderAir.bottom[lx][ly];// z-
 
     return blockSet.find({ x, y, z }) != blockSet.end();
 }
 
-void ChunkMesh::buildMesh(std::vector<LocationalBlockID>& blocks, ChunkBorderAir borderAir)
+void ChunkMesh::buildMesh(
+    std::vector<LocationalBlockID>& blocks,
+    ChunkBorderAir borderAir,
+    ChunkCoord chunkCoords)
 {
+    m_chunkCoord = chunkCoords;
+
     vertices.clear();
     indices.clear();
     blockSet.clear();
@@ -59,6 +73,10 @@ void ChunkMesh::buildMesh(std::vector<LocationalBlockID>& blocks, ChunkBorderAir
             hasBlock(block.x,     block.y + 1, block.z,     borderAir),
             hasBlock(block.x,     block.y - 1, block.z,     borderAir),
         };
+        //SDL_Log("pos: %f|%f|%f  adj: %d %d %d %d %d %d",
+        //    x, y, z,
+        //    adj.top, adj.bottom, adj.front, adj.back, adj.right, adj.left);
+
         b->generateMeshFromModel(vertices, indices, adj, block.x, block.y, block.z);
     }
 
@@ -67,6 +85,16 @@ void ChunkMesh::buildMesh(std::vector<LocationalBlockID>& blocks, ChunkBorderAir
 
 bool ChunkMesh::uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn)
 {
+    if (vertexBuffer) {
+        SDL_ReleaseGPUBuffer(state->gpu, vertexBuffer);
+        vertexBuffer = nullptr;
+    }
+
+    if (indexBuffer) {
+        SDL_ReleaseGPUBuffer(state->gpu, indexBuffer);
+        indexBuffer = nullptr;
+    }
+
     textureArray = textureArrayIn;
     if (vertices.empty() || indices.empty()) {
         SDL_Log("Block mesh is empty");

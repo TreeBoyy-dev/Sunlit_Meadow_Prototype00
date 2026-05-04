@@ -2,6 +2,7 @@
   ChunkMesh.cpp
   Chunk.cpp
   ChunkGeneratorWorker.cpp
+  ChunkMeshWorker.cpp
   GenerateChunk.cpp
   Globals.cpp
   Region.cpp

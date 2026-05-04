@@ -5,13 +5,13 @@
 
 // --- Camera ---
 Camera camera = {
-	{0.0f, 0.0f, 5.0f},
+	{264.0f, 264.0f, 22.0f},
 	{0.0f, -0.0f, -5.0f}
 };
 Vec2 mouseMovement = {
 	0.0f, 0.0f
 };
-const float MAX_CAMERA_SPEED_MOVE = 10.0f;
+const float MAX_CAMERA_SPEED_MOVE = 24.0f;
 const float MAX_CAMERA_SPEED_LOOK = 0.03f;
 
 // --- Calc FPS ---
