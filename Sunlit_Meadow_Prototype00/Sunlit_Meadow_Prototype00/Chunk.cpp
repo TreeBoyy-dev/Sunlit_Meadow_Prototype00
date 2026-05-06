@@ -56,18 +56,18 @@ void Chunk::createMeshes(ChunkBorderAir borderAir) {
 bool Chunk::uploadMeshes(AppState* state, SDL_GPUTexture* textureArray) {
 	if (drawOpaqueMesh) {
 		if (!opaqueMesh.uploadToGPU(state, textureArray)) {
-			SDL_Log("failed to upload opaqueMesh at %d|%d|%d",
-				chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
+			//SDL_Log("failed to upload opaqueMesh at %d|%d|%d",
+			//	chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
 		}
 	}
 	if (drawTransparentMesh) {
 		if (!transparentMesh.uploadToGPU(state, textureArray)) {
-			SDL_Log("failed to upload transparentMesh at %d|%d|%d",
-				chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
+			//SDL_Log("failed to upload transparentMesh at %d|%d|%d",
+			//	chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
 		}
 	}
-	SDL_Log("uploaded Meshes at %d|%d|%d",
-		chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
+	//SDL_Log("uploaded Meshes at %d|%d|%d",
+	//	chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
 	return true;
 }
 

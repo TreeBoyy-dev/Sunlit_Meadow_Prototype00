@@ -8,7 +8,7 @@ void WorldManager::calcVisibleChunksList(int renderDistance) {
 
     for (int x = -renderDistance; x <= renderDistance; x++) {
         for (int y = -renderDistance; y <= renderDistance; y++) {
-            for (int z = -5; z <= 1; z++) { // !!TEMP CHANGE
+            for (int z = -renderDistance; z <= renderDistance; z++) {
                 if (sqrt(x * x + y * y + z * z) <= (double)renderDistance) {
                     visibleChunkCoordsRelative.push_back({ x, y, z });
                 }

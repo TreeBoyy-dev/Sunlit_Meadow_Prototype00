@@ -35,25 +35,30 @@ bool Region::update(AppState* state, SDL_GPUTexture* textureArray) {
     bool changed = false;
 
     // --- drain g_worker: newly generated chunks ---
-    const int MAX_UPLOADS_PER_FRAME = 5;
+    const int MAX_UPLOADS_PER_FRAME = 999;
     int uploads = 0;
+    std::vector<ChunkCoord> newlyAdded;
+
     while (uploads < MAX_UPLOADS_PER_FRAME) {
         auto result = g_worker.tryGetChunk();
         if (!result) break;
 
         std::unique_ptr<Chunk> chunk = std::move(*result);
-        ChunkCoord coord = chunk->getChunkCoordinates(); // was broken before (coord = coord)
+        ChunkCoord coord = chunk->getChunkCoordinates();
         pendingChunks.erase(coord);
 
         chunk->uploadMeshes(state, textureArray);
         chunks.emplace(coord, std::move(chunk));
-
-        // New chunk arrived — remesh it and its neighbors
-        queueMeshUpdate(coord);
+        newlyAdded.push_back(coord);
 
         uploads++;
         changed = true;
     }
+
+    // Queue mesh updates only after all new chunks are in the map,
+    // so neighbors arriving in the same frame are visible to each other.
+    for (const auto& coord : newlyAdded)
+        queueMeshUpdate(coord);
 
     // --- drain m_worker: re-meshed chunks ---
     if (collectMeshResults(state, textureArray))
@@ -72,37 +77,93 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         return (it != chunks.end()) ? it->second.get() : nullptr;
     };
 
+    bool allFacesLoaded = true;
+
     if (auto* n = getNeighbor({ coord.x + 1, coord.y,     coord.z }))
         if (auto* face = n->getBorderAir({ -1,  0,  0 }))  // neighbor's x- face
             memcpy(border->front, face, sizeof(border->front));
-        else return false;
+        else {
+            //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor +X exists but getBorderAir returned nullptr",
+            //    coord.x, coord.y, coord.z);
+            allFacesLoaded = false;
+        }
+    else {
+        //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor +X wasn't found",
+        //    coord.x, coord.y, coord.z);
+        allFacesLoaded = false;
+    }
 
     if (auto* n = getNeighbor({ coord.x - 1, coord.y,     coord.z }))
         if (auto* face = n->getBorderAir({ 1,  0,  0 }))  // neighbor's x+ face
             memcpy(border->back, face, sizeof(border->back));
-        else return false;
+        else {
+            //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor -X exists but getBorderAir returned nullptr",
+            //    coord.x, coord.y, coord.z);
+            allFacesLoaded = false;
+        }
+    else {
+        //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor -X wasn't found",
+         //   coord.x, coord.y, coord.z);
+        allFacesLoaded = false;
+    }
 
     if (auto* n = getNeighbor({ coord.x,     coord.y + 1, coord.z }))
         if (auto* face = n->getBorderAir({ 0, -1,  0 }))  // neighbor's y- face
             memcpy(border->right, face, sizeof(border->right));
-        else return false;
+        else {
+            //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor +Y exists but getBorderAir returned nullptr",
+            //    coord.x, coord.y, coord.z);
+            allFacesLoaded = false;
+        }
+    else {
+        //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor +Y wasn't found",
+        //    coord.x, coord.y, coord.z);
+        allFacesLoaded = false;
+    }
 
     if (auto* n = getNeighbor({ coord.x,     coord.y - 1, coord.z }))
         if (auto* face = n->getBorderAir({ 0,  1,  0 }))  // neighbor's y+ face
             memcpy(border->left, face, sizeof(border->left));
-        else return false;
+        else {
+            //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor -Y exists but getBorderAir returned nullptr",
+            //    coord.x, coord.y, coord.z);
+            allFacesLoaded = false;
+        }
+    else {
+        //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor -Y wasn't found",
+        //    coord.x, coord.y, coord.z);
+        allFacesLoaded = false;
+    }
 
     if (auto* n = getNeighbor({ coord.x,     coord.y,     coord.z + 1 }))
         if (auto* face = n->getBorderAir({ 0,  0, -1 }))  // neighbor's z- face
             memcpy(border->top, face, sizeof(border->top));
-        else return false;
+        else {
+            //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor +Z exists but getBorderAir returned nullptr",
+            //    coord.x, coord.y, coord.z);
+            allFacesLoaded = false;
+        }
+    else {
+        //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor +Z wasn't found",
+        //    coord.x, coord.y, coord.z);
+        allFacesLoaded = false;
+    }
 
     if (auto* n = getNeighbor({ coord.x,     coord.y,     coord.z - 1 }))
         if (auto* face = n->getBorderAir({ 0,  0,  1 }))  // neighbor's z+ face
             memcpy(border->bottom, face, sizeof(border->bottom));
-        else return false;
+        else {
+            //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor -Z exists but getBorderAir returned nullptr",
+            //    coord.x, coord.y, coord.z);
+            allFacesLoaded = false;
+        }
+    else {
+        //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor -Z wasn't found",
+        //    coord.x, coord.y, coord.z);
+        allFacesLoaded = false;
+    }
 
-    return true;
+    return allFacesLoaded ? true : false;
 }
 
 void Region::queueMeshUpdate(ChunkCoord coord) {
@@ -130,12 +191,17 @@ void Region::queueMeshUpdate(ChunkCoord coord) {
         }
 
         ChunkBorderAir borderAir;
-        if (!buildBorderAir(&borderAir, c)) {
-            SDL_Log("not all adjacent chunks loaded at %d|%d|%d", c.x, c.y, c.z);
-            //continue;
+
+        bool allLoaded = buildBorderAir(&borderAir, c);
+        if (allLoaded) {
+            //SDL_Log("[Mesh] %d|%d|%d  all 6 neighbors loaded — clean remesh",
+            //    c.x, c.y, c.z);
         }
         else {
-            SDL_Log("remeshed: %d|%d|%d", c.x, c.y, c.z);
+            //SDL_Log("[Mesh] %d|%d|%d  PARTIAL remesh — some neighbors missing, "
+            //    "faces on those sides will over-draw until neighbors arrive",
+            //    c.x, c.y, c.z);
+                //continue;
         }
 
         auto it = chunks.find(c);

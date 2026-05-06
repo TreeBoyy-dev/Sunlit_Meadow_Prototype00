@@ -97,7 +97,7 @@ bool ChunkMesh::uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn)
 
     textureArray = textureArrayIn;
     if (vertices.empty() || indices.empty()) {
-        SDL_Log("Block mesh is empty");
+        //SDL_Log("Block mesh is empty");
         return false;
     }
 

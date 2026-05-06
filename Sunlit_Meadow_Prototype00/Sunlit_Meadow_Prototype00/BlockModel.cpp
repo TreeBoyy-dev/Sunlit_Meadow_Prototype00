@@ -50,8 +50,8 @@ void BlockModel::addFace(
     }
 
     indices.insert(indices.end(), {
-        base,                 (Uint16)(base + 1), (Uint16)(base + 2),
-        (Uint16)(base + 2), (Uint16)(base + 3), base
+        base, (Uint16)(base + 1), (Uint16)(base + 2),
+        base, (Uint16)(base + 2), (Uint16)(base + 3)
     });
 }
 
