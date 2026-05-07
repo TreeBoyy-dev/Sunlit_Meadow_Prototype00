@@ -30,7 +30,7 @@ public:
 
     bool getIsGenerated();
     ChunkCoord getChunkCoordinates();
-    bool (*getBorderAir(ChunkCoord direction))[CHUNK_SIZE];
+    Uint16(*getBorderAir(ChunkCoord direction))[CHUNK_SIZE];
 
     void createMeshes(ChunkBorderAir borderAir);
     bool uploadMeshes(

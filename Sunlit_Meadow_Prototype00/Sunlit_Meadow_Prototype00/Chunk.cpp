@@ -126,23 +126,21 @@ void Chunk::getChunkGenerated() {
 	for (int a = 0; a < CHUNK_SIZE; a++) {
 		for (int b = 0; b < CHUNK_SIZE; b++) {
 			// front/back: remaining axes are [y][z]
-			borderAir.front	 [a][b] = (blockIDs[CHUNK_SIZE - 1][a][b] == 0) ? true : false; // x+
-			borderAir.back	 [a][b] = (blockIDs[0][a][b] == 0)				? true : false; // x-
-
+			borderAir.front[a][b] = blockIDs[CHUNK_SIZE - 1][a][b];
+			borderAir.back[a][b] = blockIDs[0][a][b];
 			// right/left: remaining axes are [x][z]
-			borderAir.right	 [a][b] = (blockIDs[a][CHUNK_SIZE - 1][b] == 0) ? true : false; // y+
-			borderAir.left	 [a][b] = (blockIDs[a][0][b] == 0)				? true : false; // y-
-
+			borderAir.right[a][b] = blockIDs[a][CHUNK_SIZE - 1][b];
+			borderAir.left[a][b] = blockIDs[a][0][b];
 			// top/bottom: remaining axes are [x][y]
-			borderAir.top	 [a][b] = (blockIDs[a][b][CHUNK_SIZE - 1] == 0) ? true : false; // z+
-			borderAir.bottom [a][b] = (blockIDs[a][b][0] == 0)				? true : false;	// z-
+			borderAir.top[a][b] = blockIDs[a][b][CHUNK_SIZE - 1];
+			borderAir.bottom[a][b] = blockIDs[a][b][0];
 		}
 	}
 }
 
 // Pass direction as e.g. {1,0,0}, {-1,0,0}, {0,1,0} ...
 // Returns a pointer to the [CHUNK_SIZE][CHUNK_SIZE] face, or nullptr if invalid.
-bool (*Chunk::getBorderAir(ChunkCoord direction))[CHUNK_SIZE] {
+Uint16 (*Chunk::getBorderAir(ChunkCoord direction))[CHUNK_SIZE] {
 	if      (direction.x ==  1) return borderAir.front;
 	else if (direction.x == -1) return borderAir.back;
 	else if (direction.y ==  1) return borderAir.right;

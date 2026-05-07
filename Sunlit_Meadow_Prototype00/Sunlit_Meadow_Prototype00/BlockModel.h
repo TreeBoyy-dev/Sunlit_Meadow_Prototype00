@@ -7,11 +7,11 @@
 
 // Adjacency order: Top(+Z), Bottom(-Z), Front(+X), Back(-X), Right(+Y), Left(-Y)
 struct AdjacencyInfo {
-    bool top, bottom, front, back, right, left;
+    bool front, back, right, left, top, bottom;
 };
 
 class BlockModel {
-private:
+protected:
     Material topMaterial;
     Material bottomMaterial;
     Material sideMaterial;
@@ -37,10 +37,14 @@ public:
         Material sideMaterial
     );
 
-    void generateMesh(
+    virtual void generateMesh(
         std::vector<Vertex>& vertices,
         std::vector<Uint16>&   indices,
         AdjacencyInfo            adj,
         int x, int y, int z
     );
+
+    Material getTopMaterial();
+    Material getBottomMaterial();
+    Material getSideMaterial();
 };

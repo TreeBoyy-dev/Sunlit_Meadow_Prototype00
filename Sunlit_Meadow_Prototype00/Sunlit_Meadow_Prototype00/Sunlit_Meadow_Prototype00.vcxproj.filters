@@ -43,6 +43,12 @@
     <Filter Include="Resource Files\shaders">
       <UniqueIdentifier>{a7523635-993a-4144-a937-4c0e87ab04bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\world\Blocks\BlockModels">
+      <UniqueIdentifier>{80a66c91-6fe4-4544-9a4e-eff4e204f2b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\world\Blocks\BlockModels">
+      <UniqueIdentifier>{6fd95466-2892-48c7-a595-e141c73e11ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -81,9 +87,6 @@
     <ClCompile Include="BlockManager.cpp">
       <Filter>Source Files\world\Blocks</Filter>
     </ClCompile>
-    <ClCompile Include="BlockModel.cpp">
-      <Filter>Source Files\world\Blocks</Filter>
-    </ClCompile>
     <ClCompile Include="GenerateChunk.h">
       <Filter>Header Files\world\WorldGen.h</Filter>
     </ClCompile>
@@ -95,6 +98,12 @@
     </ClCompile>
     <ClCompile Include="ChunkMeshWorker.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockModel.cpp">
+      <Filter>Source Files\world\Blocks\BlockModels</Filter>
+    </ClCompile>
+    <ClCompile Include="SlabBlockModel.cpp">
+      <Filter>Source Files\world\Blocks\BlockModels</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -143,9 +152,6 @@
     <ClInclude Include="BlockManager.h">
       <Filter>Header Files\world\Blocks</Filter>
     </ClInclude>
-    <ClInclude Include="BlockModel.h">
-      <Filter>Header Files\world\Blocks</Filter>
-    </ClInclude>
     <ClInclude Include="ChunkTypes.h">
       <Filter>Header Files\world\worldData</Filter>
     </ClInclude>
@@ -163,6 +169,12 @@
     </ClInclude>
     <ClInclude Include="ChunkGeneratorWorker.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockModel.h">
+      <Filter>Header Files\world\Blocks\BlockModels</Filter>
+    </ClInclude>
+    <ClInclude Include="SlabBlockModel.h">
+      <Filter>Header Files\world\Blocks\BlockModels</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

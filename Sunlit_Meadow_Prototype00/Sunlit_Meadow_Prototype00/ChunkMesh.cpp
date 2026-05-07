@@ -22,26 +22,32 @@ void ChunkMesh::destroy(AppState* state)
     textureArray = nullptr;
 }
 
-bool ChunkMesh::hasBlock(int x, int y, int z, ChunkBorderAir borderAir) const
+bool ChunkMesh::getNeighborId(int x, int y, int z, ChunkBorderAir borderAir) const
 {
     const int baseX = m_chunkCoord.x * CHUNK_SIZE;
     const int baseY = m_chunkCoord.y * CHUNK_SIZE;
     const int baseZ = m_chunkCoord.z * CHUNK_SIZE;
 
-    // Convert to local coords for safe array indexing (always 0..CHUNK_SIZE-1)
     const int lx = x - baseX;
     const int ly = y - baseY;
     const int lz = z - baseZ;
 
-    if (x == baseX + CHUNK_SIZE) return !borderAir.front[ly][lz]; // x+
-    if (x == baseX - 1)          return !borderAir.back[ly][lz];  // x-
-    if (y == baseY + CHUNK_SIZE) return !borderAir.right[lx][lz]; // y+
-    if (y == baseY - 1)          return !borderAir.left[lx][lz];  // y-
-    if (z == baseZ + CHUNK_SIZE) return !borderAir.top[lx][ly];   // z+
-    if (z == baseZ - 1)          return !borderAir.bottom[lx][ly];// z-
+    if (x == baseX + CHUNK_SIZE) return borderAir.front[ly][lz];
+    if (x == baseX - 1)          return borderAir.back[ly][lz];
+    if (y == baseY + CHUNK_SIZE) return borderAir.right[lx][lz];
+    if (y == baseY - 1)          return borderAir.left[lx][lz];
+    if (z == baseZ + CHUNK_SIZE) return borderAir.top[lx][ly];
+    if (z == baseZ - 1)          return borderAir.bottom[lx][ly];
 
-    return blockSet.find({ x, y, z }) != blockSet.end();
+    auto it = blockSet.find({ x, y, z, 0 });
+    return it != blockSet.end() ? it->id : 0;
 }
+bool ChunkMesh::neighborObstructs(Uint16 id, int faceIndex)
+{
+    Block* b = blockManager.getById(id);
+    return b->getObstructs(faceIndex);
+}
+
 
 void ChunkMesh::buildMesh(
     std::vector<LocationalBlockID>& blocks,
@@ -65,15 +71,15 @@ void ChunkMesh::buildMesh(
 
         Block* b = blockManager.getById(block.id);
 
+        // In buildMesh, replace the AdjacencyInfo block:
         AdjacencyInfo adj = {
-            hasBlock(block.x,     block.y,     block.z + 1, borderAir),
-            hasBlock(block.x,     block.y,     block.z - 1, borderAir),
-            hasBlock(block.x + 1, block.y,     block.z,     borderAir),
-            hasBlock(block.x - 1, block.y,     block.z,     borderAir),
-            hasBlock(block.x,     block.y + 1, block.z,     borderAir),
-            hasBlock(block.x,     block.y - 1, block.z,     borderAir),
-        };
-        //SDL_Log("pos: %f|%f|%f  adj: %d %d %d %d %d %d",
+            neighborObstructs(getNeighborId(block.x + 1, block.y, block.z, borderAir), 1), // front:  neighbor's back
+            neighborObstructs(getNeighborId(block.x - 1, block.y, block.z, borderAir), 0), // back:   neighbor's front
+            neighborObstructs(getNeighborId(block.x, block.y + 1, block.z, borderAir), 3), // right:  neighbor's left
+            neighborObstructs(getNeighborId(block.x, block.y - 1, block.z, borderAir), 2), // left:   neighbor's right
+            neighborObstructs(getNeighborId(block.x, block.y, block.z + 1, borderAir), 5), // top:    neighbor's down
+            neighborObstructs(getNeighborId(block.x, block.y, block.z - 1, borderAir), 4), // bottom: neighbor's up
+        };        //SDL_Log("pos: %f|%f|%f  adj: %d %d %d %d %d %d",
         //    x, y, z,
         //    adj.top, adj.bottom, adj.front, adj.back, adj.right, adj.left);
 

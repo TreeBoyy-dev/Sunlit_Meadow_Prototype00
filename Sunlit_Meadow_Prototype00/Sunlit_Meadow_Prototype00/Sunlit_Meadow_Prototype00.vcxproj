@@ -147,6 +147,7 @@
     <ClCompile Include="Mat4.cpp" />
     <ClCompile Include="Materials.cpp" />
     <ClCompile Include="Region.cpp" />
+    <ClCompile Include="SlabBlockModel.cpp" />
     <ClCompile Include="Vectors.cpp" />
     <ClCompile Include="WorldManager.cpp" />
   </ItemGroup>
@@ -170,6 +171,7 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="InitPipeline.h" />
     <ClInclude Include="Mat4.h" />
+    <ClInclude Include="SlabBlockModel.h" />
     <ClInclude Include="ThreadSafeQueue.h" />
     <ClInclude Include="Vectors.h" />
     <ClInclude Include="WorldManager.h" />

@@ -34,7 +34,8 @@ public:
     uint32_t getNumIndices() const { return numIndices; }
 
 private:
-    bool hasBlock(int x, int y, int z, ChunkBorderAir borderAir) const;
+    bool getNeighborId(int x, int y, int z, ChunkBorderAir borderAir) const;
+    bool neighborObstructs(Uint16 id, int faceIndex);
 
 private:
     std::vector<Vertex> vertices;

@@ -131,3 +131,13 @@ void BlockModel::generateMesh(
         addFace(vertices, indices, corners, sideMaterial);
     }
 }
+
+Material BlockModel::getTopMaterial() {
+    return topMaterial;
+}
+Material BlockModel::getBottomMaterial() {
+    return bottomMaterial;
+}
+Material BlockModel::getSideMaterial() {
+    return sideMaterial;
+}

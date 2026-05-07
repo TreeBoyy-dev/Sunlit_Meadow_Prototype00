@@ -2,9 +2,11 @@
 #include "BlockManager.h"
 #include "GenerateChunk.h"
 
+#include <cmath>
+
 bool generateChunk(Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], ChunkCoord chunkCoordinates) {
 
-	int heightmap[CHUNK_SIZE][CHUNK_SIZE] = { 0 };
+	float heightmap[CHUNK_SIZE][CHUNK_SIZE] = { 0.0f };
 
 	//generate shape: air/stone
 	generateShape(blockIDs, chunkCoordinates, heightmap);
@@ -21,7 +23,7 @@ bool generateChunk(Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], ChunkCoo
 void generateShape(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
 	ChunkCoord chunkCoordinates,
-	int heightmap[CHUNK_SIZE][CHUNK_SIZE]
+	float heightmap[CHUNK_SIZE][CHUNK_SIZE]
 ){
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		int xAbs = chunkCoordinates.x * CHUNK_SIZE + x;
@@ -30,7 +32,7 @@ void generateShape(
 
 			float zGenerated = standartNoise.GetNoise((float)xAbs, (float)yAbs);
 
-			int zShape = (int)(60 + zGenerated * 10);
+			float zShape = 60 + zGenerated * 10;
 			heightmap[x][y] = zShape;
 
 			for (int z = 0; z < CHUNK_SIZE; z++) {
@@ -38,7 +40,7 @@ void generateShape(
 
 				Block* block;
 
-				if (zAbs <= zShape) {
+				if ((float)zAbs <= zShape) {
 					block = blockManager.getByName("cobble_stone");
 				}
 				else {
@@ -57,7 +59,7 @@ void generateShape(
 void generateFeatures(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
 	ChunkCoord chunkCoordinates,
-	int heightmap[CHUNK_SIZE][CHUNK_SIZE]
+	float heightmap[CHUNK_SIZE][CHUNK_SIZE]
 ) {
 	generateFeatures_GrassAndDirt(
 		blockIDs,
@@ -79,27 +81,32 @@ void generateFeatures(
 void generateFeatures_GrassAndDirt(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
 	ChunkCoord chunkCoordinates,
-	int heightmap[CHUNK_SIZE][CHUNK_SIZE]
+	float heightmap[CHUNK_SIZE][CHUNK_SIZE]
 ) {
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int y = 0; y < CHUNK_SIZE; y++) {
-			int zGround = heightmap[x][y] - chunkCoordinates.z * CHUNK_SIZE;
+			float zGround = heightmap[x][y] - chunkCoordinates.z * CHUNK_SIZE;
 			if (zGround < 0 || zGround >= CHUNK_SIZE)
 				continue;
 
 			Block* block = nullptr;
 
-			block = blockManager.getByName("grass_block");
+			float decimalPart = zGround - floor(zGround);
+			if (decimalPart >= 0.5f)
+				block = blockManager.getByName("grass_block");
+			else
+				block = blockManager.getByName("grass_block_slab");
+
 			if (block != nullptr)
 			{
-				blockIDs[x][y][zGround] = block->getID(); block = nullptr;
+				blockIDs[x][y][(int)zGround] = block->getID(); block = nullptr;
 			}
 			block = blockManager.getByName("dirt");
 			if (block != nullptr)
 			{
-				if (zGround - 1 > 0) blockIDs[x][y][zGround - 1] = block->getID();
-				if (zGround - 2 > 0) blockIDs[x][y][zGround - 2] = block->getID();
-				if (zGround - 3 > 0) blockIDs[x][y][zGround - 3] = block->getID();
+				if (zGround - 1 > 0) blockIDs[x][y][(int)zGround - 1] = block->getID();
+				if (zGround - 2 > 0) blockIDs[x][y][(int)zGround - 2] = block->getID();
+				if (zGround - 3 > 0) blockIDs[x][y][(int)zGround - 3] = block->getID();
 				block = nullptr;
 			}
 		}
@@ -108,7 +115,7 @@ void generateFeatures_GrassAndDirt(
 void generateFeatures_Trees(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
 	ChunkCoord chunkCoordinates,
-	int heightmap[CHUNK_SIZE][CHUNK_SIZE]
+	float heightmap[CHUNK_SIZE][CHUNK_SIZE]
 )
 {
 	// 1 in 5 chance to generate a boulder
@@ -172,7 +179,7 @@ void generateFeatures_Trees(
 void generateFeatures_Boulders(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
 	ChunkCoord chunkCoordinates,
-	int heightmap[CHUNK_SIZE][CHUNK_SIZE]
+	float heightmap[CHUNK_SIZE][CHUNK_SIZE]
 )
 {
 	// 1 in 5 chance to generate a boulder

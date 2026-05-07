@@ -1,8 +1,5 @@
-1. change worker thread:
-	- instead of passing pointers:
-		-> pass info
-		-> worker creates new info
-	- main thread coppies info
+1. fix remeshing bug:
+	- sometimes the adjacend chunk returns null even at the final remeshing
 
 1. viewing cone:
 	- don't render the chunks the player is not looking at
@@ -14,3 +11,7 @@
 		-> get all faces
 		-> simplefy faces (combine adjacend faces on the same level)
 		-> load the simplefied faces into the mesh
+
+1. add skybox
+1. add more blocks
+1. add stairs, slabs, walls etc (block varients in generall)

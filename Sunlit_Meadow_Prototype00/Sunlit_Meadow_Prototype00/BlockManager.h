@@ -5,6 +5,7 @@
 #include <string>
 #include "Block.h"
 #include "BlockModel.h"
+#include <array>
 
 class BlockManager {
 private:
@@ -20,7 +21,8 @@ private:
     // Internal: register a block and auto-assign ID
     void registerBlock(
         const std::string& name,
-        BlockModel model,
+        std::unique_ptr<BlockModel> model,
+        std::array<bool, 6> obstructs,
         bool transparent = false,
         bool hasSlab     = false,
         bool hasStair    = false,

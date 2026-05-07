@@ -1,24 +1,30 @@
 #pragma once
 #include <string>
+#include <memory>
 #include "Materials.h"
 #include "BlockModel.h"
 #include "DataStructures.h"
+#include <array>
 
 class Block {
 private:
     Uint16    id;
     std::string name;
     bool        transparent;
-    bool        hasSlab;
-    bool        hasStair;
-    bool        hasWall;
-    BlockModel  model;
+    bool        hasSlab, hasStair, hasWall;
+
+    std::unique_ptr<BlockModel> model;
+
+    //obstructs visible surface at all sides:
+    //front, back, right, left, up, down
+    std::array<bool, 6> obstructs;
 
 public:
     Block(
         Uint16 id,
         std::string name,
-        BlockModel model,
+        std::unique_ptr<BlockModel> model,
+        std::array<bool, 6> obstructs,
         bool transparent = false,
         bool hasSlab = false,
         bool hasStair = false,
@@ -38,4 +44,9 @@ public:
     bool getHasWall();
     std::string getName();
     Uint16 getID();
+
+    Material getTopMaterial();
+    Material getBottomMaterial();
+    Material getSideMaterial();
+    bool getObstructs(int faceIndex);
 };
