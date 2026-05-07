@@ -29,7 +29,7 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 
     float fovY = 70.0f * (float)SDL_PI_F / 180.0f;
     float aspect = (float)w / (float)h;
-    state->projMat = mat4Perspective(fovY, aspect, 0.0001f, 1000.0f);
+    state->projMat = mat4Perspective(fovY, aspect, 0.5f, 2000.0f);
 
     state->lastTicks = SDL_GetTicks();
     state->rotation = 0.0f;
