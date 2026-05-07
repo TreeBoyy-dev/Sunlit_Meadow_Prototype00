@@ -26,7 +26,7 @@ public:
     );
 
     void generateMeshFromModel(
-        std::vector<VertexData>& vertices,
+        std::vector<Vertex>& vertices,
         std::vector<Uint16>&   indices,
         AdjacencyInfo            adj,
         int x, int y, int z

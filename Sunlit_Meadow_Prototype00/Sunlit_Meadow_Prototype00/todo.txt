@@ -1,0 +1,16 @@
+1. fix rendering bug.
+	- some trianlges show trough the ones in front... that all i got
+
+2. fix remeshing bug:
+	- sometimes the ajasoned chunk returns null even at the final remeshing
+
+3. viewing cone:
+	- don't render the chunks the player is not looking at
+
+4. greedy meshing:
+	- idk if its called that but what ever
+	- make face/quad class instead of adding the face directly to the mesh
+	- when making the chunkmesh split it into stages:
+		-> get all faces
+		-> simplefy faces (combine ajasoned faces on the same level)
+		-> load the simplefied faces into the mesh

@@ -6,19 +6,13 @@
 #include "Vectors.h"
 #include "Mat4.h"
 
-//typedef struct {
-//    Vec3 position;
-//    Vec3 normal;
-//    Vec2 uv;
-//    float materialIndex;
-//}Vertex;
-
 typedef struct {
     Vec3 position;
+    Vec3 normal;
     Vec2 uv;
     SDL_FColor color;
     float materialIndex;
-}VertexData;
+}Vertex;
 
 typedef struct {
     Mat4 mvp;   /* model * view * projection, uploaded to the vertex shader */

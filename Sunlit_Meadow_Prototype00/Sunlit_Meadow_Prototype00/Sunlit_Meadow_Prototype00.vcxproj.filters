@@ -90,8 +90,11 @@
     <ClCompile Include="GenerateChunk.cpp">
       <Filter>Source Files\world\WorldGen</Filter>
     </ClCompile>
-    <ClCompile Include="ChunkWorker.cpp">
-      <Filter>Source Files\world\WorldGen</Filter>
+    <ClCompile Include="ChunkGeneratorWorker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ChunkMeshWorker.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,8 +158,11 @@
     <ClInclude Include="ThreadSafeQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ChunkWorker.h">
-      <Filter>Header Files\world\WorldGen.h</Filter>
+    <ClInclude Include="ChunkMeshWorker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkGeneratorWorker.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -174,5 +180,8 @@
     <FxCompile Include="shader.vert.hlsl">
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="todo.txt" />
   </ItemGroup>
 </Project>

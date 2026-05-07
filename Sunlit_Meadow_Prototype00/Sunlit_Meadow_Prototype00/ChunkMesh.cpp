@@ -103,7 +103,7 @@ bool ChunkMesh::uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn)
 
     SDL_GPUBufferCreateInfo vbInfo = {
         .usage = SDL_GPU_BUFFERUSAGE_VERTEX,
-        .size = (Uint32)(vertices.size() * sizeof(VertexData)),
+        .size = (Uint32)(vertices.size() * sizeof(Vertex)),
     };
     vertexBuffer = SDL_CreateGPUBuffer(state->gpu, &vbInfo);
     if (!vertexBuffer) {
@@ -123,7 +123,7 @@ bool ChunkMesh::uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn)
 
     SDL_GPUTransferBufferCreateInfo transferVBInfo = {
         .usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD,
-        .size = (Uint32)(vertices.size() * sizeof(VertexData)),
+        .size = (Uint32)(vertices.size() * sizeof(Vertex)),
     };
     SDL_GPUTransferBuffer* transferVB = SDL_CreateGPUTransferBuffer(state->gpu, &transferVBInfo);
 
@@ -139,7 +139,7 @@ bool ChunkMesh::uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn)
     }
 
     void* vbMapped = SDL_MapGPUTransferBuffer(state->gpu, transferVB, false);
-    SDL_memcpy(vbMapped, vertices.data(), vertices.size() * sizeof(VertexData));
+    SDL_memcpy(vbMapped, vertices.data(), vertices.size() * sizeof(Vertex));
     SDL_UnmapGPUTransferBuffer(state->gpu, transferVB);
 
     void* ibMapped = SDL_MapGPUTransferBuffer(state->gpu, transferIB, false);
@@ -156,7 +156,7 @@ bool ChunkMesh::uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn)
     SDL_GPUBufferRegion bufferRegion = {
         .buffer = vertexBuffer,
         .offset = 0,
-        .size = (Uint32)(vertices.size() * sizeof(VertexData)),
+        .size = (Uint32)(vertices.size() * sizeof(Vertex)),
     };
     SDL_UploadToGPUBuffer(
         copyPass,

@@ -17,7 +17,7 @@ private:
     Material sideMaterial;
 
     void addFace(
-        std::vector<VertexData>& vertices,
+        std::vector<Vertex>& vertices,
         std::vector<Uint16>&   indices,
         const Vec3               corners[4],  // 4 corners of the quad, CCW
         Material                 materialIndex
@@ -38,7 +38,7 @@ public:
     );
 
     void generateMesh(
-        std::vector<VertexData>& vertices,
+        std::vector<Vertex>& vertices,
         std::vector<Uint16>&   indices,
         AdjacencyInfo            adj,
         int x, int y, int z

@@ -37,7 +37,7 @@ private:
     bool hasBlock(int x, int y, int z, ChunkBorderAir borderAir) const;
 
 private:
-    std::vector<VertexData> vertices;
+    std::vector<Vertex> vertices;
     std::vector<Uint16> indices;
     std::unordered_set<LocationalBlockID, LocationalBlockIDHash> blockSet;
 

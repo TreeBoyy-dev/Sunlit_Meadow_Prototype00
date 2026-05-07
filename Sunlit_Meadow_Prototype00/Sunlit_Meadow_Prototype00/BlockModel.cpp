@@ -27,10 +27,10 @@ BlockModel::BlockModel(
 }
 
 void BlockModel::addFace(
-    std::vector<VertexData>& vertices,
-    std::vector<Uint16>&   indices,
-    const Vec3               corners[4],
-    Material                 materialIndex)
+    std::vector<Vertex>& vertices,
+    std::vector<Uint16>& indices,
+    const Vec3           corners[4],
+    Material             materialIndex)
 {
     // UV coordinates are the same for every face
     const Vec2 uvs[4] = {
@@ -42,11 +42,20 @@ void BlockModel::addFace(
 
     const SDL_FColor white = { 1.0f, 1.0f, 1.0f, 1.0f };
 
+    // Compute face normal from two edges (consistent with winding order)
+    Vec3 edge1 = { corners[1].x - corners[0].x, corners[1].y - corners[0].y, corners[1].z - corners[0].z };
+    Vec3 edge2 = { corners[3].x - corners[0].x, corners[3].y - corners[0].y, corners[3].z - corners[0].z };
+    Vec3 normal = {
+        edge1.y * edge2.z - edge1.z * edge2.y,
+        edge1.z * edge2.x - edge1.x * edge2.z,
+        edge1.x * edge2.y - edge1.y * edge2.x,
+    };
+
     // Indices are relative to the current end of the vertex buffer
     Uint16 base = static_cast<Uint16>(vertices.size());
 
     for (int i = 0; i < 4; i++) {
-        vertices.push_back({ corners[i], uvs[i], white, (float)materialIndex });
+        vertices.push_back({ corners[i], normal, uvs[i], white, (float)materialIndex });
     }
 
     indices.insert(indices.end(), {
@@ -56,9 +65,9 @@ void BlockModel::addFace(
 }
 
 void BlockModel::generateMesh(
-    std::vector<VertexData>& vertices,
-    std::vector<Uint16>&     indices,
-    AdjacencyInfo            adj,
+    std::vector<Vertex>& vertices,
+    std::vector<Uint16>& indices,
+    AdjacencyInfo        adj,
     int x, int y, int z)
 {
     if (!adj.top) {
@@ -121,5 +130,4 @@ void BlockModel::generateMesh(
         };
         addFace(vertices, indices, corners, sideMaterial);
     }
-
 }

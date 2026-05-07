@@ -63,26 +63,31 @@ SDL_AppResult App_InitPipeline(void* appstate)
     
     if (!vert || !frag) { return SDL_APP_FAILURE; }
 
-    SDL_GPUVertexAttribute vertex_attrs[4] = {
+    SDL_GPUVertexAttribute vertex_attrs[5] = {
     {
         .location = 0,
         .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3,
-        .offset = (Uint32)offsetof(VertexData, position),
+        .offset = (Uint32)offsetof(Vertex, position),
     },
     {
         .location = 1,
-        .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2,
-        .offset = (Uint32)offsetof(VertexData, uv),
+        .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3,
+        .offset = (Uint32)offsetof(Vertex, normal),
     },
     {
         .location = 2,
-        .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT4,
-        .offset = (Uint32)offsetof(VertexData, color),
+        .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2,
+        .offset = (Uint32)offsetof(Vertex, uv),
     },
     {
         .location = 3,
+        .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT4,
+        .offset = (Uint32)offsetof(Vertex, color),
+    },
+    {
+        .location = 4,
         .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT,
-        .offset = (Uint32)offsetof(VertexData, materialIndex),
+        .offset = (Uint32)offsetof(Vertex, materialIndex),
     },
     };
 
@@ -91,7 +96,7 @@ SDL_AppResult App_InitPipeline(void* appstate)
     };
     SDL_GPUVertexBufferDescription vertex_buffer_descriptions = {
         .slot = 0,
-        .pitch = sizeof(VertexData),
+        .pitch = sizeof(Vertex),
     };
     SDL_GPUDepthStencilState depth_stencil_state = {
         .compare_op = SDL_GPU_COMPAREOP_LESS,
