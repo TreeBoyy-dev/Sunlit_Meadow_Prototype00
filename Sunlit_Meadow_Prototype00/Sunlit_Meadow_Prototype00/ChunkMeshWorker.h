@@ -16,9 +16,8 @@ public:
     void start();
     void stop();
 
-    void requestChunk(Chunk* chunk, ChunkBorderAir borderAir);
-    // Returns a fully generated (but not yet mesh-init'd) Chunk, or nullopt
-    std::optional<ChunkCoord> tryGetChunk();
+    void requestChunk(Chunk chunk, ChunkBorderAir borderAir);
+    std::optional<Chunk> tryGetChunk();
     bool cancelRequest(ChunkCoord coord);
 
 private:
@@ -27,6 +26,6 @@ private:
     std::atomic<bool>  m_running;
     std::thread        m_thread;
 
-    ThreadSafeQueue_2T<Chunk*, ChunkBorderAir>  m_inputQueue;
-    ThreadSafeQueue<ChunkCoord>                 m_outputQueue;
+    ThreadSafeQueue_2T<Chunk, ChunkBorderAir>  m_inputQueue;
+    ThreadSafeQueue<Chunk>                     m_outputQueue;
 };

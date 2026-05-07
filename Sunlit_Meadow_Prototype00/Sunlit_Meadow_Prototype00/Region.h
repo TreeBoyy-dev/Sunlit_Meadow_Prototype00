@@ -45,7 +45,7 @@ public:
     Region(RegionCoord regionCoordinates);
     ~Region();
 
-    Chunk* getChunk(ChunkCoord chunkCoordinates);
+    Chunk* getChunk(ChunkCoord chunkCoordinates, bool queueChunk = true);
     bool update(AppState* state, SDL_GPUTexture* textureArray);
 
     RegionCoord getCoordinates();

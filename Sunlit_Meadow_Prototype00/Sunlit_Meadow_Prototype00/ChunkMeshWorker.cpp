@@ -14,12 +14,12 @@ void ChunkMeshWorker::stop() {
         m_thread.join();
 }
 
-void ChunkMeshWorker::requestChunk(Chunk* chunk, ChunkBorderAir borderAir) {
+void ChunkMeshWorker::requestChunk(Chunk chunk, ChunkBorderAir borderAir) {
     m_inputQueue.push(chunk, borderAir);
 }
 
 // Returns a fully generated (but not yet mesh-init'd) Chunk, or nullopt
-std::optional<ChunkCoord> ChunkMeshWorker::tryGetChunk() {
+std::optional<Chunk> ChunkMeshWorker::tryGetChunk() {
     return m_outputQueue.try_pop();
 }
 
@@ -28,9 +28,9 @@ void ChunkMeshWorker::workerLoop() {
         if (auto pair = m_inputQueue.try_pop()) {
             auto [chunk, borderAir] = std::move(*pair);
 
-            chunk->createMeshes(borderAir);
+            chunk.createMeshes(borderAir);
 
-            m_outputQueue.push(chunk->getChunkCoordinates());
+            m_outputQueue.push(chunk);
         }
         else {
             std::this_thread::sleep_for(std::chrono::microseconds(200));
@@ -39,8 +39,8 @@ void ChunkMeshWorker::workerLoop() {
 }
 
 bool ChunkMeshWorker::cancelRequest(ChunkCoord coord) {
-    return m_inputQueue.remove_if([&](Chunk* chunk, ChunkBorderAir&) 
+    return m_inputQueue.remove_if([&](Chunk chunk, ChunkBorderAir&) 
     {
-        return chunk->getChunkCoordinates() == coord;
+        return chunk.getChunkCoordinates() == coord;
     });
 }

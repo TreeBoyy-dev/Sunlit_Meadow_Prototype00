@@ -5,8 +5,8 @@
 
 // --- Camera ---
 Camera camera = {
-	{264.0f, 264.0f, 22.0f},
-	{0.0f, -0.0f, -5.0f}
+	{264.0f, 264.0f, 70.0f},
+	{0.0f,   0.0f,  -5.0f}
 };
 Vec2 mouseMovement = {
 	0.0f, 0.0f
@@ -22,7 +22,7 @@ float sum = 0.0;
 
 // --- WorldManager ---
 WorldManager testManager;
-extern const int RENDER_DISTANCE = 3;
+extern const int RENDER_DISTANCE = 5;
 
 extern ChunkCoord prevPlayerChunkCoords = { 0,0,0 };
 

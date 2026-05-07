@@ -15,19 +15,21 @@ Region::~Region() {
     m_worker.stop();
 }
 
-Chunk* Region::getChunk(ChunkCoord chunkCoordinates) {
+Chunk* Region::getChunk(ChunkCoord chunkCoordinates, bool queueChunk) {
     // Already fully ready
     auto it = chunks.find(chunkCoordinates);
     if (it != chunks.end())
         return it->second.get();
 
-    // Already queued, still generating
-    if (pendingChunks.count(chunkCoordinates))
-        return nullptr;
+    if (queueChunk) {
+        // Already queued, still generating
+        if (pendingChunks.count(chunkCoordinates))
+            return nullptr;
 
-    // New request — send to worker
-    pendingChunks.insert(chunkCoordinates);
-    g_worker.requestChunk(chunkCoordinates);
+        // New request — send to worker
+        pendingChunks.insert(chunkCoordinates);
+        g_worker.requestChunk(chunkCoordinates);
+    }
     return nullptr;
 }
 
@@ -72,15 +74,10 @@ bool Region::update(AppState* state, SDL_GPUTexture* textureArray) {
 // the else statements would result in the chunk only beeing redrawn if all 6 neighbors are generated
 bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
 
-    auto getNeighbor = [&](ChunkCoord c) -> Chunk* {
-        auto it = chunks.find(c);
-        return (it != chunks.end()) ? it->second.get() : nullptr;
-    };
-
     bool allFacesLoaded = true;
 
-    if (auto* n = getNeighbor({ coord.x + 1, coord.y,     coord.z }))
-        if (auto* face = n->getBorderAir({ -1,  0,  0 }))  // neighbor's x- face
+    if (Chunk* c = getChunk({ coord.x + 1, coord.y,     coord.z }, false))
+        if (auto* face = c->getBorderAir({ -1,  0,  0 }))  // neighbor's x- face
             memcpy(border->front, face, sizeof(border->front));
         else {
             //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor +X exists but getBorderAir returned nullptr",
@@ -93,8 +90,8 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         allFacesLoaded = false;
     }
 
-    if (auto* n = getNeighbor({ coord.x - 1, coord.y,     coord.z }))
-        if (auto* face = n->getBorderAir({ 1,  0,  0 }))  // neighbor's x+ face
+    if (Chunk* c = getChunk({ coord.x - 1, coord.y,     coord.z }, false))
+        if (auto* face = c->getBorderAir({ 1,  0,  0 }))  // neighbor's x+ face
             memcpy(border->back, face, sizeof(border->back));
         else {
             //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor -X exists but getBorderAir returned nullptr",
@@ -107,8 +104,8 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         allFacesLoaded = false;
     }
 
-    if (auto* n = getNeighbor({ coord.x,     coord.y + 1, coord.z }))
-        if (auto* face = n->getBorderAir({ 0, -1,  0 }))  // neighbor's y- face
+    if (Chunk* c = getChunk({ coord.x,     coord.y + 1, coord.z }, false))
+        if (auto* face = c->getBorderAir({ 0, -1,  0 }))  // neighbor's y- face
             memcpy(border->right, face, sizeof(border->right));
         else {
             //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor +Y exists but getBorderAir returned nullptr",
@@ -121,8 +118,8 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         allFacesLoaded = false;
     }
 
-    if (auto* n = getNeighbor({ coord.x,     coord.y - 1, coord.z }))
-        if (auto* face = n->getBorderAir({ 0,  1,  0 }))  // neighbor's y+ face
+    if (Chunk* c = getChunk({ coord.x,     coord.y - 1, coord.z }, false))
+        if (auto* face = c->getBorderAir({ 0,  1,  0 }))  // neighbor's y+ face
             memcpy(border->left, face, sizeof(border->left));
         else {
             //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor -Y exists but getBorderAir returned nullptr",
@@ -135,8 +132,8 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         allFacesLoaded = false;
     }
 
-    if (auto* n = getNeighbor({ coord.x,     coord.y,     coord.z + 1 }))
-        if (auto* face = n->getBorderAir({ 0,  0, -1 }))  // neighbor's z- face
+    if (Chunk* c = getChunk({ coord.x,     coord.y,     coord.z + 1 }, false))
+        if (auto* face = c->getBorderAir({ 0,  0, -1 }))  // neighbor's z- face
             memcpy(border->top, face, sizeof(border->top));
         else {
             //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor +Z exists but getBorderAir returned nullptr",
@@ -149,8 +146,8 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         allFacesLoaded = false;
     }
 
-    if (auto* n = getNeighbor({ coord.x,     coord.y,     coord.z - 1 }))
-        if (auto* face = n->getBorderAir({ 0,  0,  1 }))  // neighbor's z+ face
+    if (Chunk* c = getChunk({ coord.x,     coord.y,     coord.z - 1 }, false))
+        if (auto* face = c->getBorderAir({ 0,  0,  1 }))  // neighbor's z+ face
             memcpy(border->bottom, face, sizeof(border->bottom));
         else {
             //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor -Z exists but getBorderAir returned nullptr",
@@ -194,19 +191,19 @@ void Region::queueMeshUpdate(ChunkCoord coord) {
 
         bool allLoaded = buildBorderAir(&borderAir, c);
         if (allLoaded) {
-            //SDL_Log("[Mesh] %d|%d|%d  all 6 neighbors loaded — clean remesh",
-            //    c.x, c.y, c.z);
+            SDL_Log("[Mesh] %d|%d|%d  clean remesh",
+                c.x, c.y, c.z);
         }
         else {
-            //SDL_Log("[Mesh] %d|%d|%d  PARTIAL remesh — some neighbors missing, "
-            //    "faces on those sides will over-draw until neighbors arrive",
-            //    c.x, c.y, c.z);
-                //continue;
+            SDL_Log("[Mesh] %d|%d|%d  PARTIAL remesh",
+                c.x, c.y, c.z);
+            //continue;
         }
 
         auto it = chunks.find(c);
         pendingMeshChunks.insert(c);
-        m_worker.requestChunk(it->second.get(), borderAir);
+        Chunk chunkCopy = Chunk(it->second.get());
+        m_worker.requestChunk(chunkCopy, borderAir);
     }
 }
 
@@ -221,13 +218,13 @@ bool Region::collectMeshResults(AppState* state, SDL_GPUTexture* textureArray) {
         auto result = m_worker.tryGetChunk();
         if (!result) break;
 
-        ChunkCoord coord = *result;
+        ChunkCoord coord = result->getChunkCoordinates();
         pendingMeshChunks.erase(coord);
 
         auto it = chunks.find(coord);
-        if (it == chunks.end()) continue; // chunk was unloaded while meshing, skip
+        if (it == chunks.end()) continue; // unloaded while meshing
 
-        //it->second->destroyMeshes(state);
+        it->second->transferMeshesFrom(*result); // swap in built mesh data
         it->second->uploadMeshes(state, textureArray);
         meshedChunks.insert(coord);
 

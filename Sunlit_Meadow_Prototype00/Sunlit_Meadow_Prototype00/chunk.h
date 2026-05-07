@@ -23,6 +23,8 @@ private:
 public:
     Chunk();
     Chunk(ChunkCoord chunkCoordinates);
+    Chunk(Chunk* other);          
+    void transferMeshesFrom(Chunk& src);
 
     void getChunkGenerated();
 

@@ -17,6 +17,23 @@ Chunk::Chunk(ChunkCoord chunkCoordinates) :
 	drawTransparentMesh(false)
 {}
 
+Chunk::Chunk(Chunk* other) :
+	chunkCoordinates(other->getChunkCoordinates()),
+	isGenerated(other->getIsGenerated()),
+	//borderAir(other->borderAir),
+	drawOpaqueMesh(false),
+	drawTransparentMesh(false)
+{
+	memcpy(blockIDs, other->blockIDs, sizeof(blockIDs));
+}
+
+void Chunk::transferMeshesFrom(Chunk& src) {
+	opaqueMesh = std::move(src.opaqueMesh);
+	drawOpaqueMesh = src.drawOpaqueMesh;
+	transparentMesh = std::move(src.transparentMesh);
+	drawTransparentMesh = src.drawTransparentMesh;
+}
+
 void Chunk::createMeshes(ChunkBorderAir borderAir) {
 	std::vector<LocationalBlockID> opaqueblocks;
 	std::vector<LocationalBlockID> transparentblocks;

@@ -30,7 +30,7 @@ void generateShape(
 
 			float zGenerated = standartNoise.GetNoise((float)xAbs, (float)yAbs);
 
-			int zShape = (int)(10 + zGenerated * 10);
+			int zShape = (int)(60 + zGenerated * 10);
 			heightmap[x][y] = zShape;
 
 			for (int z = 0; z < CHUNK_SIZE; z++) {
