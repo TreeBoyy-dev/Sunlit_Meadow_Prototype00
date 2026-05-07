@@ -22,7 +22,7 @@ void ChunkMesh::destroy(AppState* state)
     textureArray = nullptr;
 }
 
-bool ChunkMesh::getNeighborId(int x, int y, int z, ChunkBorderAir borderAir) const
+Uint16 ChunkMesh::getNeighborId(int x, int y, int z, ChunkBorderAir borderAir) const
 {
     const int baseX = m_chunkCoord.x * CHUNK_SIZE;
     const int baseY = m_chunkCoord.y * CHUNK_SIZE;
@@ -48,7 +48,6 @@ bool ChunkMesh::neighborObstructs(Uint16 id, int faceIndex)
     return b->getObstructs(faceIndex);
 }
 
-
 void ChunkMesh::buildMesh(
     std::vector<LocationalBlockID>& blocks,
     ChunkBorderAir borderAir,
@@ -73,15 +72,24 @@ void ChunkMesh::buildMesh(
 
         // In buildMesh, replace the AdjacencyInfo block:
         AdjacencyInfo adj = {
-            neighborObstructs(getNeighborId(block.x + 1, block.y, block.z, borderAir), 1), // front:  neighbor's back
+            neighborObstructs(getNeighborId(block.x + 1, block.y, block.z, borderAir), 0), // front:  neighbor's back
             neighborObstructs(getNeighborId(block.x - 1, block.y, block.z, borderAir), 0), // back:   neighbor's front
-            neighborObstructs(getNeighborId(block.x, block.y + 1, block.z, borderAir), 3), // right:  neighbor's left
-            neighborObstructs(getNeighborId(block.x, block.y - 1, block.z, borderAir), 2), // left:   neighbor's right
-            neighborObstructs(getNeighborId(block.x, block.y, block.z + 1, borderAir), 5), // top:    neighbor's down
-            neighborObstructs(getNeighborId(block.x, block.y, block.z - 1, borderAir), 4), // bottom: neighbor's up
-        };        //SDL_Log("pos: %f|%f|%f  adj: %d %d %d %d %d %d",
-        //    x, y, z,
-        //    adj.top, adj.bottom, adj.front, adj.back, adj.right, adj.left);
+            neighborObstructs(getNeighborId(block.x, block.y + 1, block.z, borderAir), 0), // right:  neighbor's left
+            neighborObstructs(getNeighborId(block.x, block.y - 1, block.z, borderAir), 0), // left:   neighbor's right
+            neighborObstructs(getNeighborId(block.x, block.y, block.z + 1, borderAir), 0), // top:    neighbor's down
+            neighborObstructs(getNeighborId(block.x, block.y, block.z - 1, borderAir), 0), // bottom: neighbor's up
+        };
+        /*
+        SDL_Log("pos: %f|%f|%f  adj: %d %d %d %d %d %d  ids: %d %d %d %d %d %d  ",
+            x, y, z,
+            adj.front, adj.back, adj.right, adj.left, adj.top, adj.bottom,
+            getNeighborId(block.x + 1, block.y, block.z, borderAir), // front:  neighbor's back
+            getNeighborId(block.x - 1, block.y, block.z, borderAir), // back:   neighbor's front
+            getNeighborId(block.x, block.y + 1, block.z, borderAir), // right:  neighbor's left
+            getNeighborId(block.x, block.y - 1, block.z, borderAir), // left:   neighbor's right
+            getNeighborId(block.x, block.y, block.z + 1, borderAir), // top:    neighbor's down
+            getNeighborId(block.x, block.y, block.z - 1, borderAir) // bottom: neighbor's up
+        );//*/
 
         b->generateMeshFromModel(vertices, indices, adj, block.x, block.y, block.z);
     }

@@ -14,4 +14,4 @@
 
 1. add skybox
 1. add more blocks
-1. add stairs, slabs, walls etc (block varients in generall)
+1. add stairs, slabs (check), walls etc (block varients in generall)

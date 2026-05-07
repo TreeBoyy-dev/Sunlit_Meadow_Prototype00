@@ -34,7 +34,7 @@ public:
     uint32_t getNumIndices() const { return numIndices; }
 
 private:
-    bool getNeighborId(int x, int y, int z, ChunkBorderAir borderAir) const;
+    Uint16 getNeighborId(int x, int y, int z, ChunkBorderAir borderAir) const;
     bool neighborObstructs(Uint16 id, int faceIndex);
 
 private:
