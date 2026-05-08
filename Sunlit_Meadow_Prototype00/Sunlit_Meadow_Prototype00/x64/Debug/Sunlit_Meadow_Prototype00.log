@@ -1,3 +1,10 @@
 ﻿  Scanning sources for module dependencies...
-  Globals.cpp
+  WorldManager.cpp
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(80,54): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(86,28): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(86,28): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(86,48): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(86,48): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(86,68): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(86,68): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
   Sunlit_Meadow_Prototype00.vcxproj -> C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\x64\Debug\Sunlit_Meadow_Prototype00.exe

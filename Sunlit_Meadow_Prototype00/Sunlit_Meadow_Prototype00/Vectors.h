@@ -10,6 +10,10 @@ typedef struct {
     float u, v;
 }Vec2;
 
+Vec3 vec3Add(Vec3 a, Vec3 b);
+Vec3 vec3Scale(Vec3 v, float s);
+Vec3 vec3Negate(Vec3 v);
+
 Vec3 vec3Sub(Vec3 a, Vec3 b);
 float vec3Dot(Vec3 a, Vec3 b);
 Vec3 vec3Cross(Vec3 a, Vec3 b);

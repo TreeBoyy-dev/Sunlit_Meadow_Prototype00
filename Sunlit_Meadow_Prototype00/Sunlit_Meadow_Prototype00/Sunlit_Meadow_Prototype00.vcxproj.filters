@@ -176,6 +176,9 @@
     <ClInclude Include="SlabBlockModel.h">
       <Filter>Header Files\world\Blocks\BlockModels</Filter>
     </ClInclude>
+    <ClInclude Include="Frustom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="shader.glsl.frag">

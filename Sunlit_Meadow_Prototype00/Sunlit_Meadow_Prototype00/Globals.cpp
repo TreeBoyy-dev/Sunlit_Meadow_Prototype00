@@ -22,9 +22,9 @@ float sum = 0.0;
 
 // --- WorldManager ---
 WorldManager testManager;
-extern const int RENDER_DISTANCE = 4;
+const int RENDER_DISTANCE = 5;
 
-extern ChunkCoord prevPlayerChunkCoords = { 0,0,0 };
+ChunkCoord prevPlayerChunkCoords = { 0,0,0 };
 
 // --- BlockManager ---
 BlockManager blockManager;
