@@ -11,7 +11,7 @@ private:
     Uint16    id;
     std::string name;
     bool        transparent;
-    bool        hasSlab, hasStair, hasWall;
+    bool        hasSlab, hasStair, hasPillar, hasWall, hasFence; //hasStep, hasCorner??
 
     std::unique_ptr<BlockModel> model;
 

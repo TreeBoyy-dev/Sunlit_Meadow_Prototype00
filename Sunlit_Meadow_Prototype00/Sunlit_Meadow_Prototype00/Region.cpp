@@ -37,7 +37,7 @@ bool Region::update(AppState* state, SDL_GPUTexture* textureArray) {
     bool changed = false;
 
     // --- drain g_worker: newly generated chunks ---
-    const int MAX_UPLOADS_PER_FRAME = 999;
+    const int MAX_UPLOADS_PER_FRAME = 5;
     int uploads = 0;
     std::vector<ChunkCoord> newlyAdded;
 
@@ -80,8 +80,8 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         if (auto* face = c->getBorderAir({ -1,  0,  0 }))  // neighbor's x- face
             memcpy(border->front, face, sizeof(border->front));
         else {
-            //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor +X exists but getBorderAir returned nullptr",
-            //    coord.x, coord.y, coord.z);
+            SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor +X exists but getBorderAir returned nullptr",
+                coord.x, coord.y, coord.z);
             allFacesLoaded = false;
         }
     else {
@@ -94,8 +94,8 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         if (auto* face = c->getBorderAir({ 1,  0,  0 }))  // neighbor's x+ face
             memcpy(border->back, face, sizeof(border->back));
         else {
-            //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor -X exists but getBorderAir returned nullptr",
-            //    coord.x, coord.y, coord.z);
+            SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor -X exists but getBorderAir returned nullptr",
+                coord.x, coord.y, coord.z);
             allFacesLoaded = false;
         }
     else {
@@ -108,8 +108,8 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         if (auto* face = c->getBorderAir({ 0, -1,  0 }))  // neighbor's y- face
             memcpy(border->right, face, sizeof(border->right));
         else {
-            //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor +Y exists but getBorderAir returned nullptr",
-            //    coord.x, coord.y, coord.z);
+            SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor +Y exists but getBorderAir returned nullptr",
+                coord.x, coord.y, coord.z);
             allFacesLoaded = false;
         }
     else {
@@ -122,8 +122,8 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         if (auto* face = c->getBorderAir({ 0,  1,  0 }))  // neighbor's y+ face
             memcpy(border->left, face, sizeof(border->left));
         else {
-            //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor -Y exists but getBorderAir returned nullptr",
-            //    coord.x, coord.y, coord.z);
+            SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor -Y exists but getBorderAir returned nullptr",
+                coord.x, coord.y, coord.z);
             allFacesLoaded = false;
         }
     else {
@@ -136,8 +136,8 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         if (auto* face = c->getBorderAir({ 0,  0, -1 }))  // neighbor's z- face
             memcpy(border->top, face, sizeof(border->top));
         else {
-            //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor +Z exists but getBorderAir returned nullptr",
-            //    coord.x, coord.y, coord.z);
+            SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor +Z exists but getBorderAir returned nullptr",
+                coord.x, coord.y, coord.z);
             allFacesLoaded = false;
         }
     else {
@@ -150,8 +150,8 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         if (auto* face = c->getBorderAir({ 0,  0,  1 }))  // neighbor's z+ face
             memcpy(border->bottom, face, sizeof(border->bottom));
         else {
-            //SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor -Z exists but getBorderAir returned nullptr",
-            //    coord.x, coord.y, coord.z);
+            SDL_Log("[BorderAir] %d|%d|%d  TOP: neighbor -Z exists but getBorderAir returned nullptr",
+                coord.x, coord.y, coord.z);
             allFacesLoaded = false;
         }
     else {
@@ -176,7 +176,6 @@ void Region::queueMeshUpdate(ChunkCoord coord) {
 
     for (const auto& c : candidates) {
         if (chunks.find(c) == chunks.end())  continue; // not loaded
-        if (c != coord && !meshedChunks.count(c)) continue;
 
         if (pendingMeshChunks.count(c)) {
             // Already queued — try to pull it back out so we can resubmit

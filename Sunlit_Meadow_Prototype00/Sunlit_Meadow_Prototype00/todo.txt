@@ -15,3 +15,5 @@
 1. add skybox
 1. add more blocks
 1. add stairs, slabs (check), walls etc (block varients in generall)
+
+1. figure out a way to store block/item/entity data

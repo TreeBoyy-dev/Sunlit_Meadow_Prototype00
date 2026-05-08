@@ -95,7 +95,10 @@ void generateFeatures_GrassAndDirt(
 			if (decimalPart >= 0.5f)
 				block = blockManager.getByName("grass_block");
 			else
-				block = blockManager.getByName("grass_block_slab");
+				if(rand() % 200 != 0)
+					block = blockManager.getByName("grass_block_slab");
+				else
+					block = blockManager.getByName("cobble_stone_slab");
 
 			if (block != nullptr)
 			{
