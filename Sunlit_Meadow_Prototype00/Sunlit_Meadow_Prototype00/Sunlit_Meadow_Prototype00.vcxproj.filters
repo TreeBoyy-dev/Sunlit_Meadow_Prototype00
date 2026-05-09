@@ -176,8 +176,8 @@
     <ClInclude Include="SlabBlockModel.h">
       <Filter>Header Files\world\Blocks\BlockModels</Filter>
     </ClInclude>
-    <ClInclude Include="Frustom.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="InCameraView.h">
+      <Filter>Resource Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

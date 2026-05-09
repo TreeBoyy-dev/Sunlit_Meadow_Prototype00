@@ -1,10 +1,10 @@
-1. fix remeshing bug:
+fix remeshing bug:
 	- sometimes the adjacend chunk returns null even at the final remeshing
 
-1. viewing cone:
-	- don't render the chunks the player is not looking at
+viewing cone:
+	- change from dotproduct of vectors to a frustum
 
-1. greedy meshing:
+greedy meshing:
 	- idk if its called that but what ever
 	- make face/quad class instead of adding the face directly to the mesh
 	- when making the chunkmesh split it into stages:
@@ -12,8 +12,13 @@
 		-> simplefy faces (combine adjacend faces on the same level)
 		-> load the simplefied faces into the mesh
 
-1. add skybox
-1. add more blocks
-1. add stairs, slabs (check), walls etc (block varients in generall)
+add skybox
+add more blocks
+add stairs, slabs (check), walls etc (block varients in generall)
 
-1. figure out a way to store block/item/entity data
+figure out a way to store block/item/entity data
+
+add entity
+	- data
+	- physics
+	- block colission
