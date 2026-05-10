@@ -1,7 +1,7 @@
 #include <math.h>
 #include "WorldManager.h"
-#include "InCameraView.h"
 #include "Globals.h"
+#include "Frustum.h"
 
 WorldManager::WorldManager() {}
 
@@ -65,16 +65,18 @@ void WorldManager::drawChunks(
     SDL_GPURenderPass* pass,
     const UBO& ubo
 ) {
-    for (Chunk* chunk : renderList) {
-        if (chunk) {
-            if (inCameraView(camera, chunk->getChunkCoordinates(), 120)) {
-                chunk->drawMeshes(state, cmd, pass, ubo);
-            }
-        }
-        else
-            SDL_Log("tried to draw nullptr");
-    }
+    Frustum frustum = buildFrustum(camera, fovX, aspect, NEAR_PLANE, FAR_PLANE);
 
+    for (Chunk* chunk : renderList) {
+        if (!chunk) { SDL_Log("tried to draw nullptr"); continue; }
+
+        ChunkCoord cc = chunk->getChunkCoordinates();
+        Vec3 cMin = { cc.x * CHUNK_SIZE,  cc.y * CHUNK_SIZE,  cc.z * CHUNK_SIZE };
+        Vec3 cMax = { cMin.x + CHUNK_SIZE, cMin.y + CHUNK_SIZE, cMin.z + CHUNK_SIZE };
+
+        if (aabbInsideFrustum(frustum, cMin, cMax))
+            chunk->drawMeshes(state, cmd, pass, ubo);
+    }
 }
 
 Region* WorldManager::getRegion(RegionCoord regionCoordinates) {

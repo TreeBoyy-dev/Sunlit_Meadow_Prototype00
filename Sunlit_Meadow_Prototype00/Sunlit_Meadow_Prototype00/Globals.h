@@ -7,6 +7,12 @@
 #include "ChunkTypes.h"
 #include "FastNoiseLite.h"
 
+extern const float NEAR_PLANE;
+extern const float FAR_PLANE;
+extern float fovDeg;
+extern float fovX;
+extern float aspect;
+
 // --- Camera ---
 extern Camera camera;
 extern Vec2 mouseMovement;

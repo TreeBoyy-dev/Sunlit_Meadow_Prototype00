@@ -164,7 +164,7 @@
     <ClInclude Include="ChunkTypes.h" />
     <ClInclude Include="ChunkGeneratorWorker.h" />
     <ClInclude Include="FastNoiseLite.h" />
-    <ClInclude Include="InCameraView.h" />
+    <ClInclude Include="Frustum.h" />
     <ClInclude Include="InitNoise.h" />
     <ClInclude Include="Materials.h" />
     <ClInclude Include="Region.h" />

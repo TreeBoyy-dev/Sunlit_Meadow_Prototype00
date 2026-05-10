@@ -1,7 +1,10 @@
-#include "DataStructures.h"
 #include "Globals.h"
-#include "Vectors.h"
-#include "WorldManager.h"
+
+const float NEAR_PLANE = 0.5f;
+const float FAR_PLANE = 3000.0f;
+float fovDeg = 70.0f;
+float fovX = 0.0f;
+float aspect = 1.0f;
 
 // --- Camera ---
 Camera camera = {
