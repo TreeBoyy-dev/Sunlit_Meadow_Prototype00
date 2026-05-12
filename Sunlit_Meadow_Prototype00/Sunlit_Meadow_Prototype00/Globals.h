@@ -26,7 +26,7 @@ extern int frame_count;
 extern float sum;
 
 // --- WorldManager ---
-extern WorldManager testManager;
+extern WorldManager worldManager;
 extern const int RENDER_DISTANCE;
 
 extern ChunkCoord prevPlayerChunkCoords;

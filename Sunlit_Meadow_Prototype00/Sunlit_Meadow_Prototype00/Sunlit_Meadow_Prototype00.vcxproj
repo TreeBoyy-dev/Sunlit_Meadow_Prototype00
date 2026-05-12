@@ -148,6 +148,7 @@
     <ClCompile Include="Materials.cpp" />
     <ClCompile Include="Region.cpp" />
     <ClCompile Include="SlabBlockModel.cpp" />
+    <ClCompile Include="UI_Renderer.cpp" />
     <ClCompile Include="Vectors.cpp" />
     <ClCompile Include="WorldManager.cpp" />
   </ItemGroup>
@@ -166,6 +167,7 @@
     <ClInclude Include="FastNoiseLite.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="InitNoise.h" />
+    <ClInclude Include="LoadShader.h" />
     <ClInclude Include="Materials.h" />
     <ClInclude Include="Region.h" />
     <ClInclude Include="DataStructures.h" />
@@ -174,14 +176,18 @@
     <ClInclude Include="Mat4.h" />
     <ClInclude Include="SlabBlockModel.h" />
     <ClInclude Include="ThreadSafeQueue.h" />
+    <ClInclude Include="UI_Renderer.h" />
     <ClInclude Include="Vectors.h" />
     <ClInclude Include="WorldManager.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader.glsl.frag">
+    <None Include="build_shaders.bat">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="shader.glsl.vert">
+    <None Include="ui.frag.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </None>
+    <None Include="ui.vert.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>
   </ItemGroup>
@@ -190,6 +196,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="shader.vert.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="ui_tex.frag.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="ui_tex.vert.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
   </ItemGroup>

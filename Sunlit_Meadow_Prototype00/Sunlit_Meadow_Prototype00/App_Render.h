@@ -6,6 +6,10 @@ SDL_AppResult App_Render(void* appstate)
 {
     AppState* state = (AppState*)appstate;
 
+    float cx = state->ui.screenW * 0.5f;
+    float cy = state->ui.screenH * 0.5f;
+    state->ui.drawCrosshair(cx, cy, 12.0f, 2.0f, 4.0f, 1.0f, 1.0f, 1.0f, 0.9f);
+
     SDL_GPUCommandBuffer* cmd = SDL_AcquireGPUCommandBuffer(state->gpu);
     if (!cmd) {
         SDL_Log("SDL_AcquireGPUCommandBuffer failed: %s", SDL_GetError());
@@ -19,6 +23,8 @@ SDL_AppResult App_Render(void* appstate)
         SDL_Log("SDL_WaitAndAcquireGPUSwapchainTexture failed: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
+
+    state->ui.upload(state->gpu, cmd);
 
     Mat4 viewMat = mat4LookAt(camera.position, camera.lookTarget, { 0.0f, 0.0f, -1.0f });
 
@@ -46,21 +52,27 @@ SDL_AppResult App_Render(void* appstate)
             .store_op = SDL_GPU_STOREOP_DONT_CARE,
         };
 
-        SDL_GPURenderPass* pass = SDL_BeginGPURenderPass(
+        SDL_GPURenderPass* worldPass = SDL_BeginGPURenderPass(
             cmd,
             &color_target,
             1,
             &depth_target
         );
 
-        testManager.drawChunks(
-            state,
-            cmd,
-            pass,
-            ubo
-        );
+        worldManager.drawChunks(state, cmd, worldPass, ubo);
 
-        SDL_EndGPURenderPass(pass);
+        SDL_EndGPURenderPass(worldPass);
+
+        // UI pass
+        SDL_GPUColorTargetInfo ui_target = {
+            .texture = swapchain_tex,
+            .load_op = SDL_GPU_LOADOP_LOAD,
+            .store_op = SDL_GPU_STOREOP_STORE,
+        };
+        SDL_GPURenderPass* uiPass = SDL_BeginGPURenderPass(cmd, &ui_target, 1, nullptr);
+        state->ui.draw(uiPass);
+
+        SDL_EndGPURenderPass(uiPass);
     }
 
     SDL_SubmitGPUCommandBuffer(cmd);

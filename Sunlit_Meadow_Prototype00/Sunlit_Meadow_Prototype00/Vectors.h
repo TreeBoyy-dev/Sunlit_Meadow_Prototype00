@@ -7,7 +7,7 @@ typedef struct {
 }Vec3;
 
 typedef struct {
-    float u, v;
+    float x, y;
 }Vec2;
 
 Vec3 vec3Add(Vec3 a, Vec3 b);

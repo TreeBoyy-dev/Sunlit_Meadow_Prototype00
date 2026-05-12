@@ -15,7 +15,7 @@
 
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 {
-    AppState* state = (AppState*)SDL_calloc(1, sizeof(AppState));
+    AppState* state = new AppState();
     if (!state) { return SDL_APP_FAILURE; }
     *appstate = state;
 
@@ -49,8 +49,8 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
         return SDL_APP_SUCCESS;
     }
     if (event->type == SDL_EVENT_MOUSE_MOTION) {
-        mouseMovement.u += event->motion.xrel;
-        mouseMovement.v += event->motion.yrel;
+        mouseMovement.x += event->motion.xrel;
+        mouseMovement.y += event->motion.yrel;
     }
 
     return SDL_APP_CONTINUE;
@@ -73,7 +73,7 @@ void SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
     AppState* state = (AppState*)appstate;
     if (state) {
-        testManager.destroyManager(state);
+        worldManager.destroyManager(state);
 
         if (state->pipeline)
             SDL_ReleaseGPUGraphicsPipeline(state->gpu, state->pipeline);

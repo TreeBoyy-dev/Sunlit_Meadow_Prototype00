@@ -5,6 +5,7 @@
 
 #include "Vectors.h"
 #include "Mat4.h"
+#include "UI_Renderer.h"
 
 typedef struct {
     Vec3 position;
@@ -26,6 +27,8 @@ typedef struct {
     SDL_GPUSampler* sampler;
 
     SDL_GPUTexture* textureArray;
+
+    UI_Renderer ui;
 
     Uint64  lastTicks;      /* timestamp at end of previous frame   */
     float   rotation;       /* current rotation angle (radians)     */

@@ -1,8 +1,21 @@
+display debug text using a UI
+
+change how the generated chunks are handled
+	- new system:
+		-> list rendered chunks
+		-> list loaded chunks
+		-> list rendered chunkmeshes
+		-> when player moves the chunks to far away get removed and the closer ones added
+
+change order in which chunks are generated
+
 fix remeshing bug:
 	- sometimes the adjacend chunk returns null even at the final remeshing
+	- or something else idk
+	- only one of the six sides fails (alway the same side)(the bigger the renderdistance the more likely it is to happen)
 
 viewing cone:
-	- change from dotproduct of vectors to a frustum
+	- sometimes a chunk still disappers to early
 
 greedy meshing:
 	- idk if its called that but what ever
@@ -13,8 +26,6 @@ greedy meshing:
 		-> load the simplefied faces into the mesh
 
 add skybox
-add more blocks
-add stairs, slabs (check), walls etc (block varients in generall)
 
 figure out a way to store block/item/entity data
 
@@ -22,3 +33,11 @@ add entity
 	- data
 	- physics
 	- block colission
+
+add menues
+	- settings
+	- textures/design/layout in generall
+
+add more blocks
+add stairs, slabs (check), walls etc (block varients in generall)
+

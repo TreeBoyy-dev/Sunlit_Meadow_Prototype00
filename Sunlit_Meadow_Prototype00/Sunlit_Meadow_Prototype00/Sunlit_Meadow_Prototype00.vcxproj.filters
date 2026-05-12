@@ -49,6 +49,18 @@
     <Filter Include="Header Files\world\Blocks\BlockModels">
       <UniqueIdentifier>{6fd95466-2892-48c7-a595-e141c73e11ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\entity">
+      <UniqueIdentifier>{fe8b0fb6-238a-432c-adc2-438b91a79879}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\entity">
+      <UniqueIdentifier>{fd7a0676-56fe-403d-a251-f2bad241fb9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UIRendering">
+      <UniqueIdentifier>{4dad79a3-8830-4735-8f35-3a23913886a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\UIRendering">
+      <UniqueIdentifier>{dd5d0b79-ea29-41b1-ba4c-2fc156432e0f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -104,6 +116,9 @@
     </ClCompile>
     <ClCompile Include="SlabBlockModel.cpp">
       <Filter>Source Files\world\Blocks\BlockModels</Filter>
+    </ClCompile>
+    <ClCompile Include="UI_Renderer.cpp">
+      <Filter>Source Files\UIRendering</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -179,12 +194,21 @@
     <ClInclude Include="Frustum.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
+    <ClInclude Include="UI_Renderer.h">
+      <Filter>Header Files\UIRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadShader.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shader.glsl.frag">
+    <None Include="ui.vert.hlsl">
       <Filter>Resource Files\shaders</Filter>
     </None>
-    <None Include="shader.glsl.vert">
+    <None Include="build_shaders.bat">
+      <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="ui.frag.hlsl">
       <Filter>Resource Files\shaders</Filter>
     </None>
   </ItemGroup>
@@ -193,6 +217,12 @@
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
     <FxCompile Include="shader.vert.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ui_tex.frag.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="ui_tex.vert.hlsl">
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
   </ItemGroup>

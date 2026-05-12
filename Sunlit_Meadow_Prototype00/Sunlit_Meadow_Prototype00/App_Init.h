@@ -38,6 +38,11 @@ SDL_AppResult App_Init(void* appstate)
 
     int w, h;
     SDL_GetWindowSize(state->window, &w, &h);
+
+    state->ui.screenW = (float)w;
+    state->ui.screenH = (float)h;
+    state->ui.init(state->gpu, SDL_GetGPUSwapchainTextureFormat(state->gpu, state->window));
+
     SDL_GPUTextureCreateInfo depth_tex_info = {
         .type = SDL_GPU_TEXTURETYPE_2D,
         .format = depth_texture_format,
@@ -75,9 +80,9 @@ SDL_AppResult App_Init(void* appstate)
 
     blockManager.init();
 
-    testManager.calcVisibleChunksList(RENDER_DISTANCE);
-    testManager.updateRenderList(camera.position);
-    //testManager.update(state, state->textureArray);
+    worldManager.calcVisibleChunksList(RENDER_DISTANCE);
+    worldManager.updateRenderList(camera.position);
+    worldManager.update(state, state->textureArray);
 
     SDL_GPUSamplerCreateInfo sampler_info = {};
     state->sampler = SDL_CreateGPUSampler(state->gpu, &sampler_info);

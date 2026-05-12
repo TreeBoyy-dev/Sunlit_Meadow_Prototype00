@@ -3,10 +3,10 @@
 #include "WorldManager.h"
 
 bool updateCamera(float dt) {
-    camera.yaw   -= mouseMovement.u * -MAX_CAMERA_SPEED_LOOK;
-    camera.pitch += mouseMovement.v * -MAX_CAMERA_SPEED_LOOK;
-    mouseMovement.u = 0;
-    mouseMovement.v = 0;
+    camera.yaw   -= mouseMovement.x * -MAX_CAMERA_SPEED_LOOK;
+    camera.pitch += mouseMovement.y * -MAX_CAMERA_SPEED_LOOK;
+    mouseMovement.x = 0;
+    mouseMovement.y = 0;
 
     if (camera.pitch > 89.0f) camera.pitch = 89.0f;
     else if (camera.pitch < -89.0f) camera.pitch = -89.0f;
@@ -123,10 +123,10 @@ SDL_AppResult App_Update(void* appstate)
     ChunkCoord playerChunkCoords = getPlayerChunkCoord(camera.position);
 
     if (playerChunkCoords != prevPlayerChunkCoords) {
-        testManager.updateRenderList(camera.position);
+        worldManager.updateRenderList(camera.position);
     }
     prevPlayerChunkCoords = playerChunkCoords;
-    testManager.update(state, state->textureArray);
+    worldManager.update(state, state->textureArray);
 
     char buffer[256];
     snprintf(buffer, sizeof(buffer),

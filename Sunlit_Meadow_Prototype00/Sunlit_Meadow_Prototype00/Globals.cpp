@@ -24,7 +24,7 @@ int frame_count = 0;
 float sum = 0.0;
 
 // --- WorldManager ---
-WorldManager testManager;
+WorldManager worldManager;
 const int RENDER_DISTANCE = 5;
 
 ChunkCoord prevPlayerChunkCoords = { 0,0,0 };
