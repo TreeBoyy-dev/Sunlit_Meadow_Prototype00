@@ -1,5 +1,9 @@
 #pragma once
+#define SDL_MAIN_HANDLED
 #include <SDL3/SDL.h>
+#include <SDL3_ttf/SDL_ttf.h>
+#include <unordered_map>
+#include <string>
 #include <vector>
 
 #include "Vectors.h"
@@ -24,6 +28,18 @@ struct UITexBatch {
     std::vector<UIVertexTextured> verts;
 };
 
+struct CachedText {
+    SDL_GPUTexture* texture;
+    SDL_GPUSampler* sampler;
+    float w, h;
+};
+
+struct PendingTextDraw {
+    std::string text;
+    float x, y;
+    SDL_FColor color;
+};
+
 class UI_Renderer {
 public:
     UI_Renderer();
@@ -36,6 +52,12 @@ public:
     SDL_GPUGraphicsPipeline* texPipeline;
     SDL_GPUBuffer* texVertexBuffer;
     std::vector<UITexBatch>  texBatches;
+
+    TTF_Font* font = nullptr;
+    SDL_GPUSampler* textSampler = nullptr;
+    std::unordered_map<std::string, CachedText> textCache;
+    std::vector<PendingTextDraw>                pendingText;
+
 
     float screenW = 1280.0f;
     float screenH = 780.0f;
@@ -65,6 +87,11 @@ public:
     void drawTexture(SDL_GPUTexture* texture, SDL_GPUSampler* sampler,
         float x, float y, float w, float h,
         SDL_FColor tint = { 1.0f, 1.0f, 1.0f, 1.0f });
+
+    // text drawing
+    bool loadFont(const char* path, int pointSize);
+    void drawText(const char* text, float x, float y, SDL_FColor color);
+    void clearTextCache(SDL_GPUDevice* gpu);
 
     void upload(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer* cmd);
     void draw(SDL_GPURenderPass* pass);

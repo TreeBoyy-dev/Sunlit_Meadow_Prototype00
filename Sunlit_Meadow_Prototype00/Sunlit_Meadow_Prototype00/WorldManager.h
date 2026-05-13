@@ -8,6 +8,7 @@
 #include "Region.h"
 
 ChunkCoord getPlayerChunkCoord(Vec3 playerPosition);
+RegionCoord getPlayerRegionCoord(Vec3 playerPosition);
 
 class WorldManager {
 private:

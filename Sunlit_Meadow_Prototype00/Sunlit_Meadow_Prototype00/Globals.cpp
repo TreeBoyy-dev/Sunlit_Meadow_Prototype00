@@ -6,6 +6,9 @@ float fovDeg = 70.0f;
 float fovX = 0.0f;
 float aspect = 1.0f;
 
+bool renderDebugUI = false;
+float fps = 0;
+
 // --- Camera ---
 Camera camera = {
 	{264.0f, 264.0f, 70.0f},

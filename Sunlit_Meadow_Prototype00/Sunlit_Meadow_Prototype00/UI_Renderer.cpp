@@ -13,7 +13,9 @@ UI_Renderer::UI_Renderer()
     pipeline(nullptr),
     vertexBuffer(nullptr),
     texPipeline(nullptr),
-    texVertexBuffer(nullptr)
+    texVertexBuffer(nullptr),
+    font(nullptr),
+    textSampler(nullptr)
 {}
 
 // ---------- pipeline init ----------
@@ -145,7 +147,17 @@ bool UI_Renderer::init(SDL_GPUDevice* gpu, SDL_GPUTextureFormat swapchainFormat)
     };
     texVertexBuffer = SDL_CreateGPUBuffer(gpu, &texBufInfo);
 
-    return vertexBuffer != nullptr && texVertexBuffer != nullptr;
+    // ---- text sampler  ----
+    SDL_GPUSamplerCreateInfo textSamplerInfo = {
+    .min_filter = SDL_GPU_FILTER_LINEAR,
+    .mag_filter = SDL_GPU_FILTER_LINEAR,
+    .address_mode_u = SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE,
+    .address_mode_v = SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE,
+    };
+    textSampler = SDL_CreateGPUSampler(gpu, &textSamplerInfo);
+    SDL_Log("[UI] textSampler created: %p", textSampler);
+
+    return vertexBuffer != nullptr && texVertexBuffer != nullptr && textSampler != nullptr;
 }
 
 void UI_Renderer::destroy(SDL_GPUDevice* gpu)
@@ -248,8 +260,125 @@ void UI_Renderer::drawTexture(SDL_GPUTexture* texture, SDL_GPUSampler* sampler,
     batch->verts.insert(batch->verts.end(), { tl, tr, bl, tr, br, bl });
 }
 
+bool UI_Renderer::loadFont(const char* path, int pointSize)
+{
+    font = TTF_OpenFont(path, (float)pointSize);
+    SDL_Log("[UI] loadFont '%s' size=%d font=%p error=%s",
+        path, pointSize, font, SDL_GetError());
+    return font != nullptr;
+}
+
+void UI_Renderer::drawText(const char* text, float x, float y, SDL_FColor color)
+{
+    pendingText.push_back({ std::string(text), x, y, color });
+
+    SDL_Log("[UI] draw text");
+}
+
+void UI_Renderer::clearTextCache(SDL_GPUDevice* gpu)
+{
+    for (auto& [key, entry] : textCache)
+        SDL_ReleaseGPUTexture(gpu, entry.texture);
+    textCache.clear();
+
+    SDL_Log("[UI] clear text cache %d", textCache.size());
+}
+
 void UI_Renderer::upload(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer* cmd)
 {
+    SDL_Log("[UI] upload called — verts:%d pending:%d batches:%d",
+        (int)verts.size(), (int)pendingText.size(), (int)texBatches.size());
+
+    // --- text ---
+    for (auto& pending : pendingText)
+    {
+        // check cache first
+        auto it = textCache.find(pending.text);
+        if (it == textCache.end())
+        {
+            SDL_Log("[UI] rendering new string: '%s'", pending.text.c_str());
+            if (!font) {
+                SDL_Log("[UI] ERROR: font is null! Did you call loadFont()?");
+                continue;
+            }
+            // render to surface
+            SDL_Color fg = {
+                (Uint8)(pending.color.r * 255),
+                (Uint8)(pending.color.g * 255),
+                (Uint8)(pending.color.b * 255),
+                (Uint8)(pending.color.a * 255),
+            };
+            SDL_Surface* surf = TTF_RenderText_Blended(font, pending.text.c_str(), 0, fg);
+            if (!surf) {
+                SDL_Log("[UI] TTF_RenderText_Blended failed: %s", SDL_GetError());
+                continue;
+            }
+            SDL_Log("[UI] surface created: %dx%d", surf->w, surf->h);
+
+            // ensure RGBA format
+            SDL_Surface* rgba = SDL_ConvertSurface(surf, SDL_PIXELFORMAT_RGBA32);
+            SDL_DestroySurface(surf);
+            if (!rgba) continue;
+
+            // create GPU texture
+            SDL_GPUTextureCreateInfo texInfo = {
+                .type = SDL_GPU_TEXTURETYPE_2D,
+                .format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM,
+                .usage = SDL_GPU_TEXTUREUSAGE_SAMPLER,
+                .width = (Uint32)rgba->w,
+                .height = (Uint32)rgba->h,
+                .layer_count_or_depth = 1,
+                .num_levels = 1,
+            };
+            SDL_GPUTexture* tex = SDL_CreateGPUTexture(gpu, &texInfo);
+
+            // upload pixels
+            Uint32 uploadSize = (Uint32)(rgba->w * rgba->h * 4);
+            SDL_GPUTransferBufferCreateInfo tbInfo = {
+                .usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD,
+                .size = uploadSize,
+            };
+            SDL_GPUTransferBuffer* tb = SDL_CreateGPUTransferBuffer(gpu, &tbInfo);
+            void* mapped = SDL_MapGPUTransferBuffer(gpu, tb, false);
+
+            // copy row by row in case pitch != w*4
+            Uint8* dst = (Uint8*)mapped;
+            Uint8* src = (Uint8*)rgba->pixels;
+            for (int row = 0; row < rgba->h; row++) {
+                memcpy(dst + row * rgba->w * 4, src + row * rgba->pitch, rgba->w * 4);
+            }
+            SDL_UnmapGPUTransferBuffer(gpu, tb);
+
+            SDL_GPUCopyPass* cp = SDL_BeginGPUCopyPass(cmd);
+            SDL_GPUTextureTransferInfo tsrc = {
+                .transfer_buffer = tb,
+                .pixels_per_row = (Uint32)rgba->w,
+            };
+            SDL_GPUTextureRegion tdst = {
+                .texture = tex,
+                .w = (Uint32)rgba->w,
+                .h = (Uint32)rgba->h,
+                .d = 1,
+            };
+            SDL_UploadToGPUTexture(cp, &tsrc, &tdst, false);
+            SDL_EndGPUCopyPass(cp);
+            SDL_ReleaseGPUTransferBuffer(gpu, tb);
+
+            CachedText cached = { tex, textSampler, (float)rgba->w, (float)rgba->h };
+            SDL_DestroySurface(rgba);
+
+            textCache[pending.text] = cached;
+            it = textCache.find(pending.text);
+        }
+
+        // queue a textured quad using the cached texture
+        const CachedText& cached = it->second;
+        drawTexture(cached.texture, cached.sampler,
+            pending.x, pending.y, cached.w, cached.h,
+            pending.color);
+    }
+    pendingText.clear();
+
     // --- color verts ---
     if (!verts.empty()) {
         Uint32 uploadSize = (Uint32)(verts.size() * sizeof(UIVertex));
@@ -286,6 +415,9 @@ void UI_Renderer::upload(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer* cmd)
 
 void UI_Renderer::draw(SDL_GPURenderPass* pass)
 {
+    SDL_Log("[UI] draw — verts:%d batches:%d",
+        (int)verts.size(), (int)texBatches.size());
+
     // --- color draws ---
     if (!verts.empty()) {
         SDL_BindGPUGraphicsPipeline(pass, pipeline);
@@ -295,6 +427,8 @@ void UI_Renderer::draw(SDL_GPURenderPass* pass)
         verts.clear();
     }
 
+    SDL_Log("[UI] texBatches count: %d", (int)texBatches.size());
+
     // --- textured draws ---
     Uint32 offset = 0;
     if (!texBatches.empty()) {
@@ -303,14 +437,19 @@ void UI_Renderer::draw(SDL_GPURenderPass* pass)
         SDL_BindGPUVertexBuffers(pass, 0, &binding, 1);
 
         for (auto& batch : texBatches) {
+            SDL_Log("[UI] drawing batch: tex=%p verts:%d",
+                batch.texture, (int)batch.verts.size());
+
             if (batch.verts.empty()) continue;
             SDL_GPUTextureSamplerBinding samplerBinding = {
                 .texture = batch.texture,
                 .sampler = batch.sampler,
             };
             SDL_BindGPUFragmentSamplers(pass, 0, &samplerBinding, 1);
-            SDL_DrawGPUPrimitives(pass, (Uint32)batch.verts.size(), 1,
-                offset / (Uint32)sizeof(UIVertexTextured), 0);
+            Uint32 firstVert = offset / (Uint32)sizeof(UIVertexTextured);
+            SDL_Log("[UI] DrawPrimitives: count=%d firstVert=%d offset=%d",
+                (int)batch.verts.size(), firstVert, offset);
+            SDL_DrawGPUPrimitives(pass, (Uint32)batch.verts.size(), 1, firstVert, 0);
             offset += (Uint32)(batch.verts.size() * sizeof(UIVertexTextured));
         }
         texBatches.clear();

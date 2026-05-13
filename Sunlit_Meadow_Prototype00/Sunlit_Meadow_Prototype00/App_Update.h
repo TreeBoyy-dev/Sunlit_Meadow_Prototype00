@@ -108,7 +108,7 @@ SDL_AppResult App_Update(void* appstate)
     lst_dt[frame_count] = dt;
 
     float avrg = sum / (float)ARR_SIZE;
-    float fps = 1 / avrg;
+    fps = 1 / avrg;
 
     frame_count++;
     frame_count = frame_count % ARR_SIZE;
@@ -128,7 +128,7 @@ SDL_AppResult App_Update(void* appstate)
     prevPlayerChunkCoords = playerChunkCoords;
     worldManager.update(state, state->textureArray);
 
-    char buffer[256];
+    /*char buffer[256];
     snprintf(buffer, sizeof(buffer),
         "FPS: %4.1f, Player Position: %3.1f : %3.1f : %3.1f, Player Chunk: %d : %d : %d",
         fps,
@@ -136,6 +136,7 @@ SDL_AppResult App_Update(void* appstate)
         playerChunkCoords.x, playerChunkCoords.y, playerChunkCoords.z
     );
     SDL_SetWindowTitle(state->window, buffer);
+    */
 
     return SDL_APP_CONTINUE;
 }

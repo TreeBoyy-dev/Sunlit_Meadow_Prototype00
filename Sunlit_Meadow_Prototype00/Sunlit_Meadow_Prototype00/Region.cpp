@@ -190,12 +190,12 @@ void Region::queueMeshUpdate(ChunkCoord coord) {
 
         bool allLoaded = buildBorderAir(&borderAir, c);
         if (allLoaded) {
-            SDL_Log("[Mesh] %d|%d|%d  clean remesh",
-                c.x, c.y, c.z);
+            //SDL_Log("[Mesh] %d|%d|%d  clean remesh",
+            //    c.x, c.y, c.z);
         }
         else {
-            SDL_Log("[Mesh] %d|%d|%d  PARTIAL remesh",
-                c.x, c.y, c.z);
+            //SDL_Log("[Mesh] %d|%d|%d  PARTIAL remesh",
+            //    c.x, c.y, c.z);
             //continue;
         }
 

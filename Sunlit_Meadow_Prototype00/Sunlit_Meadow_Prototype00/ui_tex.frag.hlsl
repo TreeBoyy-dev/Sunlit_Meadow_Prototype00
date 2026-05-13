@@ -1,5 +1,5 @@
-[[vk::binding(0, 2)]] Texture2D tex : register(t0);
-[[vk::binding(0, 2)]] SamplerState samp : register(s0);
+[[vk::combinedImageSampler]][[vk::binding(0, 2)]] Texture2D tex : register(t0);
+[[vk::combinedImageSampler]][[vk::binding(0, 2)]] SamplerState samp : register(s0);
 
 struct PSInput
 {

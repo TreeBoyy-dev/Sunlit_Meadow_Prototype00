@@ -2,6 +2,7 @@
 #define SDL_MAIN_HANDLED
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
+#include <SDL3_ttf/SDL_ttf.h>
 
 #include "Globals.h"
 #include "InitPipeline.h"
@@ -16,6 +17,15 @@ SDL_AppResult App_Init(void* appstate)
 
     if (!SDL_Init(SDL_INIT_VIDEO)) {
         SDL_Log("SDL_Init failed: %s", SDL_GetError());
+        return SDL_APP_FAILURE;
+    }
+
+    if (!TTF_Init()) {
+        SDL_Log("TTF_Init failed: %s", SDL_GetError());
+        return SDL_APP_FAILURE;
+    }
+    if (!state->ui.loadFont("cour.ttf", 16)) {
+        SDL_Log("failed to load font", SDL_GetError());
         return SDL_APP_FAILURE;
     }
 

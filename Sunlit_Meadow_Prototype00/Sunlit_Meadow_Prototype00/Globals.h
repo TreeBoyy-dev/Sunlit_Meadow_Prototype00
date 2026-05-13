@@ -13,6 +13,9 @@ extern float fovDeg;
 extern float fovX;
 extern float aspect;
 
+extern bool renderDebugUI;
+extern float fps;
+
 // --- Camera ---
 extern Camera camera;
 extern Vec2 mouseMovement;

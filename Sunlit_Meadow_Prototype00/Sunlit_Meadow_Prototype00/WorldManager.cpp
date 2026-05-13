@@ -98,6 +98,13 @@ ChunkCoord getPlayerChunkCoord(Vec3 playerPosition) {
         (int)std::floor(playerPosition.z / CHUNK_SIZE)
     };
 }
+RegionCoord getPlayerRegionCoord(Vec3 playerPosition) {
+    return {
+        (int)std::floor(playerPosition.x / (CHUNK_SIZE * REGION_SIZE_YX)),
+        (int)std::floor(playerPosition.y / (CHUNK_SIZE * REGION_SIZE_YX)),
+        (int)std::floor(playerPosition.z / (CHUNK_SIZE * REGION_SIZE_Z))
+    };
+}
 
 void WorldManager::destroyManager(AppState* state) {
     for (auto& [coord, region] : regions) {
