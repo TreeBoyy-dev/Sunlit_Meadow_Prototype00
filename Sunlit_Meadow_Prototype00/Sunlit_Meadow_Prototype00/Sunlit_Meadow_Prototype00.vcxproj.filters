@@ -61,6 +61,9 @@
     <Filter Include="Header Files\UIRendering">
       <UniqueIdentifier>{dd5d0b79-ea29-41b1-ba4c-2fc156432e0f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\fonts">
+      <UniqueIdentifier>{81685d3b-2047-4ff6-a05a-49047742c194}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -228,5 +231,10 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="todo.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="cour.ttf">
+      <Filter>Resource Files\fonts</Filter>
+    </Font>
   </ItemGroup>
 </Project>

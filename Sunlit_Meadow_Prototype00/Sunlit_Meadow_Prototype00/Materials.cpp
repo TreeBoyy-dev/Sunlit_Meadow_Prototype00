@@ -148,6 +148,11 @@ bool UploadTextureArrayLayers(
         SDL_Log("Failed to load Texture: marble");
         return false;
     }
+    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "chalk.png", MATERIAL_CHALK))
+    {
+        SDL_Log("Failed to load Texture: chalk");
+        return false;
+    }
     if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "gneiss.png", MATERIAL_GNEISS))
     {
         SDL_Log("Failed to load Texture: gneiss");

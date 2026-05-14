@@ -6,7 +6,7 @@ float fovDeg = 70.0f;
 float fovX = 0.0f;
 float aspect = 1.0f;
 
-bool renderDebugUI = false;
+bool renderDebugUI = true;
 float fps = 0;
 
 // --- Camera ---
@@ -28,7 +28,7 @@ float sum = 0.0;
 
 // --- WorldManager ---
 WorldManager worldManager;
-const int RENDER_DISTANCE = 5;
+const int RENDER_DISTANCE = 6;
 
 ChunkCoord prevPlayerChunkCoords = { 0,0,0 };
 

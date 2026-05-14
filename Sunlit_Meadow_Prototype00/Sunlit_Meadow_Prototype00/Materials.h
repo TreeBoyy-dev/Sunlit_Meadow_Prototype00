@@ -8,6 +8,7 @@ typedef enum {
     MATERIAL_COBBLESTONE,
     MATERIAL_DIORITE,
     MATERIAL_MARBLE,
+    MATERIAL_CHALK,
     MATERIAL_GNEISS,
     //dirt like blocks
     MATERIAL_DIRT,

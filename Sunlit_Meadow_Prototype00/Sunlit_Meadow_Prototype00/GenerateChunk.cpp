@@ -189,7 +189,7 @@ void generateFeatures_Boulders(
 	if (rand() % 5 != 0)
 		return;
 
-	Block* stoneBlock = blockManager.getByName("marble");
+	Block* stoneBlock = blockManager.getByName("chalk");
 	if (stoneBlock == nullptr)
 		return;
 

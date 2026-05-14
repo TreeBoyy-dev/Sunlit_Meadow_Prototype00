@@ -1,4 +1,4 @@
-display debug text using a UI
+(done) display debug text using a UI
 
 change how the generated chunks are handled
 	- new system:
@@ -27,8 +27,6 @@ greedy meshing:
 
 add skybox
 
-figure out a way to store block/item/entity data
-
 add entity
 	- data
 	- physics
@@ -41,3 +39,5 @@ add menues
 add more blocks
 add stairs, slabs (check), walls etc (block varients in generall)
 
+figure out a way to store block/item/entity data
+	- then store the world in a file

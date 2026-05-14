@@ -1,17 +1,3 @@
 ﻿  Scanning sources for module dependencies...
-  Chunk.cpp
-  ChunkMesh.cpp
-  GenerateChunk.cpp
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\GenerateChunk.cpp(147,14): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\GenerateChunk.cpp(200,14): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-  Globals.cpp
-  WorldManager.cpp
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(74,28): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(74,28): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(74,48): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(74,48): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(74,68): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(74,68): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-  Generating Code...
-  main.cpp
+  BlockModel.cpp
   Sunlit_Meadow_Prototype00.vcxproj -> C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\x64\Debug\Sunlit_Meadow_Prototype00.exe
