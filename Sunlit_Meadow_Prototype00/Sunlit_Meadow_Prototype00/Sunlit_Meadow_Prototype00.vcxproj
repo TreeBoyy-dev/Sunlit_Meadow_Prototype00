@@ -147,6 +147,7 @@
     <ClCompile Include="Mat4.cpp" />
     <ClCompile Include="Materials.cpp" />
     <ClCompile Include="Region.cpp" />
+    <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="SlabBlockModel.cpp" />
     <ClCompile Include="UI_Renderer.cpp" />
     <ClCompile Include="Vectors.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="InitPipeline.h" />
     <ClInclude Include="Mat4.h" />
+    <ClInclude Include="SkyBox.h" />
     <ClInclude Include="SlabBlockModel.h" />
     <ClInclude Include="ThreadSafeQueue.h" />
     <ClInclude Include="UI_Renderer.h" />
@@ -196,6 +198,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="shader.vert.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="skybox.frag.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="skybox.vert.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="ui_tex.frag.hlsl">

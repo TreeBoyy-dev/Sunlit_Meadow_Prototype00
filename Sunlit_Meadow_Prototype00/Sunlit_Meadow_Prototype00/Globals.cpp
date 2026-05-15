@@ -9,6 +9,8 @@ float aspect = 1.0f;
 bool renderDebugUI = true;
 float fps = 0;
 
+Skybox skybox;
+
 // --- Camera ---
 Camera camera = {
 	{264.0f, 264.0f, 70.0f},

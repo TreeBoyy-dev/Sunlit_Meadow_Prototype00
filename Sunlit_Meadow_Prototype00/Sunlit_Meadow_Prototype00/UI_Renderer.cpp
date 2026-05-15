@@ -70,7 +70,7 @@ bool UI_Renderer::init(SDL_GPUDevice* gpu, SDL_GPUTextureFormat swapchainFormat)
             .has_depth_stencil_target = false,
         },
     };
-
+    
     pipeline = SDL_CreateGPUGraphicsPipeline(gpu, &pipeInfo);
     SDL_ReleaseGPUShader(gpu, vert);
     SDL_ReleaseGPUShader(gpu, frag);

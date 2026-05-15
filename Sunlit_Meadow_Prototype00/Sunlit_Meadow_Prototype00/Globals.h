@@ -6,6 +6,7 @@
 #include "BlockManager.h"
 #include "ChunkTypes.h"
 #include "FastNoiseLite.h"
+#include "Skybox.h"
 
 extern const float NEAR_PLANE;
 extern const float FAR_PLANE;
@@ -15,6 +16,8 @@ extern float aspect;
 
 extern bool renderDebugUI;
 extern float fps;
+
+extern Skybox skybox;
 
 // --- Camera ---
 extern Camera camera;

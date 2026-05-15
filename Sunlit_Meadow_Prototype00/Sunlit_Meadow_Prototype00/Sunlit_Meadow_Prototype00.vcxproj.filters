@@ -123,6 +123,9 @@
     <ClCompile Include="UI_Renderer.cpp">
       <Filter>Source Files\UIRendering</Filter>
     </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h">
@@ -203,6 +206,9 @@
     <ClInclude Include="LoadShader.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ui.vert.hlsl">
@@ -226,6 +232,12 @@
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
     <FxCompile Include="ui_tex.vert.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="skybox.frag.hlsl">
+      <Filter>Resource Files\shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="skybox.vert.hlsl">
       <Filter>Resource Files\shaders</Filter>
     </FxCompile>
   </ItemGroup>

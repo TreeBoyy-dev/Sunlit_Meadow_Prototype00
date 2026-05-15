@@ -60,26 +60,51 @@ SDL_AppResult App_Render(void* appstate)
 
     Mat4 viewMat = mat4LookAt(camera.position, camera.lookTarget, { 0.0f, 0.0f, -1.0f });
 
+    Mat4 rotOnlyView = mat4LookAt(
+        { 0.0f, 0.0f, 0.0f },          
+        camera.forward,                  
+        { 0.0f, 0.0f, -1.0f }    
+    );
+
     Mat4 modelMat = mat4Mul(
         mat4Translate(0.0f, 0.0f, 0.0f),
         mat4Rotate(0.0f, 0.0f, 0.0f)
     );
-    UBO ubo = {
+
+    UBO worldUBO = {
         .mvp = mat4Mul(state->projMat, mat4Mul(viewMat, modelMat)),
+    };
+    UBO skyboxUBO = {
+        .mvp = mat4Mul(state->projMat, rotOnlyView),
     };
 
     if (swapchain_tex) {
 
+        SDL_GPUColorTargetInfo skybox_color = {
+        .texture = swapchain_tex,
+        .clear_color = { 0.0f, 0.2f, 0.4f, 1.0f },
+        .load_op = SDL_GPU_LOADOP_CLEAR,
+        .store_op = SDL_GPU_STOREOP_STORE,
+        };
+
+        SDL_GPURenderPass* skyboxPass = SDL_BeginGPURenderPass(
+            cmd,
+            &skybox_color,
+            1,
+            nullptr
+        );
+        skybox.draw(skyboxPass, cmd, skyboxUBO);
+        SDL_EndGPURenderPass(skyboxPass);
+
         SDL_GPUColorTargetInfo color_target = {
             .texture = swapchain_tex,
             .clear_color = { 0.0f, 0.2f, 0.4f, 1.0f },
-            .load_op = SDL_GPU_LOADOP_CLEAR,
+            .load_op = SDL_GPU_LOADOP_LOAD,
             .store_op = SDL_GPU_STOREOP_STORE,
         };
-
         SDL_GPUDepthStencilTargetInfo depth_target = {
             .texture = state->depth_texture,
-            .clear_depth = 1,
+            .clear_depth = 1.0,
             .load_op = SDL_GPU_LOADOP_CLEAR,
             .store_op = SDL_GPU_STOREOP_DONT_CARE,
         };
@@ -90,20 +115,17 @@ SDL_AppResult App_Render(void* appstate)
             1,
             &depth_target
         );
-
-        worldManager.drawChunks(state, cmd, worldPass, ubo);
-
+        worldManager.drawChunks(state, cmd, worldPass, worldUBO);
         SDL_EndGPURenderPass(worldPass);
 
-        // UI pass
         SDL_GPUColorTargetInfo ui_target = {
             .texture = swapchain_tex,
             .load_op = SDL_GPU_LOADOP_LOAD,
             .store_op = SDL_GPU_STOREOP_STORE,
         };
+
         SDL_GPURenderPass* uiPass = SDL_BeginGPURenderPass(cmd, &ui_target, 1, nullptr);
         state->ui.draw(uiPass);
-
         SDL_EndGPURenderPass(uiPass);
     }
 

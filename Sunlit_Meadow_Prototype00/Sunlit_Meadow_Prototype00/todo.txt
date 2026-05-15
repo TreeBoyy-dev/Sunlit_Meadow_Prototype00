@@ -25,7 +25,7 @@ greedy meshing:
 		-> simplefy faces (combine adjacend faces on the same level)
 		-> load the simplefied faces into the mesh
 
-add skybox
+(done - could use better texture) add skybox
 
 add entity
 	- data
