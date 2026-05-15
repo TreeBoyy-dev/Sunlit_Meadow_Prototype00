@@ -30,27 +30,41 @@ void generateShape(
 		for (int y = 0; y < CHUNK_SIZE; y++) {
 			int yAbs = chunkCoordinates.y * CHUNK_SIZE + y;
 
-			float zGenerated = standartNoise.GetNoise((float)xAbs, (float)yAbs);
-
-			float zShape = 60 + zGenerated * 10;
-			heightmap[x][y] = zShape;
-
-			for (int z = 0; z < CHUNK_SIZE; z++) {
-				int zAbs = chunkCoordinates.z * CHUNK_SIZE + z;
-
-				Block* block;
-
-				if ((float)zAbs <= zShape) {
-					block = blockManager.getByName("cobble_stone");
-				}
-				else {
-					block = blockManager.getByName("air");
-				}
-
-				if (block != nullptr)
+			if (chunkCoordinates.z <= 2) {
+				for (int z = 0; z < CHUNK_SIZE; z++) {
+					Block* block = blockManager.getByName("cobble_stone");
 					blockIDs[x][y][z] = block->getID();
-				else
-					SDL_Log("Block = nullptr in Chunk generation!!!");
+				}
+			}
+			else if (chunkCoordinates.z >= 5) {
+				for (int z = 0; z < CHUNK_SIZE; z++) {
+					Block* block = blockManager.getByName("air");
+					blockIDs[x][y][z] = block->getID();
+				}
+			}
+			else {
+				float zGenerated = standartNoise.GetNoise((float)xAbs, (float)yAbs);
+
+				float zShape = 60 + zGenerated * 10;
+				heightmap[x][y] = zShape;
+
+				for (int z = 0; z < CHUNK_SIZE; z++) {
+					int zAbs = chunkCoordinates.z * CHUNK_SIZE + z;
+
+					Block* block;
+
+					if ((float)zAbs <= zShape) {
+						block = blockManager.getByName("cobble_stone");
+					}
+					else {
+						block = blockManager.getByName("air");
+					}
+
+					if (block != nullptr)
+						blockIDs[x][y][z] = block->getID();
+					else
+						SDL_Log("Block = nullptr in Chunk generation!!!");
+				}
 			}
 		}
 	}

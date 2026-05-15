@@ -1,3 +1,5 @@
 ﻿  Scanning sources for module dependencies...
-  main.cpp
+  GenerateChunk.cpp
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\GenerateChunk.cpp(161,14): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\GenerateChunk.cpp(214,14): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
   Sunlit_Meadow_Prototype00.vcxproj -> C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\x64\Debug\Sunlit_Meadow_Prototype00.exe
