@@ -11,7 +11,7 @@ class ThreadSafeQueue {
 public:
     void push(T item) {
         std::lock_guard<std::mutex> lock(m_mutex);
-        m_queue.push(std::move(item));
+        m_queue.push_back(std::move(item));
     }
 
     // Returns std::nullopt if queue is empty (non-blocking)
@@ -22,18 +22,30 @@ public:
             return std::nullopt;
 
         T item = std::move(m_queue.front());
-        m_queue.pop();
+        m_queue.pop_front();
         return item;
     }
 
-    bool empty() {
+    template<typename Pred>
+    bool remove_if(Pred pred) {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        for (auto it = m_queue.begin(); it != m_queue.end(); ++it) {
+            if (pred(*it)) {
+                m_queue.erase(it);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    bool empty() const {
         std::lock_guard<std::mutex> lock(m_mutex);
         return m_queue.empty();
     }
 
 private:
-    std::queue<T> m_queue;
-    std::mutex m_mutex;
+    std::deque<T> m_queue;
+    mutable std::mutex m_mutex;
 };
 
 template<typename T1, typename T2>

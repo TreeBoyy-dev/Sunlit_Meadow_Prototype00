@@ -38,3 +38,9 @@ void ChunkGeneratorWorker::workerLoop() {
         }
     }
 }
+
+bool ChunkGeneratorWorker::cancelRequest(ChunkCoord coord) {
+    return m_inputQueue.remove_if(
+        [&](const ChunkCoord& c) { return c == coord; }
+    );
+}

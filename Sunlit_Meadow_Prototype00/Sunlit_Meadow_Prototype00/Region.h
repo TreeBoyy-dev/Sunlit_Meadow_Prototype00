@@ -45,8 +45,14 @@ public:
     Region(RegionCoord regionCoordinates);
     ~Region();
 
-    Chunk* getChunk(ChunkCoord chunkCoordinates, bool queueChunk = true);
-    bool update(AppState* state, SDL_GPUTexture* textureArray);
+    Chunk* getChunk(ChunkCoord chunkCoordinates);
+
+    void requestChunkGeneration(ChunkCoord chunkCoordinates);
+    void cancelChunkGeneration(ChunkCoord chunkCoordinates);
+
+    bool update(AppState* state,
+        SDL_GPUTexture* textureArray,
+        std::vector<ChunkCoord>& outNewlyReady);
 
     RegionCoord getCoordinates();
     void destroyRegion(AppState* state);
@@ -54,5 +60,7 @@ public:
 private:
     bool buildBorderAir(ChunkBorderAir* border, ChunkCoord coord);
     void queueMeshUpdate(ChunkCoord coord);
-    bool collectMeshResults(AppState* state, SDL_GPUTexture* textureArray);
+    bool collectMeshResults(AppState* state,
+        SDL_GPUTexture* textureArray,
+        std::vector<ChunkCoord>& outNewlyReady);
 };

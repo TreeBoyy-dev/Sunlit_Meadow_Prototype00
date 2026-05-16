@@ -17,8 +17,8 @@ public:
     void stop();
 
     void requestChunk(ChunkCoord coord);
-    // Returns a fully generated (but not yet mesh-init'd) Chunk, or nullopt
     std::optional<std::unique_ptr<Chunk>> tryGetChunk();
+    bool cancelRequest(ChunkCoord coord);
 
 private:
     void workerLoop();

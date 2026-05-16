@@ -1,5 +1,9 @@
 (done) display debug text using a UI
 
+move rendering to seperate Render Thread
+
+move initPipeline to Worldmanager
+
 change how the generated chunks are handled
 	- new system:
 		-> list rendered chunks

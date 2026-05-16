@@ -91,7 +91,6 @@ SDL_AppResult App_Init(void* appstate)
     blockManager.init();
 
     worldManager.calcVisibleChunksList(RENDER_DISTANCE);
-    worldManager.updateRenderList(camera.position);
     worldManager.update(state, state->textureArray);
 
     skybox.init(state, SDL_GetGPUSwapchainTextureFormat(state->gpu, state->window), "Textures/", "Cubemap_Sky_SBS.png");

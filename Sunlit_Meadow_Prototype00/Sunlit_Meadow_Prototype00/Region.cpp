@@ -15,25 +15,30 @@ Region::~Region() {
     m_worker.stop();
 }
 
-Chunk* Region::getChunk(ChunkCoord chunkCoordinates, bool queueChunk) {
-    // Already fully ready
+Chunk* Region::getChunk(ChunkCoord chunkCoordinates) {
     auto it = chunks.find(chunkCoordinates);
-    if (it != chunks.end())
-        return it->second.get();
-
-    if (queueChunk) {
-        // Already queued, still generating
-        if (pendingChunks.count(chunkCoordinates))
-            return nullptr;
-
-        // New request — send to worker
-        pendingChunks.insert(chunkCoordinates);
-        g_worker.requestChunk(chunkCoordinates);
-    }
-    return nullptr;
+    return (it != chunks.end()) ? it->second.get() : nullptr;
 }
 
-bool Region::update(AppState* state, SDL_GPUTexture* textureArray) {
+void Region::requestChunkGeneration(ChunkCoord chunkCoordinates) {
+    if (chunks.count(chunkCoordinates))        return; // already generated
+    if (pendingChunks.count(chunkCoordinates)) return; // already queued
+
+    pendingChunks.insert(chunkCoordinates);
+    g_worker.requestChunk(chunkCoordinates);
+}
+
+void Region::cancelChunkGeneration(ChunkCoord chunkCoordinates) {
+    if (!pendingChunks.count(chunkCoordinates)) return;
+
+    if (g_worker.cancelRequest(chunkCoordinates))
+        pendingChunks.erase(chunkCoordinates);
+}
+
+bool Region::update(AppState* state,
+    SDL_GPUTexture* textureArray,
+    std::vector<ChunkCoord>& outNewlyReady)
+{
     bool changed = false;
 
     // --- drain g_worker: newly generated chunks ---
@@ -57,13 +62,11 @@ bool Region::update(AppState* state, SDL_GPUTexture* textureArray) {
         changed = true;
     }
 
-    // Queue mesh updates only after all new chunks are in the map,
-    // so neighbors arriving in the same frame are visible to each other.
     for (const auto& coord : newlyAdded)
         queueMeshUpdate(coord);
 
-    // --- drain m_worker: re-meshed chunks ---
-    if (collectMeshResults(state, textureArray))
+    // --- drain m_worker: re-meshed chunks (these are the "drawable" events) ---
+    if (collectMeshResults(state, textureArray, outNewlyReady))
         changed = true;
 
     return changed;
@@ -76,7 +79,7 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
 
     bool allFacesLoaded = true;
 
-    if (Chunk* c = getChunk({ coord.x + 1, coord.y,     coord.z }, false))
+    if (Chunk* c = getChunk({ coord.x + 1, coord.y,     coord.z }))
         if (auto* face = c->getBorderAir({ -1,  0,  0 }))  // neighbor's x- face
             memcpy(border->front, face, sizeof(border->front));
         else {
@@ -90,7 +93,7 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         allFacesLoaded = false;
     }
 
-    if (Chunk* c = getChunk({ coord.x - 1, coord.y,     coord.z }, false))
+    if (Chunk* c = getChunk({ coord.x - 1, coord.y,     coord.z }))
         if (auto* face = c->getBorderAir({ 1,  0,  0 }))  // neighbor's x+ face
             memcpy(border->back, face, sizeof(border->back));
         else {
@@ -104,7 +107,7 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         allFacesLoaded = false;
     }
 
-    if (Chunk* c = getChunk({ coord.x,     coord.y + 1, coord.z }, false))
+    if (Chunk* c = getChunk({ coord.x,     coord.y + 1, coord.z }))
         if (auto* face = c->getBorderAir({ 0, -1,  0 }))  // neighbor's y- face
             memcpy(border->right, face, sizeof(border->right));
         else {
@@ -118,7 +121,7 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         allFacesLoaded = false;
     }
 
-    if (Chunk* c = getChunk({ coord.x,     coord.y - 1, coord.z }, false))
+    if (Chunk* c = getChunk({ coord.x,     coord.y - 1, coord.z }))
         if (auto* face = c->getBorderAir({ 0,  1,  0 }))  // neighbor's y+ face
             memcpy(border->left, face, sizeof(border->left));
         else {
@@ -132,7 +135,7 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         allFacesLoaded = false;
     }
 
-    if (Chunk* c = getChunk({ coord.x,     coord.y,     coord.z + 1 }, false))
+    if (Chunk* c = getChunk({ coord.x,     coord.y,     coord.z + 1 }))
         if (auto* face = c->getBorderAir({ 0,  0, -1 }))  // neighbor's z- face
             memcpy(border->top, face, sizeof(border->top));
         else {
@@ -146,7 +149,7 @@ bool Region::buildBorderAir(ChunkBorderAir* border, ChunkCoord coord) {
         allFacesLoaded = false;
     }
 
-    if (Chunk* c = getChunk({ coord.x,     coord.y,     coord.z - 1 }, false))
+    if (Chunk* c = getChunk({ coord.x,     coord.y,     coord.z - 1 }))
         if (auto* face = c->getBorderAir({ 0,  0,  1 }))  // neighbor's z+ face
             memcpy(border->bottom, face, sizeof(border->bottom));
         else {
@@ -206,7 +209,10 @@ void Region::queueMeshUpdate(ChunkCoord coord) {
     }
 }
 
-bool Region::collectMeshResults(AppState* state, SDL_GPUTexture* textureArray) {
+bool Region::collectMeshResults(AppState* state,
+    SDL_GPUTexture* textureArray,
+    std::vector<ChunkCoord>& outNewlyReady)
+{
     if (pendingMeshChunks.empty()) return false;
 
     const int MAX_UPLOADS_PER_FRAME = 2;
@@ -223,9 +229,10 @@ bool Region::collectMeshResults(AppState* state, SDL_GPUTexture* textureArray) {
         auto it = chunks.find(coord);
         if (it == chunks.end()) continue; // unloaded while meshing
 
-        it->second->transferMeshesFrom(*result); // swap in built mesh data
+        it->second->transferMeshesFrom(*result);
         it->second->uploadMeshes(state, textureArray);
         meshedChunks.insert(coord);
+        outNewlyReady.push_back(coord);   // <-- report drawable
 
         uploads++;
         any = true;
