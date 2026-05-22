@@ -30,7 +30,7 @@ float sum = 0.0;
 
 // --- WorldManager ---
 WorldManager worldManager;
-const int RENDER_DISTANCE = 16;
+const int RENDER_DISTANCE = 12;
 
 ChunkCoord prevPlayerChunkCoords = { 0,0,0 };
 

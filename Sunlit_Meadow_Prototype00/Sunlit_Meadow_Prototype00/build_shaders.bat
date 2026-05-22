@@ -24,4 +24,10 @@ if %errorlevel% neq 0 ( echo Vertex skybox shader failed. & exit /b 1 )
 shadercross.exe skybox.frag.hlsl -o skybox.frag.spv
 if %errorlevel% neq 0 ( echo Fragment skybox shader failed. & exit /b 1 )
 
+shadercross.exe entity.vert.hlsl -o entity.vert.spv
+if %errorlevel% neq 0 ( echo Vertex entity shader failed. & exit /b 1 )
+ 
+shadercross.exe entity.frag.hlsl -o entity.frag.spv
+if %errorlevel% neq 0 ( echo Fragment entity shader failed. & exit /b 1 )
+ 
 echo Done.

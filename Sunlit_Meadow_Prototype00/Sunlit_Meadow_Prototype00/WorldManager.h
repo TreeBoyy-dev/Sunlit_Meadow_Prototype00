@@ -25,7 +25,7 @@ public:
     WorldManager();
     void calcVisibleChunksList(int renderDistance);
     void update(AppState* state, SDL_GPUTexture* textureArray);
-    void updatePlayerPosition(Vec3 playerPosition);   // replaces updateRenderList
+    void updatePlayerPosition(Vec3 playerPosition);
     void drawChunks(AppState*, SDL_GPUCommandBuffer*, SDL_GPURenderPass*, const UBO&);
     void destroyManager(AppState* state);
 

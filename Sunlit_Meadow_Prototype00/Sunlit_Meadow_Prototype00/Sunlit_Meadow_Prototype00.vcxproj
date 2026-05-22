@@ -137,6 +137,9 @@
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="ChunkGeneratorWorker.cpp" />
     <ClCompile Include="ChunkMeshWorker.cpp" />
+    <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="EntityManager.cpp" />
+    <ClCompile Include="EntityModel.cpp" />
     <ClCompile Include="GenerateChunk.cpp" />
     <ClCompile Include="GenerateChunk.h" />
     <ClCompile Include="Globals.cpp" />
@@ -165,6 +168,9 @@
     <ClInclude Include="ChunkMeshWorker.h" />
     <ClInclude Include="ChunkTypes.h" />
     <ClInclude Include="ChunkGeneratorWorker.h" />
+    <ClInclude Include="Entity.h" />
+    <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="EntityModel.h" />
     <ClInclude Include="FastNoiseLite.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="InitNoise.h" />
@@ -194,6 +200,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="entity.frag.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="entity.vert.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="shader.frag.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>

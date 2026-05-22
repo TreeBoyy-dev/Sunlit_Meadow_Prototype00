@@ -1,4 +1,5 @@
 #include <math.h>
+#include <chrono>
 #include <algorithm>
 #include "WorldManager.h"
 #include "Globals.h"
@@ -45,6 +46,9 @@ void WorldManager::updatePlayerPosition(Vec3 playerPosition) {
 }
 
 void WorldManager::onPlayerChunkChanged() {
+    using clock = std::chrono::steady_clock;
+    auto t0 = clock::now();
+
     // 1) Build the new visible set in absolute coords.
     std::unordered_set<ChunkCoord, ChunkCoordHash> nowVisible;
     nowVisible.reserve(visibleChunkCoordsRelative.size());
@@ -53,23 +57,27 @@ void WorldManager::onPlayerChunkChanged() {
                             rel.y + m_lastPlayerChunkPos.y,
                             rel.z + m_lastPlayerChunkPos.z });
     }
+    auto t1 = clock::now();
 
     // 2) Drop renderList entries that left the view.
     for (auto it = renderList.begin(); it != renderList.end(); ) {
         if (!nowVisible.count(it->first)) it = renderList.erase(it);
         else                              ++it;
     }
+    auto t2 = clock::now();
 
     // 3) Drop pendingChunks entries that left the view, and cancel them.
+    /*
     for (auto it = pendingChunks.begin(); it != pendingChunks.end(); ) {
         if (!nowVisible.count(*it)) {
             getRegion(regionCoordForChunk(*it))->cancelChunkGeneration(*it);
             it = pendingChunks.erase(it);
         }
         else {
-            ++it;
+            ++it; 
         }
-    }
+    }//*/
+    auto t3 = clock::now();
 
     // 4) For every newly visible chunk: ready -> renderList, else -> pending.
     std::vector<ChunkCoord> toRequest;
@@ -87,6 +95,7 @@ void WorldManager::onPlayerChunkChanged() {
             toRequest.push_back(coord);
         }
     }
+    auto t4 = clock::now();
 
     // 5) Sort the new pending ones by distance, closest first, then request.
     const ChunkCoord pp = m_lastPlayerChunkPos;
@@ -96,9 +105,24 @@ void WorldManager::onPlayerChunkChanged() {
             int bx = b.x - pp.x, by = b.y - pp.y, bz = b.z - pp.z;
             return (ax * ax + ay * ay + az * az) < (bx * bx + by * by + bz * bz);
         });
+    auto t5 = clock::now();
 
     for (const ChunkCoord& coord : toRequest)
         getRegion(regionCoordForChunk(coord))->requestChunkGeneration(coord);
+    auto t6 = clock::now();
+
+    //Logger to display time usage:
+    ///*
+    using us = std::chrono::microseconds;
+    SDL_Log("time usage onPlayerChunkChanged: step1=%lldus step2=%lldus step3=%lldus step4=%lldus step5=%lldus step6=%lldus (total=%lldus)",
+        (long long)std::chrono::duration_cast<us>(t1 - t0).count(),
+        (long long)std::chrono::duration_cast<us>(t2 - t1).count(),
+        (long long)std::chrono::duration_cast<us>(t3 - t2).count(),
+        (long long)std::chrono::duration_cast<us>(t4 - t3).count(),
+        (long long)std::chrono::duration_cast<us>(t5 - t4).count(),
+        (long long)std::chrono::duration_cast<us>(t6 - t5).count(),
+        (long long)std::chrono::duration_cast<us>(t6 - t0).count());
+    //*/
 }
 
 void WorldManager::drawChunks(AppState* state,

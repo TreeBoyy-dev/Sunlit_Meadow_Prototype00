@@ -122,21 +122,8 @@ SDL_AppResult App_Update(void* appstate)
 
     ChunkCoord playerChunkCoords = getPlayerChunkCoord(camera.position);
 
-    if (playerChunkCoords != prevPlayerChunkCoords) {
-        worldManager.updatePlayerPosition(camera.position);
-    }
-    prevPlayerChunkCoords = playerChunkCoords;
+    worldManager.updatePlayerPosition(camera.position);
     worldManager.update(state, state->textureArray);
-
-    /*char buffer[256];
-    snprintf(buffer, sizeof(buffer),
-        "FPS: %4.1f, Player Position: %3.1f : %3.1f : %3.1f, Player Chunk: %d : %d : %d",
-        fps,
-        camera.position.x, camera.position.y, camera.position.z,
-        playerChunkCoords.x, playerChunkCoords.y, playerChunkCoords.z
-    );
-    SDL_SetWindowTitle(state->window, buffer);
-    */
 
     return SDL_APP_CONTINUE;
 }

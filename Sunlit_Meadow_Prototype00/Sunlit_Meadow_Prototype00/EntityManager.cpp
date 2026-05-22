@@ -1,0 +1,364 @@
+#include <cstring>
+
+#include "EntityManager.h"
+#include "LoadShader.h"
+#include "InitPipeline.h"   // depth_texture_format
+#include "Materials.h"      // BuildAbsolutePath
+
+EntityManager::EntityManager() {}
+
+// ---------------------------------------------------------------------------
+// Pipeline: its own vertex/fragment shaders, but reuses the engine Vertex
+// layout and UBO so it slots into the same view/projection math as the world.
+// ---------------------------------------------------------------------------
+bool EntityManager::init(AppState* state) {
+    SDL_GPUShader* vert = loadShader(state->gpu, "entity.vert.spv", 1, 0);
+    SDL_GPUShader* frag = loadShader(state->gpu, "entity.frag.spv", 0, 1);
+    if (!vert || !frag) {
+        SDL_Log("[Entity] shader load failed");
+        return false;
+    }
+
+    SDL_GPUVertexAttribute vertex_attrs[5] = {
+        {.location = 0, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3, .offset = (Uint32)offsetof(Vertex, position) },
+        {.location = 1, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3, .offset = (Uint32)offsetof(Vertex, normal)   },
+        {.location = 2, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2, .offset = (Uint32)offsetof(Vertex, uv)       },
+        {.location = 3, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT4, .offset = (Uint32)offsetof(Vertex, color)    },
+        {.location = 4, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT,  .offset = (Uint32)offsetof(Vertex, materialIndex) },
+    };
+
+    SDL_GPUVertexBufferDescription vbDesc = {
+        .slot = 0,
+        .pitch = sizeof(Vertex),
+        .input_rate = SDL_GPU_VERTEXINPUTRATE_VERTEX,
+    };
+    SDL_GPUColorTargetDescription colorTarget = {
+        .format = SDL_GetGPUSwapchainTextureFormat(state->gpu, state->window),
+    };
+    SDL_GPURasterizerState raster = {
+        .fill_mode = SDL_GPU_FILLMODE_FILL,
+        .cull_mode = SDL_GPU_CULLMODE_BACK,
+        .front_face = SDL_GPU_FRONTFACE_COUNTER_CLOCKWISE,
+    };
+    SDL_GPUDepthStencilState depth = {
+        .compare_op = SDL_GPU_COMPAREOP_LESS,
+        .enable_depth_test = true,
+        .enable_depth_write = true,
+    };
+
+    SDL_GPUGraphicsPipelineCreateInfo pipeInfo = {
+        .vertex_shader = vert,
+        .fragment_shader = frag,
+        .vertex_input_state = {
+            .vertex_buffer_descriptions = &vbDesc,
+            .num_vertex_buffers = 1,
+            .vertex_attributes = vertex_attrs,
+            .num_vertex_attributes = SDL_arraysize(vertex_attrs),
+        },
+        .primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST,
+        .rasterizer_state = raster,
+        .depth_stencil_state = depth,
+        .target_info = {
+            .color_target_descriptions = &colorTarget,
+            .num_color_targets = 1,
+            .depth_stencil_format = depth_texture_format,
+            .has_depth_stencil_target = true,
+        },
+    };
+
+    pipeline = SDL_CreateGPUGraphicsPipeline(state->gpu, &pipeInfo);
+    SDL_ReleaseGPUShader(state->gpu, vert);
+    SDL_ReleaseGPUShader(state->gpu, frag);
+    if (!pipeline) {
+        SDL_Log("[Entity] pipeline failed: %s", SDL_GetError());
+        return false;
+    }
+
+    SDL_GPUSamplerCreateInfo samplerInfo = {
+        .min_filter = SDL_GPU_FILTER_NEAREST,
+        .mag_filter = SDL_GPU_FILTER_NEAREST,
+        .mipmap_mode = SDL_GPU_SAMPLERMIPMAPMODE_NEAREST,
+        .address_mode_u = SDL_GPU_SAMPLERADDRESSMODE_REPEAT,
+        .address_mode_v = SDL_GPU_SAMPLERADDRESSMODE_REPEAT,
+        .address_mode_w = SDL_GPU_SAMPLERADDRESSMODE_REPEAT,
+    };
+    sampler = SDL_CreateGPUSampler(state->gpu, &samplerInfo);
+    if (!sampler) {
+        SDL_Log("[Entity] sampler failed: %s", SDL_GetError());
+        return false;
+    }
+
+    return true;
+}
+
+void EntityManager::destroy(AppState* state) {
+    for (auto& [name, asset] : mobAssets) {
+        if (asset->vertexBuffer) SDL_ReleaseGPUBuffer(state->gpu, asset->vertexBuffer);
+        if (asset->indexBuffer)  SDL_ReleaseGPUBuffer(state->gpu, asset->indexBuffer);
+        if (asset->texture)      SDL_ReleaseGPUTexture(state->gpu, asset->texture);
+    }
+    mobAssets.clear();
+    entities.clear();
+
+    if (sampler)  SDL_ReleaseGPUSampler(state->gpu, sampler);
+    if (pipeline) SDL_ReleaseGPUGraphicsPipeline(state->gpu, pipeline);
+    sampler = nullptr;
+    pipeline = nullptr;
+}
+
+// ---------------------------------------------------------------------------
+// Asset loading
+// ---------------------------------------------------------------------------
+bool EntityManager::loadMob(
+    AppState* state,
+    const std::string& name,
+    const char* modelPath, const char* modelFile,
+    const char* texturePath, const char* textureFile)
+{
+    auto asset = std::make_unique<MobAsset>();
+
+    std::vector<Vertex> vertices;
+    std::vector<Uint16> indices;
+    if (!loadModelFromFile(modelPath, modelFile, vertices, indices)) {
+        SDL_Log("[Entity] failed to load model '%s'", modelFile);
+        return false;
+    }
+
+    if (!uploadMeshToGPU(state, asset.get(), vertices, indices)) {
+        SDL_Log("[Entity] failed to upload mesh for '%s'", name.c_str());
+        return false;
+    }
+
+    asset->texture = loadTextureFromFile(state, texturePath, textureFile);
+    if (!asset->texture) {
+        SDL_Log("[Entity] failed to load texture '%s'", textureFile);
+        if (asset->vertexBuffer) SDL_ReleaseGPUBuffer(state->gpu, asset->vertexBuffer);
+        if (asset->indexBuffer)  SDL_ReleaseGPUBuffer(state->gpu, asset->indexBuffer);
+        return false;
+    }
+
+    mobAssets[name] = std::move(asset);
+    return true;
+}
+
+bool EntityManager::loadModelFromFile(
+    const char* filePath,
+    const char* fileName,
+    std::vector<Vertex>& outVertices,
+    std::vector<Uint16>& outIndices)
+{
+    // TODO: parse your model format (e.g. .obj) from BuildAbsolutePath(filePath, fileName)
+    //       and fill outVertices / outIndices in the engine Vertex layout:
+    //       { position, normal, uv, color = {1,1,1,1}, materialIndex = 0 }.
+    //
+    // Until that's written this returns false so loadMob fails loudly instead of
+    // uploading an empty mesh.
+    (void)filePath;
+    (void)fileName;
+    (void)outVertices;
+    (void)outIndices;
+    return false;
+}
+
+// Single 2D texture loader — same surface->transfer->texture path as Materials.cpp,
+// but creates a standalone texture sized to the image instead of a 2D array layer.
+SDL_GPUTexture* EntityManager::loadTextureFromFile(
+    AppState* state,
+    const char* filePath,
+    const char* fileName)
+{
+    std::string fullPath = BuildAbsolutePath(filePath, fileName);
+
+    SDL_Surface* loaded = SDL_LoadSurface(fullPath.c_str());
+    if (!loaded) {
+        SDL_Log("SDL_LoadSurface failed for '%s': %s", fullPath.c_str(), SDL_GetError());
+        return nullptr;
+    }
+    SDL_Surface* surface = SDL_ConvertSurface(loaded, SDL_PIXELFORMAT_RGBA32);
+    SDL_DestroySurface(loaded);
+    if (!surface) {
+        SDL_Log("SDL_ConvertSurface failed: %s", SDL_GetError());
+        return nullptr;
+    }
+
+    const Uint32 width = (Uint32)surface->w;
+    const Uint32 height = (Uint32)surface->h;
+    const Uint32 dataSize = width * height * 4;
+
+    SDL_GPUTextureCreateInfo texInfo = {
+        .type = SDL_GPU_TEXTURETYPE_2D,
+        .format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM,
+        .usage = SDL_GPU_TEXTUREUSAGE_SAMPLER,
+        .width = width,
+        .height = height,
+        .layer_count_or_depth = 1,
+        .num_levels = 1,
+    };
+    SDL_GPUTexture* texture = SDL_CreateGPUTexture(state->gpu, &texInfo);
+    if (!texture) {
+        SDL_Log("SDL_CreateGPUTexture failed: %s", SDL_GetError());
+        SDL_DestroySurface(surface);
+        return nullptr;
+    }
+
+    SDL_GPUTransferBufferCreateInfo tInfo = {
+        .usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD,
+        .size = dataSize,
+    };
+    SDL_GPUTransferBuffer* transfer = SDL_CreateGPUTransferBuffer(state->gpu, &tInfo);
+
+    void* mapped = SDL_MapGPUTransferBuffer(state->gpu, transfer, false);
+    SDL_memcpy(mapped, surface->pixels, dataSize);
+    SDL_UnmapGPUTransferBuffer(state->gpu, transfer);
+
+    SDL_GPUCommandBuffer* cmd = SDL_AcquireGPUCommandBuffer(state->gpu);
+    SDL_GPUCopyPass* copy = SDL_BeginGPUCopyPass(cmd);
+
+    SDL_GPUTextureTransferInfo src = {
+        .transfer_buffer = transfer,
+        .offset = 0,
+        .pixels_per_row = width,
+        .rows_per_layer = height,
+    };
+    SDL_GPUTextureRegion dst = {
+        .texture = texture,
+        .mip_level = 0,
+        .layer = 0,
+        .x = 0, .y = 0, .z = 0,
+        .w = width, .h = height, .d = 1,
+    };
+    SDL_UploadToGPUTexture(copy, &src, &dst, false);
+
+    SDL_EndGPUCopyPass(copy);
+    SDL_SubmitGPUCommandBuffer(cmd);
+
+    SDL_ReleaseGPUTransferBuffer(state->gpu, transfer);
+    SDL_DestroySurface(surface);
+
+    return texture;
+}
+
+bool EntityManager::uploadMeshToGPU(
+    AppState* state,
+    MobAsset* asset,
+    const std::vector<Vertex>& vertices,
+    const std::vector<Uint16>& indices)
+{
+    if (vertices.empty() || indices.empty()) {
+        SDL_Log("[Entity] empty mesh, nothing to upload");
+        return false;
+    }
+
+    const Uint32 vbSize = (Uint32)(vertices.size() * sizeof(Vertex));
+    const Uint32 ibSize = (Uint32)(indices.size() * sizeof(Uint16));
+
+    SDL_GPUBufferCreateInfo vbInfo = { .usage = SDL_GPU_BUFFERUSAGE_VERTEX, .size = vbSize };
+    asset->vertexBuffer = SDL_CreateGPUBuffer(state->gpu, &vbInfo);
+
+    SDL_GPUBufferCreateInfo ibInfo = { .usage = SDL_GPU_BUFFERUSAGE_INDEX, .size = ibSize };
+    asset->indexBuffer = SDL_CreateGPUBuffer(state->gpu, &ibInfo);
+
+    if (!asset->vertexBuffer || !asset->indexBuffer) {
+        SDL_Log("[Entity] buffer creation failed: %s", SDL_GetError());
+        return false;
+    }
+
+    SDL_GPUTransferBufferCreateInfo tVB = { .usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD, .size = vbSize };
+    SDL_GPUTransferBuffer* transferVB = SDL_CreateGPUTransferBuffer(state->gpu, &tVB);
+    SDL_GPUTransferBufferCreateInfo tIB = { .usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD, .size = ibSize };
+    SDL_GPUTransferBuffer* transferIB = SDL_CreateGPUTransferBuffer(state->gpu, &tIB);
+
+    void* vbMapped = SDL_MapGPUTransferBuffer(state->gpu, transferVB, false);
+    SDL_memcpy(vbMapped, vertices.data(), vbSize);
+    SDL_UnmapGPUTransferBuffer(state->gpu, transferVB);
+
+    void* ibMapped = SDL_MapGPUTransferBuffer(state->gpu, transferIB, false);
+    SDL_memcpy(ibMapped, indices.data(), ibSize);
+    SDL_UnmapGPUTransferBuffer(state->gpu, transferIB);
+
+    SDL_GPUCommandBuffer* cmd = SDL_AcquireGPUCommandBuffer(state->gpu);
+    SDL_GPUCopyPass* copy = SDL_BeginGPUCopyPass(cmd);
+
+    SDL_GPUTransferBufferLocation vbSrc = { .transfer_buffer = transferVB, .offset = 0 };
+    SDL_GPUBufferRegion           vbDst = { .buffer = asset->vertexBuffer, .offset = 0, .size = vbSize };
+    SDL_UploadToGPUBuffer(copy, &vbSrc, &vbDst, false);
+
+    SDL_GPUTransferBufferLocation ibSrc = { .transfer_buffer = transferIB, .offset = 0 };
+    SDL_GPUBufferRegion           ibDst = { .buffer = asset->indexBuffer, .offset = 0, .size = ibSize };
+    SDL_UploadToGPUBuffer(copy, &ibSrc, &ibDst, false);
+
+    SDL_EndGPUCopyPass(copy);
+    SDL_SubmitGPUCommandBuffer(cmd);
+
+    SDL_ReleaseGPUTransferBuffer(state->gpu, transferVB);
+    SDL_ReleaseGPUTransferBuffer(state->gpu, transferIB);
+
+    asset->numIndices = (Uint32)indices.size();
+    return true;
+}
+
+// ---------------------------------------------------------------------------
+// Spawning / updating --- TODO: fix that entities use assetids and dont copy the asset
+// ---------------------------------------------------------------------------
+Entity* EntityManager::spawn(const std::string& mobName, Vec3 position) {
+    auto it = mobAssets.find(mobName);
+    if (it == mobAssets.end()) {
+        SDL_Log("[Entity] spawn: unknown mob '%s' (load it first)", mobName.c_str());
+        return nullptr;
+    }
+
+    EntityData data;
+    data.id = nextEntityId++;
+    data.name = mobName;
+
+    Hitbox hitbox;
+    hitbox.offset = { 0.0f, 0.0f, 0.5f };
+    hitbox.halfExtents = { 0.4f, 0.4f, 0.5f };
+
+    // Rendering is driven by the shared MobAsset, so no per-entity EntityModel.
+    auto entity = std::make_unique<Entity>(
+        std::move(data), hitbox, nullptr, position);
+
+    Entity* raw = entity.get();
+    entities.push_back({ std::move(entity), it->second.get() });
+    return raw;
+}
+
+void EntityManager::update(float dt) {
+    for (auto& inst : entities)
+        inst.entity->update(dt);
+}
+
+// ---------------------------------------------------------------------------
+// Draw — one bind of the pipeline, then per-entity MVP + asset bind + draw.
+// ---------------------------------------------------------------------------
+void EntityManager::draw(
+    //AppState* state,
+    SDL_GPUCommandBuffer* cmd,
+    SDL_GPURenderPass* pass,
+    const Mat4& viewProj)
+{
+    //(void)state;
+    if (!pipeline) return;
+
+    SDL_BindGPUGraphicsPipeline(pass, pipeline);
+
+    for (auto& inst : entities) {
+        MobAsset* asset = inst.asset;
+        if (!asset || !asset->vertexBuffer || !asset->indexBuffer ||
+            !asset->texture || asset->numIndices == 0)
+            continue;
+
+        UBO ubo = { .mvp = mat4Mul(viewProj, inst.entity->getModelMatrix()) };
+
+        SDL_GPUBufferBinding vbBind = { .buffer = asset->vertexBuffer, .offset = 0 };
+        SDL_GPUBufferBinding ibBind = { .buffer = asset->indexBuffer,  .offset = 0 };
+        SDL_GPUTextureSamplerBinding texBind = { .texture = asset->texture, .sampler = sampler };
+
+        SDL_BindGPUVertexBuffers(pass, 0, &vbBind, 1);
+        SDL_BindGPUIndexBuffer(pass, &ibBind, SDL_GPU_INDEXELEMENTSIZE_16BIT);
+        SDL_BindGPUFragmentSamplers(pass, 0, &texBind, 1);
+        SDL_PushGPUVertexUniformData(cmd, 0, &ubo, sizeof(UBO));
+        SDL_DrawGPUIndexedPrimitives(pass, asset->numIndices, 1, 0, 0, 0);
+    }
+}
