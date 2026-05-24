@@ -1,0 +1,22 @@
+{
+    "version": 1,
+    "revision": 0,
+    "rules": [
+        {
+            "primary-output": "x64\\Debug\\GenerateChunk.obj",
+            "outputs": [
+                "x64\\Debug\\GenerateChunk.h_883B0B32416844AC.ifc.dt.module.json",
+                "x64\\Debug\\GenerateChunk.h_883B0B32416844AC.ifc.dt.d.json",
+                "x64\\Debug\\GenerateChunk.h.ifc"
+            ],
+            "provides": [
+                {
+                    "logical-name": "C:\\MyData\\Sunlit_Meadow\\Prototypes\\Sunlit_Meadow_Prototype00\\Sunlit_Meadow_Prototype00\\Sunlit_Meadow_Prototype00\\GenerateChunk.h",
+                    "source-path": "c:\\mydata\\sunlit_meadow\\prototypes\\sunlit_meadow_prototype00\\sunlit_meadow_prototype00\\sunlit_meadow_prototype00\\generatechunk.h",
+                    "lookup-method": "absolute"
+                }
+            ],
+            "requires": []
+        }
+    ]
+}

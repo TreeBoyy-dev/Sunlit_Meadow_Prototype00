@@ -58,11 +58,11 @@
     <Filter Include="Resource Files\fonts">
       <UniqueIdentifier>{81685d3b-2047-4ff6-a05a-49047742c194}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\world\entity">
-      <UniqueIdentifier>{fd7a0676-56fe-403d-a251-f2bad241fb9f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\world\entity">
+    <Filter Include="Header Files\entity">
       <UniqueIdentifier>{fe8b0fb6-238a-432c-adc2-438b91a79879}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\entity">
+      <UniqueIdentifier>{fd7a0676-56fe-403d-a251-f2bad241fb9f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -118,19 +118,25 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Entity.cpp">
-      <Filter>Source Files\world\entity</Filter>
+      <Filter>Source Files\entity</Filter>
     </ClCompile>
     <ClCompile Include="EntityModel.cpp">
-      <Filter>Source Files\world\entity</Filter>
+      <Filter>Source Files\entity</Filter>
     </ClCompile>
     <ClCompile Include="EntityManager.cpp">
-      <Filter>Source Files\world\entity</Filter>
+      <Filter>Source Files\entity</Filter>
     </ClCompile>
     <ClCompile Include="ChunkMeshWorker.cpp">
       <Filter>Source Files\world\WorldGen</Filter>
     </ClCompile>
     <ClCompile Include="ChunkGeneratorWorker.cpp">
       <Filter>Source Files\world\WorldGen</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityTypes.cpp">
+      <Filter>Source Files\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="BuildAbsolutePath.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -207,19 +213,25 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Entity.h">
-      <Filter>Header Files\world\entity</Filter>
+      <Filter>Header Files\entity</Filter>
     </ClInclude>
     <ClInclude Include="EntityModel.h">
-      <Filter>Header Files\world\entity</Filter>
+      <Filter>Header Files\entity</Filter>
     </ClInclude>
     <ClInclude Include="EntityManager.h">
-      <Filter>Header Files\world\entity</Filter>
+      <Filter>Header Files\entity</Filter>
     </ClInclude>
     <ClInclude Include="ChunkGeneratorWorker.h">
       <Filter>Header Files\world\WorldGen.h</Filter>
     </ClInclude>
     <ClInclude Include="ChunkMeshWorker.h">
       <Filter>Header Files\world\WorldGen.h</Filter>
+    </ClInclude>
+    <ClInclude Include="BuildAbsolutePath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityAssets.h">
+      <Filter>Header Files\entity</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -231,6 +243,9 @@
     </None>
     <None Include="ui.frag.hlsl">
       <Filter>Resource Files\shaders</Filter>
+    </None>
+    <None Include="EntityTypes.h">
+      <Filter>Header Files\entity</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

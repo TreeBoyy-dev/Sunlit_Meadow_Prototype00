@@ -2,13 +2,12 @@
 
 #include "EntityManager.h"
 #include "LoadShader.h"
+#include "BuildAbsolutePath.h"
 
 EntityManager::EntityManager() {}
 
-// ---------------------------------------------------------------------------
-// Pipeline: its own vertex/fragment shaders, but reuses the engine Vertex
+// Pipeline: its own vertex/fragment shaders, but reuses the engine WorldVertex
 // layout and UBO so it slots into the same view/projection math as the world.
-// ---------------------------------------------------------------------------
 bool EntityManager::init(AppState* state) {
     SDL_GPUShader* vert = loadShader(state->gpu, "entity.vert.spv", 1, 0);
     SDL_GPUShader* frag = loadShader(state->gpu, "entity.frag.spv", 0, 1);
@@ -90,12 +89,15 @@ bool EntityManager::init(AppState* state) {
 }
 
 void EntityManager::destroy(AppState* state) {
-    for (auto& [name, asset] : mobAssets) {
+    for (auto& asset : assets) {
         if (asset->vertexBuffer) SDL_ReleaseGPUBuffer(state->gpu, asset->vertexBuffer);
         if (asset->indexBuffer)  SDL_ReleaseGPUBuffer(state->gpu, asset->indexBuffer);
         if (asset->texture)      SDL_ReleaseGPUTexture(state->gpu, asset->texture);
     }
-    mobAssets.clear();
+    assets.clear();
+    assetsById.clear();
+    assetsByName.clear();
+    spawnDefaults.clear();
     entities.clear();
 
     if (sampler)  SDL_ReleaseGPUSampler(state->gpu, sampler);
@@ -104,16 +106,44 @@ void EntityManager::destroy(AppState* state) {
     pipeline = nullptr;
 }
 
-// ---------------------------------------------------------------------------
-// Asset loading
-// ---------------------------------------------------------------------------
-bool EntityManager::loadMob(
+// Type registration
+EntityAsset* EntityManager::registerType(
+    std::unique_ptr<EntityAsset> asset,
+    SpawnData                    defaults)
+{
+    Uint16 id = nextTypeId++;
+    asset->id = id;
+
+    EntityAsset* ptr = asset.get();
+
+    assetsById[id] = ptr;
+    assetsByName[asset->name] = ptr;
+
+    // spawnDefaults stays index-aligned with the type id: because ids are
+    // handed out 0,1,2,... and this is the only place that grows the list,
+    // push_back lands defaults at exactly index == id.
+    spawnDefaults.push_back(defaults);
+
+    assets.push_back(std::move(asset));
+    return ptr;
+}
+
+bool EntityManager::loadEntityType(
     AppState* state,
     const std::string& name,
     const char* modelPath, const char* modelFile,
-    const char* texturePath, const char* textureFile)
+    const char* texturePath, const char* textureFile,
+    Hitbox    hitbox,
+    SpawnData spawnDefaults)
 {
-    auto asset = std::make_unique<MobAsset>();
+    if (assetsByName.find(name) != assetsByName.end()) {
+        SDL_Log("[Entity] type '%s' already registered", name.c_str());
+        return false;
+    }
+
+    auto asset = std::make_unique<EntityAsset>();
+    asset->name = name;
+    asset->hitbox = hitbox;
 
     std::vector<WorldVertex> vertices;
     std::vector<Uint16> indices;
@@ -135,7 +165,7 @@ bool EntityManager::loadMob(
         return false;
     }
 
-    mobAssets[name] = std::move(asset);
+    registerType(std::move(asset), spawnDefaults);
     return true;
 }
 
@@ -146,11 +176,11 @@ bool EntityManager::loadModelFromFile(
     std::vector<Uint16>& outIndices)
 {
     // TODO: parse your model format (e.g. .obj) from BuildAbsolutePath(filePath, fileName)
-    //       and fill outVertices / outIndices in the engine Vertex layout:
+    //       and fill outVertices / outIndices in the engine WorldVertex layout:
     //       { position, normal, uv, color = {1,1,1,1}, materialIndex = 0 }.
     //
-    // Until that's written this returns false so loadMob fails loudly instead of
-    // uploading an empty mesh.
+    // Until that's written this returns false so loadEntityType fails loudly
+    // instead of registering a type with an empty mesh.
     (void)filePath;
     (void)fileName;
     (void)outVertices;
@@ -238,7 +268,7 @@ SDL_GPUTexture* EntityManager::loadTextureFromFile(
 
 bool EntityManager::uploadMeshToGPU(
     AppState* state,
-    MobAsset* asset,
+    EntityAsset* asset,
     const std::vector<WorldVertex>& vertices,
     const std::vector<Uint16>& indices)
 {
@@ -295,59 +325,66 @@ bool EntityManager::uploadMeshToGPU(
     return true;
 }
 
-// ---------------------------------------------------------------------------
-// Spawning / updating --- TODO: fix that entities use assetids and dont copy the asset
-// ---------------------------------------------------------------------------
-Entity* EntityManager::spawn(const std::string& mobName, Vec3 position) {
-    auto it = mobAssets.find(mobName);
-    if (it == mobAssets.end()) {
-        SDL_Log("[Entity] spawn: unknown mob '%s' (load it first)", mobName.c_str());
-        return nullptr;
-    }
-
+// Spawning / updating
+Entity* EntityManager::spawnInternal(EntityAsset* asset, Vec3 position, const SpawnData& sd) {
+    // Build this entity's own per-instance data from the spawn parameters.
     EntityData data;
     data.id = nextEntityId++;
-    data.name = mobName;
+    data.health = sd.health;
+    data.maxHealth = sd.maxHealth;
+    data.alive = true;
 
-    Hitbox hitbox;
-    hitbox.offset = { 0.0f, 0.0f, 0.5f };
-    hitbox.halfExtents = { 0.4f, 0.4f, 0.5f };
+    PhysicsBody physics;
+    physics.mass = sd.mass;
+    physics.affectedByGravity = sd.affectedByGravity;
 
-    // Rendering is driven by the shared MobAsset, so no per-entity EntityModel.
-    auto entity = std::make_unique<Entity>(
-        std::move(data), hitbox, nullptr, position);
-
+    // The entity stores a pointer to the shared asset; it does NOT copy it.
+    auto entity = std::make_unique<Entity>(asset, data, physics, position);
     Entity* raw = entity.get();
-    entities.push_back({ std::move(entity), it->second.get() });
+    entities.push_back(std::move(entity));
     return raw;
 }
 
-void EntityManager::update(float dt) {
-    for (auto& inst : entities)
-        inst.entity->update(dt);
+Entity* EntityManager::spawn(const std::string& typeName, Vec3 position) {
+    EntityAsset* asset = getAssetByName(typeName);
+    if (!asset) {
+        SDL_Log("[Entity] spawn: unknown type '%s' (register it first)", typeName.c_str());
+        return nullptr;
+    }
+    return spawnInternal(asset, position, spawnDefaults[asset->id]);
 }
 
-// ---------------------------------------------------------------------------
+Entity* EntityManager::spawn(const std::string& typeName, Vec3 position, SpawnData overrideData) {
+    EntityAsset* asset = getAssetByName(typeName);
+    if (!asset) {
+        SDL_Log("[Entity] spawn: unknown type '%s' (register it first)", typeName.c_str());
+        return nullptr;
+    }
+    return spawnInternal(asset, position, overrideData);
+}
+
+void EntityManager::update(float dt) {
+    for (auto& entity : entities)
+        entity->update(dt);
+}
+
 // Draw — one bind of the pipeline, then per-entity MVP + asset bind + draw.
-// ---------------------------------------------------------------------------
 void EntityManager::draw(
-    //AppState* state,
     SDL_GPUCommandBuffer* cmd,
     SDL_GPURenderPass* pass,
     const Mat4& viewProj)
 {
-    //(void)state;
     if (!pipeline) return;
 
     SDL_BindGPUGraphicsPipeline(pass, pipeline);
 
-    for (auto& inst : entities) {
-        MobAsset* asset = inst.asset;
+    for (auto& entity : entities) {
+        const EntityAsset* asset = entity->getAsset();
         if (!asset || !asset->vertexBuffer || !asset->indexBuffer ||
             !asset->texture || asset->numIndices == 0)
             continue;
 
-        UBO ubo = { .mvp = mat4Mul(viewProj, inst.entity->getModelMatrix()) };
+        UBO ubo = { .mvp = mat4Mul(viewProj, entity->getModelMatrix()) };
 
         SDL_GPUBufferBinding vbBind = { .buffer = asset->vertexBuffer, .offset = 0 };
         SDL_GPUBufferBinding ibBind = { .buffer = asset->indexBuffer,  .offset = 0 };
@@ -359,4 +396,15 @@ void EntityManager::draw(
         SDL_PushGPUVertexUniformData(cmd, 0, &ubo, sizeof(UBO));
         SDL_DrawGPUIndexedPrimitives(pass, asset->numIndices, 1, 0, 0, 0);
     }
+}
+
+// Type-asset lookups (mirror BlockManager::getById / getByName)
+EntityAsset* EntityManager::getAssetById(Uint16 id) {
+    auto it = assetsById.find(id);
+    return it != assetsById.end() ? it->second : nullptr;
+}
+
+EntityAsset* EntityManager::getAssetByName(const std::string& name) {
+    auto it = assetsByName.find(name);
+    return it != assetsByName.end() ? it->second : nullptr;
 }
