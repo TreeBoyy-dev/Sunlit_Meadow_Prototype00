@@ -41,8 +41,14 @@ private:
 
     ChunkGeneratorWorker g_worker;
     ChunkMeshWorker m_worker;
+
+    BlockManager* m_blockManager = nullptr;
+    FastNoiseLite* m_standartNoise = nullptr;
 public:
-    Region(RegionCoord regionCoordinates);
+    Region(
+        RegionCoord regionCoordinates,
+        BlockManager* blockManager,
+        FastNoiseLite* standartNoise);
     ~Region();
 
     Chunk* getChunk(ChunkCoord chunkCoordinates);

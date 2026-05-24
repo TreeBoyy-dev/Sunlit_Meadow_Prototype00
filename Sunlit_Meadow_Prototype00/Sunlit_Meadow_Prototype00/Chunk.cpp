@@ -1,7 +1,6 @@
 #include "GenerateChunk.h"
 #include "Chunk.h"
 #include "Globals.h"
-#include "BlockManager.h"
 
 Chunk::Chunk() :
 	chunkCoordinates({0,0,0}),
@@ -34,7 +33,7 @@ void Chunk::transferMeshesFrom(Chunk& src) {
 	drawTransparentMesh = src.drawTransparentMesh;
 }
 
-void Chunk::createMeshes(ChunkBorderAir borderAir) {
+void Chunk::createMeshes(ChunkBorderAir borderAir, BlockManager& blockManager) {
 	std::vector<LocationalBlockID> opaqueblocks;
 	std::vector<LocationalBlockID> transparentblocks;
 
@@ -61,11 +60,11 @@ void Chunk::createMeshes(ChunkBorderAir borderAir) {
 	}
 	if (opaqueblocks.size() > 0) {
 		drawOpaqueMesh = true;
-		opaqueMesh.buildMesh(opaqueblocks, borderAir, chunkCoordinates);
+		opaqueMesh.buildMesh(opaqueblocks, borderAir, chunkCoordinates, blockManager);
 	}
 	if (transparentblocks.size() > 0) {
 		drawTransparentMesh = true;
-		transparentMesh.buildMesh(transparentblocks, borderAir, chunkCoordinates);
+		transparentMesh.buildMesh(transparentblocks, borderAir, chunkCoordinates, blockManager);
 	}
 }
 
@@ -119,8 +118,8 @@ ChunkCoord Chunk::getChunkCoordinates() {
 	return chunkCoordinates;
 }
 
-void Chunk::getChunkGenerated() {
-	generateChunk(blockIDs, chunkCoordinates);
+void Chunk::getChunkGenerated(BlockManager& blockManager, FastNoiseLite& standartNoise) {
+	generateChunk(blockIDs, chunkCoordinates, blockManager, standartNoise);
 	isGenerated = true;
 
 	for (int a = 0; a < CHUNK_SIZE; a++) {

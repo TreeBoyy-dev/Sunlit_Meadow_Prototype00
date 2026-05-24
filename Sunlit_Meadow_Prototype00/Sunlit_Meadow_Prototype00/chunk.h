@@ -2,6 +2,8 @@
 
 #include "ChunkMesh.h"
 #include "ChunkTypes.h"
+#include "BlockManager.h"
+#include "FastNoiseLite.h"
 
 //chunksize in blockIDs -> side of a cube
 #define CHUNK_SIZE 16
@@ -26,13 +28,13 @@ public:
     Chunk(Chunk* other);          
     void transferMeshesFrom(Chunk& src);
 
-    void getChunkGenerated();
+    void getChunkGenerated(BlockManager& blockManager, FastNoiseLite& standartNoise);
 
     bool getIsGenerated();
     ChunkCoord getChunkCoordinates();
     Uint16(*getBorderAir(ChunkCoord direction))[CHUNK_SIZE];
 
-    void createMeshes(ChunkBorderAir borderAir);
+    void createMeshes(ChunkBorderAir borderAir, BlockManager& blockManager);
     bool uploadMeshes(
         AppState* state,
         SDL_GPUTexture* textureArray

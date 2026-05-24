@@ -105,12 +105,6 @@
     <ClCompile Include="GenerateChunk.cpp">
       <Filter>Source Files\world\WorldGen</Filter>
     </ClCompile>
-    <ClCompile Include="ChunkGeneratorWorker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ChunkMeshWorker.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="BlockModel.cpp">
       <Filter>Source Files\world\Blocks\BlockModels</Filter>
     </ClCompile>
@@ -131,6 +125,12 @@
     </ClCompile>
     <ClCompile Include="EntityManager.cpp">
       <Filter>Source Files\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="ChunkMeshWorker.cpp">
+      <Filter>Source Files\world\WorldGen</Filter>
+    </ClCompile>
+    <ClCompile Include="ChunkGeneratorWorker.cpp">
+      <Filter>Source Files\world\WorldGen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -188,12 +188,6 @@
     <ClInclude Include="ThreadSafeQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ChunkMeshWorker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ChunkGeneratorWorker.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BlockModel.h">
       <Filter>Header Files\world\Blocks\BlockModels</Filter>
     </ClInclude>
@@ -220,6 +214,12 @@
     </ClInclude>
     <ClInclude Include="EntityManager.h">
       <Filter>Header Files\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkGeneratorWorker.h">
+      <Filter>Header Files\world\WorldGen.h</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkMeshWorker.h">
+      <Filter>Header Files\world\WorldGen.h</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,7 @@
 #include "DataStructures.h"
 #include "Vectors.h"
 #include "ChunkTypes.h"
+#include "BlockManager.h"
 
 class ChunkMesh
 {
@@ -25,7 +26,8 @@ public:
     void buildMesh(
         std::vector<LocationalBlockID>& blocks,
         ChunkBorderAir borderAir,
-        ChunkCoord chunkCoords);
+        ChunkCoord chunkCoords,
+        BlockManager& blockManager);
     bool uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn);
 
     SDL_GPUBuffer* getVertexBuffer() const { return vertexBuffer; }
@@ -35,7 +37,7 @@ public:
 
 private:
     Uint16 getNeighborId(int x, int y, int z, ChunkBorderAir borderAir) const;
-    bool neighborObstructs(Uint16 id, int faceIndex);
+    bool neighborObstructs(Uint16 id, int faceIndex, BlockManager& blockManager);
 
 private:
     std::vector<Vertex> vertices;

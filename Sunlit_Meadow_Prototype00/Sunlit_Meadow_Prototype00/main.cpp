@@ -31,7 +31,6 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     state->projMat = mat4Perspective(fovX, aspect, NEAR_PLANE, FAR_PLANE);
 
     state->lastTicks = SDL_GetTicks();
-    state->rotation = 0.0f;
 
     SDL_SetWindowRelativeMouseMode(state->window, true);
 

@@ -3,11 +3,13 @@
 
 #include <utility>
 
-Region::Region(RegionCoord regionCoordinates)
-    : regionCoordinates(regionCoordinates)
+Region::Region(RegionCoord regionCoordinates, BlockManager* blockManager, FastNoiseLite* standartNoise)
+    : regionCoordinates(regionCoordinates),
+    m_blockManager(blockManager),
+    m_standartNoise(standartNoise)
 {
-    g_worker.start();
-    m_worker.start();
+    g_worker.start(m_blockManager, m_standartNoise);
+    m_worker.start(m_blockManager);
 }
 
 Region::~Region() {

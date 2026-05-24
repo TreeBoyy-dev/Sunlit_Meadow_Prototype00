@@ -126,7 +126,8 @@ void WorldManager::destroy(AppState* state) {
     }
 }
 
-// Updaating hte world ----------------------------------------------------
+
+// Updaating the world ----------------------------------------------------
 void WorldManager::update(AppState* state, Vec3 playerPosition) {
     updatePlayerPosition(playerPosition);
 
@@ -253,6 +254,8 @@ void WorldManager::drawChunks(AppState* state,
 
     Frustum frustum = buildFrustum(camera, fovX, aspect, NEAR_PLANE, FAR_PLANE);
 
+    SDL_BindGPUGraphicsPipeline(pass, pipeline);
+
     for (auto& [cc, chunk] : renderList) {
         Vec3 cMin = { cc.x * CHUNK_SIZE,  cc.y * CHUNK_SIZE,  cc.z * CHUNK_SIZE };
         Vec3 cMax = { cMin.x + CHUNK_SIZE, cMin.y + CHUNK_SIZE, cMin.z + CHUNK_SIZE };
@@ -260,6 +263,7 @@ void WorldManager::drawChunks(AppState* state,
             chunk->drawMeshes(state, cmd, pass, ubo);
     }
 }
+
 
 //helpers -----------------------------------------------------------------
 Region* WorldManager::getRegion(RegionCoord regionCoordinates) {
@@ -269,7 +273,7 @@ Region* WorldManager::getRegion(RegionCoord regionCoordinates) {
 
     auto [newIt, inserted] = regions.emplace(
         regionCoordinates,
-        std::make_unique<Region>(regionCoordinates)
+        std::make_unique<Region>(regionCoordinates, &blockManager, &standartNoise)
     );
     return newIt->second.get();
 }

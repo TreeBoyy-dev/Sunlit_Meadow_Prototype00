@@ -7,13 +7,14 @@
 #include "ThreadSafeQueue.h"
 #include "Chunk.h"
 #include "ChunkTypes.h"
+#include "BlockManager.h"
 
 class ChunkMeshWorker {
 public:
     ChunkMeshWorker();
     ~ChunkMeshWorker();
 
-    void start();
+    void start(BlockManager* blockManager);
     void stop();
 
     void requestChunk(Chunk chunk, ChunkBorderAir borderAir);
@@ -25,6 +26,8 @@ private:
 
     std::atomic<bool>  m_running;
     std::thread        m_thread;
+
+    BlockManager* m_blockManager = nullptr;
 
     ThreadSafeQueue_2T<Chunk, ChunkBorderAir>  m_inputQueue;
     ThreadSafeQueue<Chunk>                     m_outputQueue;

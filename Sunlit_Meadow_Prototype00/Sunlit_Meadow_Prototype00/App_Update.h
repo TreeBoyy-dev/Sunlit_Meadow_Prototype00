@@ -114,7 +114,6 @@ SDL_AppResult App_Update(void* appstate)
     frame_count = frame_count % ARR_SIZE;
 
     float speed = 90.0f * (float)SDL_PI_F / 180.0f;   // deg/sec → rad/sec
-    state->rotation += speed * dt;
 
     if (!updateCamera(dt))
         return SDL_APP_FAILURE;
@@ -122,7 +121,7 @@ SDL_AppResult App_Update(void* appstate)
 
     ChunkCoord playerChunkCoords = getPlayerChunkCoord(camera.position);
 
-    worldManager.update(state, state->textureArray, camera.position);
+    worldManager.update(state, camera.position);
 
     return SDL_APP_CONTINUE;
 }

@@ -42,7 +42,7 @@ Uint16 ChunkMesh::getNeighborId(int x, int y, int z, ChunkBorderAir borderAir) c
     auto it = blockSet.find({ x, y, z, 0 });
     return it != blockSet.end() ? it->id : 0;
 }
-bool ChunkMesh::neighborObstructs(Uint16 id, int faceIndex)
+bool ChunkMesh::neighborObstructs(Uint16 id, int faceIndex, BlockManager& blockManager)
 {
     Block* b = blockManager.getById(id);
     return b->getObstructs(faceIndex);
@@ -51,7 +51,8 @@ bool ChunkMesh::neighborObstructs(Uint16 id, int faceIndex)
 void ChunkMesh::buildMesh(
     std::vector<LocationalBlockID>& blocks,
     ChunkBorderAir borderAir,
-    ChunkCoord chunkCoords)
+    ChunkCoord chunkCoords,
+    BlockManager& blockManager)
 {
     m_chunkCoord = chunkCoords;
 
@@ -72,12 +73,12 @@ void ChunkMesh::buildMesh(
 
         // In buildMesh, replace the AdjacencyInfo block:
         AdjacencyInfo adj = {
-            neighborObstructs(getNeighborId(block.x + 1, block.y, block.z, borderAir), 0), // front:  neighbor's back
-            neighborObstructs(getNeighborId(block.x - 1, block.y, block.z, borderAir), 0), // back:   neighbor's front
-            neighborObstructs(getNeighborId(block.x, block.y + 1, block.z, borderAir), 0), // right:  neighbor's left
-            neighborObstructs(getNeighborId(block.x, block.y - 1, block.z, borderAir), 0), // left:   neighbor's right
-            neighborObstructs(getNeighborId(block.x, block.y, block.z + 1, borderAir), 0), // top:    neighbor's down
-            neighborObstructs(getNeighborId(block.x, block.y, block.z - 1, borderAir), 0), // bottom: neighbor's up
+            neighborObstructs(getNeighborId(block.x + 1, block.y, block.z, borderAir), 0, blockManager), // front:  neighbor's back
+            neighborObstructs(getNeighborId(block.x - 1, block.y, block.z, borderAir), 0, blockManager), // back:   neighbor's front
+            neighborObstructs(getNeighborId(block.x, block.y + 1, block.z, borderAir), 0, blockManager), // right:  neighbor's left
+            neighborObstructs(getNeighborId(block.x, block.y - 1, block.z, borderAir), 0, blockManager), // left:   neighbor's right
+            neighborObstructs(getNeighborId(block.x, block.y, block.z + 1, borderAir), 0, blockManager), // top:    neighbor's down
+            neighborObstructs(getNeighborId(block.x, block.y, block.z - 1, borderAir), 0, blockManager), // bottom: neighbor's up
         };
         /*
         SDL_Log("pos: %f|%f|%f  adj: %d %d %d %d %d %d  ids: %d %d %d %d %d %d  ",
@@ -230,7 +231,6 @@ void ChunkMesh::draw(
         .sampler = state->sampler,
     };
 
-    SDL_BindGPUGraphicsPipeline(pass, state->pipeline);
     SDL_BindGPUVertexBuffers(pass, 0, &vertex_buffer_binding, 1);
     SDL_BindGPUIndexBuffer(pass, &index_buffer_binding, SDL_GPU_INDEXELEMENTSIZE_16BIT);
     SDL_PushGPUVertexUniformData(cmd, 0, &ubo, (Uint32)sizeof(ubo));

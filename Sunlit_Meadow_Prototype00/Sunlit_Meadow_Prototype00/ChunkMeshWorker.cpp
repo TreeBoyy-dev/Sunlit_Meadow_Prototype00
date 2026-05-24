@@ -3,7 +3,8 @@
 ChunkMeshWorker::ChunkMeshWorker() : m_running(false) {}
 ChunkMeshWorker::~ChunkMeshWorker() { stop(); }
 
-void ChunkMeshWorker::start() {
+void ChunkMeshWorker::start(BlockManager* blockManager) {
+    m_blockManager = blockManager;
     m_running = true;
     m_thread = std::thread(&ChunkMeshWorker::workerLoop, this);
 }
@@ -28,7 +29,7 @@ void ChunkMeshWorker::workerLoop() {
         if (auto pair = m_inputQueue.try_pop()) {
             auto [chunk, borderAir] = std::move(*pair);
 
-            chunk.createMeshes(borderAir);
+            chunk.createMeshes(borderAir, *m_blockManager);
 
             m_outputQueue.push(chunk);
         }

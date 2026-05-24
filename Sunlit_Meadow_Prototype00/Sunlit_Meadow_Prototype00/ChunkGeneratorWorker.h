@@ -7,13 +7,15 @@
 #include "ThreadSafeQueue.h"
 #include "Chunk.h"
 #include "ChunkTypes.h"
+#include "BlockManager.h"
+#include "FastNoiseLite.h"
 
 class ChunkGeneratorWorker {
 public:
     ChunkGeneratorWorker();
     ~ChunkGeneratorWorker();
 
-    void start();
+    void start(BlockManager* blockManager, FastNoiseLite* standartNoise);
     void stop();
 
     void requestChunk(ChunkCoord coord);
@@ -25,6 +27,9 @@ private:
 
     std::atomic<bool>  m_running;
     std::thread        m_thread;
+
+    BlockManager* m_blockManager = nullptr;
+    FastNoiseLite* m_standartNoise = nullptr;
 
     ThreadSafeQueue<ChunkCoord>              m_inputQueue;
     ThreadSafeQueue<std::unique_ptr<Chunk>>  m_outputQueue;

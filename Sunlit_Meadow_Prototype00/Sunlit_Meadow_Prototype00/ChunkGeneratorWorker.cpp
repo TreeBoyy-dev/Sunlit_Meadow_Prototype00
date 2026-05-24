@@ -3,7 +3,9 @@
 ChunkGeneratorWorker::ChunkGeneratorWorker() : m_running(false) {}
 ChunkGeneratorWorker::~ChunkGeneratorWorker() { stop(); }
 
-void ChunkGeneratorWorker::start() {
+void ChunkGeneratorWorker::start(BlockManager* blockManager, FastNoiseLite* standartNoise) {
+    m_blockManager = blockManager;
+    m_standartNoise = standartNoise;
     m_running = true;
     m_thread = std::thread(&ChunkGeneratorWorker::workerLoop, this);
 }
@@ -28,8 +30,8 @@ void ChunkGeneratorWorker::workerLoop() {
         if (auto coord = m_inputQueue.try_pop()) {
             auto chunk = std::make_unique<Chunk>(*coord);
 
-            chunk->getChunkGenerated();
-            chunk->createMeshes({});
+            chunk->getChunkGenerated(*m_blockManager, *m_standartNoise);
+            chunk->createMeshes({}, *m_blockManager);
 
             m_outputQueue.push(std::move(chunk));
         }

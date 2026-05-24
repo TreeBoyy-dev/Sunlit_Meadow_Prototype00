@@ -4,18 +4,23 @@
 
 #include <cmath>
 
-bool generateChunk(Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], ChunkCoord chunkCoordinates) {
+bool generateChunk(
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
+	ChunkCoord chunkCoordinates,
+	BlockManager& blockManager,
+	FastNoiseLite& noise
+) {
 
 	float heightmap[CHUNK_SIZE][CHUNK_SIZE] = { 0.0f };
 
 	//generate shape: air/stone
-	generateShape(blockIDs, chunkCoordinates, heightmap);
+	generateShape(blockIDs, chunkCoordinates, heightmap, blockManager, noise);
 
 	//generate biomes
 	//TODO
 
 	//generate features: grass, vegitation, structures
-	generateFeatures(blockIDs, chunkCoordinates, heightmap);
+	generateFeatures(blockIDs, chunkCoordinates, heightmap, blockManager);
 
 	return true;
 }
@@ -23,7 +28,9 @@ bool generateChunk(Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE], ChunkCoo
 void generateShape(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
 	ChunkCoord chunkCoordinates,
-	float heightmap[CHUNK_SIZE][CHUNK_SIZE]
+	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
+	BlockManager& blockManager,
+	FastNoiseLite& noise
 ){
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		int xAbs = chunkCoordinates.x * CHUNK_SIZE + x;
@@ -43,7 +50,7 @@ void generateShape(
 				}
 			}
 			else {
-				float zGenerated = standartNoise.GetNoise((float)xAbs, (float)yAbs);
+				float zGenerated = noise.GetNoise((float)xAbs, (float)yAbs);
 
 				float zShape = 60 + zGenerated * 10;
 				heightmap[x][y] = zShape;
@@ -73,29 +80,34 @@ void generateShape(
 void generateFeatures(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
 	ChunkCoord chunkCoordinates,
-	float heightmap[CHUNK_SIZE][CHUNK_SIZE]
+	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
+	BlockManager& blockManager
 ) {
 	generateFeatures_GrassAndDirt(
 		blockIDs,
 		chunkCoordinates,
-		heightmap
+		heightmap,
+		blockManager
 	);
 	generateFeatures_Trees(
 		blockIDs,
 		chunkCoordinates,
-		heightmap
+		heightmap,
+		blockManager
 	);
 	generateFeatures_Boulders(
 		blockIDs,
 		chunkCoordinates,
-		heightmap
+		heightmap,
+		blockManager
 	);
 }
 
 void generateFeatures_GrassAndDirt(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
 	ChunkCoord chunkCoordinates,
-	float heightmap[CHUNK_SIZE][CHUNK_SIZE]
+	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
+	BlockManager& blockManager
 ) {
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int y = 0; y < CHUNK_SIZE; y++) {
@@ -132,7 +144,8 @@ void generateFeatures_GrassAndDirt(
 void generateFeatures_Trees(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
 	ChunkCoord chunkCoordinates,
-	float heightmap[CHUNK_SIZE][CHUNK_SIZE]
+	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
+	BlockManager& blockManager
 )
 {
 	// 1 in 5 chance to generate a boulder
@@ -196,7 +209,8 @@ void generateFeatures_Trees(
 void generateFeatures_Boulders(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
 	ChunkCoord chunkCoordinates,
-	float heightmap[CHUNK_SIZE][CHUNK_SIZE]
+	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
+	BlockManager& blockManager
 )
 {
 	// 1 in 5 chance to generate a boulder
