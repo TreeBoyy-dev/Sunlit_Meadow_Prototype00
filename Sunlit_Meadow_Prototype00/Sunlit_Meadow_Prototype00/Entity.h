@@ -5,6 +5,7 @@
 #include "Vectors.h"
 #include "DataStructures.h"
 #include "EntityModel.h"
+#include "WorldTypes.h"
 
 struct EntityData {
     Uint32      id        = 0;

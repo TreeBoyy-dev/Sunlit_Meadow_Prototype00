@@ -12,6 +12,7 @@
 #include "DataStructures.h"
 #include "Vectors.h"
 #include "Mat4.h"
+#include "WorldTypes.h"
 
 // GPU resources for one mob *type*, loaded from files once and shared by every
 // entity of that type. Mirrors how ChunkMesh holds a chunk's buffers, but keyed
@@ -48,7 +49,7 @@ private:
     bool loadModelFromFile(
         const char* filePath,
         const char* fileName,
-        std::vector<Vertex>& outVertices,
+        std::vector<WorldVertex>& outVertices,
         std::vector<Uint16>& outIndices
     );
 
@@ -63,7 +64,7 @@ private:
     bool uploadMeshToGPU(
         AppState* state,
         MobAsset* asset,
-        const std::vector<Vertex>& vertices,
+        const std::vector<WorldVertex>& vertices,
         const std::vector<Uint16>& indices
     );
 

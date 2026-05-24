@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ChunkMesh.h"
-#include "ChunkTypes.h"
+#include "WorldTypes.h"
 #include "BlockManager.h"
 #include "FastNoiseLite.h"
 

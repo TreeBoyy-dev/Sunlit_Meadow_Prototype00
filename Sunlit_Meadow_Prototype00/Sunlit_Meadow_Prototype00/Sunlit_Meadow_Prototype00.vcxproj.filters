@@ -49,12 +49,6 @@
     <Filter Include="Header Files\world\Blocks\BlockModels">
       <UniqueIdentifier>{6fd95466-2892-48c7-a595-e141c73e11ab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\entity">
-      <UniqueIdentifier>{fe8b0fb6-238a-432c-adc2-438b91a79879}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\entity">
-      <UniqueIdentifier>{fd7a0676-56fe-403d-a251-f2bad241fb9f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\UIRendering">
       <UniqueIdentifier>{4dad79a3-8830-4735-8f35-3a23913886a3}</UniqueIdentifier>
     </Filter>
@@ -63,6 +57,12 @@
     </Filter>
     <Filter Include="Resource Files\fonts">
       <UniqueIdentifier>{81685d3b-2047-4ff6-a05a-49047742c194}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\world\entity">
+      <UniqueIdentifier>{fd7a0676-56fe-403d-a251-f2bad241fb9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\world\entity">
+      <UniqueIdentifier>{fe8b0fb6-238a-432c-adc2-438b91a79879}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -118,13 +118,13 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Entity.cpp">
-      <Filter>Source Files\entity</Filter>
+      <Filter>Source Files\world\entity</Filter>
     </ClCompile>
     <ClCompile Include="EntityModel.cpp">
-      <Filter>Source Files\entity</Filter>
+      <Filter>Source Files\world\entity</Filter>
     </ClCompile>
     <ClCompile Include="EntityManager.cpp">
-      <Filter>Source Files\entity</Filter>
+      <Filter>Source Files\world\entity</Filter>
     </ClCompile>
     <ClCompile Include="ChunkMeshWorker.cpp">
       <Filter>Source Files\world\WorldGen</Filter>
@@ -176,7 +176,7 @@
     <ClInclude Include="BlockManager.h">
       <Filter>Header Files\world\Blocks</Filter>
     </ClInclude>
-    <ClInclude Include="ChunkTypes.h">
+    <ClInclude Include="WorldTypes.h">
       <Filter>Header Files\world\worldData</Filter>
     </ClInclude>
     <ClInclude Include="FastNoiseLite.h">
@@ -207,13 +207,13 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Entity.h">
-      <Filter>Header Files\entity</Filter>
+      <Filter>Header Files\world\entity</Filter>
     </ClInclude>
     <ClInclude Include="EntityModel.h">
-      <Filter>Header Files\entity</Filter>
+      <Filter>Header Files\world\entity</Filter>
     </ClInclude>
     <ClInclude Include="EntityManager.h">
-      <Filter>Header Files\entity</Filter>
+      <Filter>Header Files\world\entity</Filter>
     </ClInclude>
     <ClInclude Include="ChunkGeneratorWorker.h">
       <Filter>Header Files\world\WorldGen.h</Filter>

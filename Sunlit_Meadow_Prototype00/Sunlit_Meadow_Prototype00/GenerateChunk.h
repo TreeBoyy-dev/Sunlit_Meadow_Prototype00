@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ChunkTypes.h"
+#include "WorldTypes.h"
 #include "BlockManager.h"
 #include "FastNoiseLite.h"
 

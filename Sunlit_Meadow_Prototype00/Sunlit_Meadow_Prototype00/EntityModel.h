@@ -4,6 +4,7 @@
 #include "DataStructures.h"
 #include "Vectors.h"
 #include "Materials.h"
+#include "WorldTypes.h"
 
 class EntityModel {
 protected:
@@ -15,7 +16,7 @@ public:
 
     // Fills local-space geometry for this entity. Override per model type.
     virtual void generateMesh(
-        std::vector<Vertex>& vertices,
+        std::vector<WorldVertex>& vertices,
         std::vector<Uint16>& indices
     );
 

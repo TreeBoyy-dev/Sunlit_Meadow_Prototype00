@@ -6,7 +6,7 @@
 #include "Vectors.h"
 #include "Mat4.h"
 #include "UI_Renderer.h"
-
+/*
 typedef struct {
     Vec3 position;
     Vec3 normal;
@@ -14,7 +14,7 @@ typedef struct {
     SDL_FColor color;
     float materialIndex;
 }Vertex;
-
+*/
 const SDL_GPUTextureFormat depth_texture_format = SDL_GPU_TEXTUREFORMAT_D24_UNORM;
 
 typedef struct {

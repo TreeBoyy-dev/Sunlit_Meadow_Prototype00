@@ -2,7 +2,6 @@
 
 #include "EntityManager.h"
 #include "LoadShader.h"
-#include "Materials.h"      // BuildAbsolutePath
 
 EntityManager::EntityManager() {}
 
@@ -19,16 +18,16 @@ bool EntityManager::init(AppState* state) {
     }
 
     SDL_GPUVertexAttribute vertex_attrs[5] = {
-        {.location = 0, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3, .offset = (Uint32)offsetof(Vertex, position) },
-        {.location = 1, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3, .offset = (Uint32)offsetof(Vertex, normal)   },
-        {.location = 2, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2, .offset = (Uint32)offsetof(Vertex, uv)       },
-        {.location = 3, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT4, .offset = (Uint32)offsetof(Vertex, color)    },
-        {.location = 4, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT,  .offset = (Uint32)offsetof(Vertex, materialIndex) },
+        {.location = 0, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3, .offset = (Uint32)offsetof(WorldVertex, position) },
+        {.location = 1, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3, .offset = (Uint32)offsetof(WorldVertex, normal)   },
+        {.location = 2, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2, .offset = (Uint32)offsetof(WorldVertex, uv)       },
+        {.location = 3, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT4, .offset = (Uint32)offsetof(WorldVertex, color)    },
+        {.location = 4, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT,  .offset = (Uint32)offsetof(WorldVertex, materialIndex) },
     };
 
     SDL_GPUVertexBufferDescription vbDesc = {
         .slot = 0,
-        .pitch = sizeof(Vertex),
+        .pitch = sizeof(WorldVertex),
         .input_rate = SDL_GPU_VERTEXINPUTRATE_VERTEX,
     };
     SDL_GPUColorTargetDescription colorTarget = {
@@ -116,7 +115,7 @@ bool EntityManager::loadMob(
 {
     auto asset = std::make_unique<MobAsset>();
 
-    std::vector<Vertex> vertices;
+    std::vector<WorldVertex> vertices;
     std::vector<Uint16> indices;
     if (!loadModelFromFile(modelPath, modelFile, vertices, indices)) {
         SDL_Log("[Entity] failed to load model '%s'", modelFile);
@@ -143,7 +142,7 @@ bool EntityManager::loadMob(
 bool EntityManager::loadModelFromFile(
     const char* filePath,
     const char* fileName,
-    std::vector<Vertex>& outVertices,
+    std::vector<WorldVertex>& outVertices,
     std::vector<Uint16>& outIndices)
 {
     // TODO: parse your model format (e.g. .obj) from BuildAbsolutePath(filePath, fileName)
@@ -240,7 +239,7 @@ SDL_GPUTexture* EntityManager::loadTextureFromFile(
 bool EntityManager::uploadMeshToGPU(
     AppState* state,
     MobAsset* asset,
-    const std::vector<Vertex>& vertices,
+    const std::vector<WorldVertex>& vertices,
     const std::vector<Uint16>& indices)
 {
     if (vertices.empty() || indices.empty()) {
@@ -248,7 +247,7 @@ bool EntityManager::uploadMeshToGPU(
         return false;
     }
 
-    const Uint32 vbSize = (Uint32)(vertices.size() * sizeof(Vertex));
+    const Uint32 vbSize = (Uint32)(vertices.size() * sizeof(WorldVertex));
     const Uint32 ibSize = (Uint32)(indices.size() * sizeof(Uint16));
 
     SDL_GPUBufferCreateInfo vbInfo = { .usage = SDL_GPU_BUFFERUSAGE_VERTEX, .size = vbSize };

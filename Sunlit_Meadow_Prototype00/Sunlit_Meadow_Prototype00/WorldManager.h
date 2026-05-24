@@ -8,18 +8,11 @@
 #include "Region.h"
 #include "FastNoiseLite.h"
 #include "BlockManager.h"
+#include "WorldTypes.h"
 
 ChunkCoord getPlayerChunkCoord(Vec3 playerPosition);
 RegionCoord getPlayerRegionCoord(Vec3 playerPosition);
 RegionCoord getRegionCoordForChunk(ChunkCoord c);
-
-typedef struct {
-    Vec3 position;
-    Vec3 normal;
-    Vec2 uv;
-    SDL_FColor color;
-    float materialIndex;
-}WorldVertex;
 
 class WorldManager {
 private:

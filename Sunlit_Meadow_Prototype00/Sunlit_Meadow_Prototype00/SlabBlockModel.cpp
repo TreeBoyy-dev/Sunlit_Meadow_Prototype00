@@ -26,7 +26,7 @@ SlabBlockModel::SlabBlockModel(
 }
 
 void SlabBlockModel::generateMesh(
-    std::vector<Vertex>& vertices,
+    std::vector<WorldVertex>& vertices,
     std::vector<Uint16>& indices,
     AdjacencyInfo adj,
     int x, int y, int z

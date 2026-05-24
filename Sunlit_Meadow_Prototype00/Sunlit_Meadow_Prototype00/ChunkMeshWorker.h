@@ -6,7 +6,7 @@
 
 #include "ThreadSafeQueue.h"
 #include "Chunk.h"
-#include "ChunkTypes.h"
+#include "WorldTypes.h"
 #include "BlockManager.h"
 
 class ChunkMeshWorker {

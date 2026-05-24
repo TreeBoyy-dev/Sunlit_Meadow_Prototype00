@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <memory>
 
-#include "ChunkTypes.h"
+#include "WorldTypes.h"
 #include "Chunk.h"
 #include "ChunkGeneratorWorker.h"
 #include "ChunkMeshWorker.h"

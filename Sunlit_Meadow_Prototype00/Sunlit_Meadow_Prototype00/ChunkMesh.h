@@ -7,7 +7,7 @@
 #include <SDL3/SDL.h>
 #include "DataStructures.h"
 #include "Vectors.h"
-#include "ChunkTypes.h"
+#include "WorldTypes.h"
 #include "BlockManager.h"
 
 class ChunkMesh
@@ -40,7 +40,7 @@ private:
     bool neighborObstructs(Uint16 id, int faceIndex, BlockManager& blockManager);
 
 private:
-    std::vector<Vertex> vertices;
+    std::vector<WorldVertex> vertices;
     std::vector<Uint16> indices;
     std::unordered_set<LocationalBlockID, LocationalBlockIDHash> blockSet;
 

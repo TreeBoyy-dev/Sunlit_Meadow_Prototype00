@@ -3,7 +3,7 @@
 #include <memory>
 #include "Materials.h"
 #include "BlockModel.h"
-#include "DataStructures.h"
+#include "WorldTypes.h"
 #include <array>
 
 class Block {
@@ -32,7 +32,7 @@ public:
     );
 
     void generateMeshFromModel(
-        std::vector<Vertex>& vertices,
+        std::vector<WorldVertex>& vertices,
         std::vector<Uint16>&   indices,
         AdjacencyInfo            adj,
         int x, int y, int z

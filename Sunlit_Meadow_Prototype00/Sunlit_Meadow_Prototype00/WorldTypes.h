@@ -1,8 +1,17 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <functional>
+#include "Vectors.h"
 
 #define CHUNK_SIZE 16
+
+typedef struct {
+    Vec3 position;
+    Vec3 normal;
+    Vec2 uv;
+    SDL_FColor color;
+    float materialIndex;
+}WorldVertex;
 
 struct ChunkCoord {
     int x, y, z;

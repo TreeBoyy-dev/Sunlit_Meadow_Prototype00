@@ -311,4 +311,3 @@ RegionCoord getRegionCoordForChunk(ChunkCoord c) {
         (int)std::floor((float)c.z / REGION_SIZE_Z)
     };
 }
-

@@ -27,7 +27,7 @@ BlockModel::BlockModel(
 }
 
 void BlockModel::addFace(
-    std::vector<Vertex>& vertices,
+    std::vector<WorldVertex>& vertices,
     std::vector<Uint16>& indices,
     const Vec3           corners[4],
     Material             materialIndex)
@@ -65,7 +65,7 @@ void BlockModel::addFace(
 }
 
 void BlockModel::generateMesh(
-    std::vector<Vertex>& vertices,
+    std::vector<WorldVertex>& vertices,
     std::vector<Uint16>& indices,
     AdjacencyInfo        adj,
     int x, int y, int z)

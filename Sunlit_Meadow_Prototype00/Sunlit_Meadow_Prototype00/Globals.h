@@ -4,7 +4,7 @@
 #include "Vectors.h"
 #include "WorldManager.h"
 #include "BlockManager.h"
-#include "ChunkTypes.h"
+#include "WorldTypes.h"
 #include "FastNoiseLite.h"
 #include "Skybox.h"
 
