@@ -122,8 +122,7 @@ SDL_AppResult App_Update(void* appstate)
 
     ChunkCoord playerChunkCoords = getPlayerChunkCoord(camera.position);
 
-    worldManager.updatePlayerPosition(camera.position);
-    worldManager.update(state, state->textureArray);
+    worldManager.update(state, state->textureArray, camera.position);
 
     return SDL_APP_CONTINUE;
 }

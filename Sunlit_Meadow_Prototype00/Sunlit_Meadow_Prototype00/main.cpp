@@ -10,7 +10,6 @@
 #include "App_Update.h"
 #include "App_Init.h"
 #include "Globals.h"
-#include "InitPipeline.h"
 #include "Vectors.h"
 
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
@@ -88,10 +87,8 @@ void SDL_AppQuit(void* appstate, SDL_AppResult result)
 {
     AppState* state = (AppState*)appstate;
     if (state) {
-        worldManager.destroyManager(state);
+        worldManager.destroy(state);
 
-        if (state->pipeline)
-            SDL_ReleaseGPUGraphicsPipeline(state->gpu, state->pipeline);
         if (state->gpu)
             SDL_DestroyGPUDevice(state->gpu);
         if (state->window)

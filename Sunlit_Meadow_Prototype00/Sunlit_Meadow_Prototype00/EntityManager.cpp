@@ -2,7 +2,6 @@
 
 #include "EntityManager.h"
 #include "LoadShader.h"
-#include "InitPipeline.h"   // depth_texture_format
 #include "Materials.h"      // BuildAbsolutePath
 
 EntityManager::EntityManager() {}

@@ -15,6 +15,8 @@ typedef struct {
     float materialIndex;
 }Vertex;
 
+const SDL_GPUTextureFormat depth_texture_format = SDL_GPU_TEXTUREFORMAT_D24_UNORM;
+
 typedef struct {
     Mat4 mvp;   /* model * view * projection, uploaded to the vertex shader */
 } UBO;
@@ -22,16 +24,10 @@ typedef struct {
 typedef struct {
     SDL_Window* window;
     SDL_GPUDevice* gpu;
-    SDL_GPUGraphicsPipeline* pipeline;
     SDL_GPUTexture* depth_texture;
     SDL_GPUSampler* sampler;
 
-    SDL_GPUTexture* textureArray;
-
-    UI_Renderer ui;
-
     Uint64  lastTicks;      /* timestamp at end of previous frame   */
-    float   rotation;       /* current rotation angle (radians)     */
     Mat4    projMat;        /* projection matrix, computed at init  */
 } AppState;
 
@@ -42,4 +38,3 @@ typedef struct {
     float yaw;
     float pitch;
 } Camera;
-

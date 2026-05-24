@@ -31,14 +31,14 @@ std::string BuildAbsolutePath(
 }
 
 bool UploadTextureArrayLayer(
-    AppState* state,
+    SDL_GPUDevice* gpu,
     SDL_GPUTexture* textureArray,
     const char* filePath,
     const char* fileName,
     Material material
 )
 {
-    if (!state || !state->gpu || !textureArray || !filePath || !fileName) {
+    if (!gpu || !textureArray || !filePath || !fileName) {
         SDL_Log("UploadTextureArrayLayer: invalid argument");
         return false;
     }
@@ -70,7 +70,7 @@ bool UploadTextureArrayLayer(
     };
 
     SDL_GPUTransferBuffer* transferBuffer =
-        SDL_CreateGPUTransferBuffer(state->gpu, &transferInfo);
+        SDL_CreateGPUTransferBuffer(gpu, &transferInfo);
 
     if (!transferBuffer) {
         SDL_Log("SDL_CreateGPUTransferBuffer failed: %s", SDL_GetError());
@@ -78,21 +78,21 @@ bool UploadTextureArrayLayer(
         return false;
     }
 
-    void* mapped = SDL_MapGPUTransferBuffer(state->gpu, transferBuffer, false);
+    void* mapped = SDL_MapGPUTransferBuffer(gpu, transferBuffer, false);
     if (!mapped) {
         SDL_Log("SDL_MapGPUTransferBuffer failed: %s", SDL_GetError());
-        SDL_ReleaseGPUTransferBuffer(state->gpu, transferBuffer);
+        SDL_ReleaseGPUTransferBuffer(gpu, transferBuffer);
         SDL_DestroySurface(surface);
         return false;
     }
 
     SDL_memcpy(mapped, surface->pixels, dataSize);
-    SDL_UnmapGPUTransferBuffer(state->gpu, transferBuffer);
+    SDL_UnmapGPUTransferBuffer(gpu, transferBuffer);
 
-    SDL_GPUCommandBuffer* cmd = SDL_AcquireGPUCommandBuffer(state->gpu);
+    SDL_GPUCommandBuffer* cmd = SDL_AcquireGPUCommandBuffer(gpu);
     if (!cmd) {
         SDL_Log("SDL_AcquireGPUCommandBuffer failed: %s", SDL_GetError());
-        SDL_ReleaseGPUTransferBuffer(state->gpu, transferBuffer);
+        SDL_ReleaseGPUTransferBuffer(gpu, transferBuffer);
         SDL_DestroySurface(surface);
         return false;
     }
@@ -123,77 +123,77 @@ bool UploadTextureArrayLayer(
     SDL_EndGPUCopyPass(copyPass);
     SDL_SubmitGPUCommandBuffer(cmd);
 
-    SDL_ReleaseGPUTransferBuffer(state->gpu, transferBuffer);
+    SDL_ReleaseGPUTransferBuffer(gpu, transferBuffer);
     SDL_DestroySurface(surface);
 
     return true;
 }
 
 bool UploadTextureArrayLayers(
-    AppState* state,
+    SDL_GPUDevice* gpu,
     SDL_GPUTexture* textureArray
 ) {
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "cobblestone.png", MATERIAL_COBBLESTONE))
+    if (!UploadTextureArrayLayer(gpu, textureArray, "Textures/", "cobblestone.png", MATERIAL_COBBLESTONE))
     {
         SDL_Log("Failed to load Texture: cobblestone");
         return false;
     }
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "diorite.png", MATERIAL_DIORITE))
+    if (!UploadTextureArrayLayer(gpu, textureArray, "Textures/", "diorite.png", MATERIAL_DIORITE))
     {
         SDL_Log("Failed to load Texture: diorite");
         return false;
     }
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "marble.png", MATERIAL_MARBLE))
+    if (!UploadTextureArrayLayer(gpu, textureArray, "Textures/", "marble.png", MATERIAL_MARBLE))
     {
         SDL_Log("Failed to load Texture: marble");
         return false;
     }
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "chalk.png", MATERIAL_CHALK))
+    if (!UploadTextureArrayLayer(gpu, textureArray, "Textures/", "chalk.png", MATERIAL_CHALK))
     {
         SDL_Log("Failed to load Texture: chalk");
         return false;
     }
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "gneiss.png", MATERIAL_GNEISS))
+    if (!UploadTextureArrayLayer(gpu, textureArray, "Textures/", "gneiss.png", MATERIAL_GNEISS))
     {
         SDL_Log("Failed to load Texture: gneiss");
         return false;
     }
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "dirt.png", MATERIAL_DIRT))
+    if (!UploadTextureArrayLayer(gpu, textureArray, "Textures/", "dirt.png", MATERIAL_DIRT))
     {
         SDL_Log("Failed to load Texture: dirt");
         return false;
     }
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "GrassBlock.png", MATERIAL_GRASS_BLOCK))
+    if (!UploadTextureArrayLayer(gpu, textureArray, "Textures/", "GrassBlock.png", MATERIAL_GRASS_BLOCK))
     {
         SDL_Log("Failed to load Texture: grass block");
         return false;
     }
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "BirchLogSide.png", MATERIAL_BIRCH_LOG_SIDE))
+    if (!UploadTextureArrayLayer(gpu, textureArray, "Textures/", "BirchLogSide.png", MATERIAL_BIRCH_LOG_SIDE))
     {
         SDL_Log("Failed to load Texture: BirchLogSide");
         return false;
     }
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "BirchLogTop.png", MATERIAL_BIRCH_LOG_TOP))
+    if (!UploadTextureArrayLayer(gpu, textureArray, "Textures/", "BirchLogTop.png", MATERIAL_BIRCH_LOG_TOP))
     {
         SDL_Log("Failed to load Texture: BirchLogTop");
         return false;
     }
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "BirchLeaves.png", MATERIAL_BIRCH_LEAVES))
+    if (!UploadTextureArrayLayer(gpu, textureArray, "Textures/", "BirchLeaves.png", MATERIAL_BIRCH_LEAVES))
     {
         SDL_Log("Failed to load Texture: BirchLeaves");
         return false;
     }
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "ChestnutLogSide.png", MATERIAL_CHESTNUT_LOG_SIDE))
+    if (!UploadTextureArrayLayer(gpu, textureArray, "Textures/", "ChestnutLogSide.png", MATERIAL_CHESTNUT_LOG_SIDE))
     {
         SDL_Log("Failed to load Texture: ChestnutLogSide");
         return false;
     }
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "ChestnutLogTop.png", MATERIAL_CHESTNUT_LOG_TOP))
+    if (!UploadTextureArrayLayer(gpu, textureArray, "Textures/", "ChestnutLogTop.png", MATERIAL_CHESTNUT_LOG_TOP))
     {
         SDL_Log("Failed to load Texture: ChestnutLogTop");
         return false;
     }
-    if (!UploadTextureArrayLayer(state, textureArray, "Textures/", "ChestnutLeaves.png", MATERIAL_CHESTNUT_LEAVES))
+    if (!UploadTextureArrayLayer(gpu, textureArray, "Textures/", "ChestnutLeaves.png", MATERIAL_CHESTNUT_LEAVES))
     {
         SDL_Log("Failed to load Texture: ChestnutLeaves");
         return false;

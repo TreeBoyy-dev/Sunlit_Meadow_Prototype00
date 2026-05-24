@@ -5,9 +5,7 @@
 #include <SDL3_ttf/SDL_ttf.h>
 
 #include "Globals.h"
-#include "InitPipeline.h"
 #include "Materials.h"
-#include "InitNoise.h"
 
 SDL_AppResult App_Init(void* appstate)
 {
@@ -24,7 +22,7 @@ SDL_AppResult App_Init(void* appstate)
         SDL_Log("TTF_Init failed: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
-    if (!state->ui.loadFont("cour.ttf", 16)) {
+    if (!ui.loadFont("cour.ttf", 16)) {
         SDL_Log("failed to load font: %s", SDL_GetError());
         return SDL_APP_FAILURE;
     }
@@ -49,9 +47,9 @@ SDL_AppResult App_Init(void* appstate)
     int w, h;
     SDL_GetWindowSize(state->window, &w, &h);
 
-    state->ui.screenW = (float)w;
-    state->ui.screenH = (float)h;
-    state->ui.init(state->gpu, SDL_GetGPUSwapchainTextureFormat(state->gpu, state->window));
+    ui.screenW = (float)w;
+    ui.screenH = (float)h;
+    ui.init(state->gpu, SDL_GetGPUSwapchainTextureFormat(state->gpu, state->window));
 
     SDL_GPUTextureCreateInfo depth_tex_info = {
         .type = SDL_GPU_TEXTURETYPE_2D,
@@ -64,34 +62,10 @@ SDL_AppResult App_Init(void* appstate)
     };
     state->depth_texture = SDL_CreateGPUTexture(state->gpu, &depth_tex_info);
 
-    App_InitPipeline(state);
-
-    Uint32 layerCount = (Uint32)MATERIAL_COUNT;
-    SDL_GPUTextureCreateInfo texInfo = {
-    .type = SDL_GPU_TEXTURETYPE_2D_ARRAY,
-    .format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM,
-    .usage = SDL_GPU_TEXTUREUSAGE_SAMPLER,
-    .width = 32,
-    .height = 32,
-    .layer_count_or_depth = layerCount,
-    .num_levels = 1,
-    .sample_count = SDL_GPU_SAMPLECOUNT_1,
-    .props = 0
-    };
-    state->textureArray = SDL_CreateGPUTexture(state->gpu, &texInfo);
-
-    if (!UploadTextureArrayLayers(state, state->textureArray))
-    {
-        SDL_Log("failed loading textures");
-        return SDL_APP_FAILURE;
-    }
-
-    initNoise(&standartNoise);
-
-    blockManager.init();
+    worldManager.init(state->gpu, SDL_GetGPUSwapchainTextureFormat(state->gpu, state->window));
 
     worldManager.calcVisibleChunksList(RENDER_DISTANCE);
-    worldManager.update(state, state->textureArray);
+    worldManager.update(state, camera.position);
 
     skybox.init(state, SDL_GetGPUSwapchainTextureFormat(state->gpu, state->window), "Textures/", "Cubemap_Sky_SBS.png");
     SDL_GPUCommandBuffer* uploadCmd = SDL_AcquireGPUCommandBuffer(state->gpu);

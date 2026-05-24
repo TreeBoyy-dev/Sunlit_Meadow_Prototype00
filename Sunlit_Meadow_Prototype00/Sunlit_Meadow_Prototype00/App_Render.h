@@ -13,31 +13,31 @@ void drawDebugUI(void* appstate) {
     const SDL_FColor white = { 1.0f, 1.0f, 1.0f, 1.0f };
 
     snprintf(buffer, sizeof(buffer), "FPS: %4.1f", fps);
-    state->ui.drawText(buffer, 8.0f, y, white); y += lineH;
+    ui.drawText(buffer, 8.0f, y, white); y += lineH;
 
     snprintf(buffer, sizeof(buffer), "Pos: %3.1f  %3.1f  %3.1f",
         camera.position.x, camera.position.y, camera.position.z);
-    state->ui.drawText(buffer, 8.0f, y, white); y += lineH;
+    ui.drawText(buffer, 8.0f, y, white); y += lineH;
 
     snprintf(buffer, sizeof(buffer), "Chunk: %d  %d  %d",
         playerChunkCoords.x, playerChunkCoords.y, playerChunkCoords.z);
-    state->ui.drawText(buffer, 8.0f, y, white); y += lineH;
+    ui.drawText(buffer, 8.0f, y, white); y += lineH;
 
     snprintf(buffer, sizeof(buffer), "Region: %d  %d  %d",
         playerRegionCoords.x, playerRegionCoords.y, playerRegionCoords.z);
-    state->ui.drawText(buffer, 8.0f, y, white); y += lineH;
+    ui.drawText(buffer, 8.0f, y, white); y += lineH;
 }
 
 SDL_AppResult App_Render(void* appstate)
 {
     AppState* state = (AppState*)appstate;
 
-    //state->ui.clearTextCache(state->gpu);
+    //ui.clearTextCache(state->gpu);
 
-    float cx = state->ui.screenW * 0.5f;
-    float cy = state->ui.screenH * 0.5f;
-    state->ui.drawCrosshair(cx, cy, 12.0f, 2.0f, 4.0f, 1.0f, 1.0f, 1.0f, 0.9f);
-    //state->ui.drawText("hello UI", 20.0f, 20.0f, { 1.0f, 1.0f, 1.0f, 1.0f });
+    float cx = ui.screenW * 0.5f;
+    float cy = ui.screenH * 0.5f;
+    ui.drawCrosshair(cx, cy, 12.0f, 2.0f, 4.0f, 1.0f, 1.0f, 1.0f, 0.9f);
+    //ui.drawText("hello UI", 20.0f, 20.0f, { 1.0f, 1.0f, 1.0f, 1.0f });
 
     if (renderDebugUI)
         drawDebugUI(state);
@@ -56,7 +56,7 @@ SDL_AppResult App_Render(void* appstate)
         return SDL_APP_FAILURE;
     }
 
-    state->ui.upload(state->gpu, cmd);
+    ui.upload(state->gpu, cmd);
 
     Mat4 viewMat = mat4LookAt(camera.position, camera.lookTarget, { 0.0f, 0.0f, -1.0f });
 
@@ -115,7 +115,7 @@ SDL_AppResult App_Render(void* appstate)
             1,
             &depth_target
         );
-        worldManager.drawChunks(state, cmd, worldPass, worldUBO);
+        worldManager.draw(state, cmd, worldPass, worldUBO);
         SDL_EndGPURenderPass(worldPass);
 
         SDL_GPUColorTargetInfo ui_target = {
@@ -125,7 +125,7 @@ SDL_AppResult App_Render(void* appstate)
         };
 
         SDL_GPURenderPass* uiPass = SDL_BeginGPURenderPass(cmd, &ui_target, 1, nullptr);
-        state->ui.draw(uiPass);
+        ui.draw(uiPass);
         SDL_EndGPURenderPass(uiPass);
     }
 

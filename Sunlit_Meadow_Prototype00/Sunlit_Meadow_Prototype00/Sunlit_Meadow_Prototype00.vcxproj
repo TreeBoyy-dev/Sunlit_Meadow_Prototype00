@@ -143,7 +143,6 @@
     <ClCompile Include="GenerateChunk.cpp" />
     <ClCompile Include="GenerateChunk.h" />
     <ClCompile Include="Globals.cpp" />
-    <ClCompile Include="InitPipeline.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\SDL3-3.4.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -179,7 +178,6 @@
     <ClInclude Include="Region.h" />
     <ClInclude Include="DataStructures.h" />
     <ClInclude Include="Globals.h" />
-    <ClInclude Include="InitPipeline.h" />
     <ClInclude Include="Mat4.h" />
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="SlabBlockModel.h" />

@@ -30,7 +30,7 @@ std::string BuildAbsolutePath(
 );
 
 bool UploadTextureArrayLayer(
-    AppState* state,
+    SDL_GPUDevice* gpu,
     SDL_GPUTexture* textureArray,
     const char* filePath,
     const char* fileName,
@@ -38,7 +38,7 @@ bool UploadTextureArrayLayer(
 );
 
 bool UploadTextureArrayLayers(
-    AppState* state,
+    SDL_GPUDevice* gpu,
     SDL_GPUTexture* textureArray
 );
 

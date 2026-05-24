@@ -6,12 +6,28 @@
 
 #include "Chunk.h"
 #include "Region.h"
+#include "FastNoiseLite.h"
+#include "BlockManager.h"
 
 ChunkCoord getPlayerChunkCoord(Vec3 playerPosition);
 RegionCoord getPlayerRegionCoord(Vec3 playerPosition);
+RegionCoord getRegionCoordForChunk(ChunkCoord c);
+
+typedef struct {
+    Vec3 position;
+    Vec3 normal;
+    Vec2 uv;
+    SDL_FColor color;
+    float materialIndex;
+}WorldVertex;
 
 class WorldManager {
 private:
+    SDL_GPUGraphicsPipeline* pipeline = nullptr;
+
+    SDL_GPUTexture* textureArray = nullptr;
+
+
     std::unordered_map<RegionCoord, std::unique_ptr<Region>, RegionCoordHash> regions;
     std::vector<ChunkCoord> visibleChunkCoordsRelative;
 
@@ -21,16 +37,25 @@ private:
     int        m_renderDistance = 0;
     ChunkCoord m_lastPlayerChunkPos = { 1000, 1000, 10000 };
 
+    BlockManager blockManager;
+    FastNoiseLite standartNoise;
+
 public:
     WorldManager();
-    void calcVisibleChunksList(int renderDistance);
-    void update(AppState* state, SDL_GPUTexture* textureArray);
-    void updatePlayerPosition(Vec3 playerPosition);
-    void drawChunks(AppState*, SDL_GPUCommandBuffer*, SDL_GPURenderPass*, const UBO&);
-    void destroyManager(AppState* state);
+
+    bool    init(SDL_GPUDevice* gpu, SDL_GPUTextureFormat swapchainFormat);
+    void    destroy(AppState* state);
+
+    void    update(AppState* state, Vec3 playerPosition);
+    void    draw(AppState*, SDL_GPUCommandBuffer*, SDL_GPURenderPass*, const UBO&);
+
+    void    calcVisibleChunksList(int renderDistance);
 
 private:
+    void    updatePlayerPosition(Vec3 playerPosition);
+
+    void    drawChunks(AppState*, SDL_GPUCommandBuffer*, SDL_GPURenderPass*, const UBO&);
+
     Region* getRegion(RegionCoord regionCoordinates);
-    RegionCoord regionCoordForChunk(ChunkCoord c);
-    void        onPlayerChunkChanged();
+    void    onPlayerChunkChanged();
 };

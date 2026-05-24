@@ -34,8 +34,5 @@ const int RENDER_DISTANCE = 12;
 
 ChunkCoord prevPlayerChunkCoords = { 0,0,0 };
 
-// --- BlockManager ---
-BlockManager blockManager;
-
-// --- World generation related ---
-FastNoiseLite standartNoise;
+// --- UI ---
+UI_Renderer ui;

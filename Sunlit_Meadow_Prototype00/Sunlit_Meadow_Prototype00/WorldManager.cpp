@@ -4,21 +4,132 @@
 #include "WorldManager.h"
 #include "Globals.h"
 #include "Frustum.h"
+#include "LoadShader.h"
+#include "InitNoise.h"
 
 WorldManager::WorldManager() {}
 
-void WorldManager::calcVisibleChunksList(int renderDistance) {
-    m_renderDistance = renderDistance;
-    visibleChunkCoordsRelative.clear();
-    for (int x = -renderDistance; x <= renderDistance; x++)
-        for (int y = -renderDistance; y <= renderDistance; y++)
-            for (int z = -renderDistance; z <= renderDistance; z++)
-                if (sqrt(x * x + y * y + z * z) <= (double)renderDistance)
-                    visibleChunkCoordsRelative.push_back({ x, y, z });
+bool WorldManager::init(SDL_GPUDevice* gpu, SDL_GPUTextureFormat swapchainFormat) {
+
+    SDL_GPUShader* vert = loadShader(gpu, "shader.vert.spv", 1, 0);
+    SDL_GPUShader* frag = loadShader(gpu, "shader.frag.spv", 0, 1);
+
+    if (!vert || !frag) { return SDL_APP_FAILURE; }
+
+    SDL_GPUVertexAttribute vertex_attrs[5] = {
+    {
+        .location = 0,
+        .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3,
+        .offset = (Uint32)offsetof(WorldVertex, position),
+    },
+    {
+        .location = 1,
+        .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3,
+        .offset = (Uint32)offsetof(WorldVertex, normal),
+    },
+    {
+        .location = 2,
+        .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2,
+        .offset = (Uint32)offsetof(WorldVertex, uv),
+    },
+    {
+        .location = 3,
+        .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT4,
+        .offset = (Uint32)offsetof(WorldVertex, color),
+    },
+    {
+        .location = 4,
+        .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT,
+        .offset = (Uint32)offsetof(WorldVertex, materialIndex),
+    },
+    };
+
+    SDL_GPUColorTargetDescription color_target_desc = {
+        .format = swapchainFormat,
+    };
+    SDL_GPUVertexBufferDescription vertex_buffer_descriptions = {
+        .slot = 0,
+        .pitch = sizeof(WorldVertex),
+    };
+    SDL_GPUDepthStencilState depth_stencil_state = {
+        .compare_op = SDL_GPU_COMPAREOP_LESS,
+        .enable_depth_test = true,
+        .enable_depth_write = true,
+    };
+
+    SDL_GPUGraphicsPipelineCreateInfo pipeline_info = {
+        .vertex_shader = vert,
+        .fragment_shader = frag,
+        .vertex_input_state = {
+            .vertex_buffer_descriptions = &vertex_buffer_descriptions,
+            .num_vertex_buffers = 1,
+            .vertex_attributes = vertex_attrs,
+            .num_vertex_attributes = SDL_arraysize(vertex_attrs),
+        },
+        .primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST,
+        .depth_stencil_state = depth_stencil_state,
+        .target_info = {
+            .color_target_descriptions = &color_target_desc,
+            .num_color_targets = 1,
+            .depth_stencil_format = depth_texture_format,
+            .has_depth_stencil_target = true,
+        },
+    };
+
+    pipeline = SDL_CreateGPUGraphicsPipeline(gpu, &pipeline_info);
+
+    SDL_ReleaseGPUShader(gpu, vert);
+    SDL_ReleaseGPUShader(gpu, frag);
+
+    if (!pipeline) {
+        SDL_Log("SDL_CreateGPUGraphicsPipeline failed: %s", SDL_GetError());
+        return false;
+    }
+
+    Uint32 layerCount = (Uint32)MATERIAL_COUNT;
+    SDL_GPUTextureCreateInfo texInfo = {
+    .type = SDL_GPU_TEXTURETYPE_2D_ARRAY,
+    .format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM,
+    .usage = SDL_GPU_TEXTUREUSAGE_SAMPLER,
+    .width = 32,
+    .height = 32,
+    .layer_count_or_depth = layerCount,
+    .num_levels = 1,
+    .sample_count = SDL_GPU_SAMPLECOUNT_1,
+    .props = 0
+    };
+    textureArray = SDL_CreateGPUTexture(gpu, &texInfo);
+
+    if (!UploadTextureArrayLayers(gpu, textureArray))
+    {
+        SDL_Log("failed loading textures");
+        return SDL_APP_FAILURE;
+    }
+
+
+    blockManager.init();
+    initNoise(&standartNoise);
+
+    return true;
 }
 
+void WorldManager::destroy(AppState* state) {
+    for (auto& [coord, region] : regions) {
+        region->destroyRegion(state);
+    }
+    regions.clear();
+    renderList.clear();
 
-void WorldManager::update(AppState* state, SDL_GPUTexture* textureArray) {
+    if (pipeline) {
+        SDL_ReleaseGPUGraphicsPipeline(state->gpu, pipeline);
+        pipeline = nullptr;
+    }
+}
+
+// Updaating hte world ----------------------------------------------------
+void WorldManager::update(AppState* state, Vec3 playerPosition) {
+    updatePlayerPosition(playerPosition);
+
     std::vector<ChunkCoord> newlyReady;
     newlyReady.reserve(8);
 
@@ -86,7 +197,7 @@ void WorldManager::onPlayerChunkChanged() {
     for (const ChunkCoord& coord : nowVisible) {
         if (renderList.count(coord) || pendingChunks.count(coord)) continue;
 
-        Region* r = getRegion(regionCoordForChunk(coord));
+        Region* r = getRegion(getRegionCoordForChunk(coord));
         if (Chunk* c = r->getChunk(coord)) {
             renderList.emplace(coord, c);
         }
@@ -108,7 +219,7 @@ void WorldManager::onPlayerChunkChanged() {
     auto t5 = clock::now();
 
     for (const ChunkCoord& coord : toRequest)
-        getRegion(regionCoordForChunk(coord))->requestChunkGeneration(coord);
+        getRegion(getRegionCoordForChunk(coord))->requestChunkGeneration(coord);
     auto t6 = clock::now();
 
     //Logger to display time usage:
@@ -125,10 +236,21 @@ void WorldManager::onPlayerChunkChanged() {
     //*/
 }
 
+
+//drawing the world -------------------------------------------------------
+void WorldManager::draw(AppState* state,
+    SDL_GPUCommandBuffer* cmd,
+    SDL_GPURenderPass* pass,
+    const UBO& ubo) {
+
+    drawChunks(state, cmd, pass, ubo);
+}
+
 void WorldManager::drawChunks(AppState* state,
     SDL_GPUCommandBuffer* cmd,
     SDL_GPURenderPass* pass,
     const UBO& ubo) {
+
     Frustum frustum = buildFrustum(camera, fovX, aspect, NEAR_PLANE, FAR_PLANE);
 
     for (auto& [cc, chunk] : renderList) {
@@ -139,14 +261,7 @@ void WorldManager::drawChunks(AppState* state,
     }
 }
 
-RegionCoord WorldManager::regionCoordForChunk(ChunkCoord c) {
-    return {
-        (int)std::floor((float)c.x / REGION_SIZE_YX),
-        (int)std::floor((float)c.y / REGION_SIZE_YX),
-        (int)std::floor((float)c.z / REGION_SIZE_Z)
-    };
-}
-
+//helpers -----------------------------------------------------------------
 Region* WorldManager::getRegion(RegionCoord regionCoordinates) {
     auto it = regions.find(regionCoordinates);
     if (it != regions.end())
@@ -159,6 +274,18 @@ Region* WorldManager::getRegion(RegionCoord regionCoordinates) {
     return newIt->second.get();
 }
 
+void WorldManager::calcVisibleChunksList(int renderDistance) {
+    m_renderDistance = renderDistance;
+    visibleChunkCoordsRelative.clear();
+    for (int x = -renderDistance; x <= renderDistance; x++)
+        for (int y = -renderDistance; y <= renderDistance; y++)
+            for (int z = -renderDistance; z <= renderDistance; z++)
+                if (sqrt(x * x + y * y + z * z) <= (double)renderDistance)
+                    visibleChunkCoordsRelative.push_back({ x, y, z });
+}
+
+
+//global helpers -----------------------------------------------------------------
 ChunkCoord getPlayerChunkCoord(Vec3 playerPosition) {
     return {
         (int)std::floor(playerPosition.x / CHUNK_SIZE),
@@ -173,11 +300,11 @@ RegionCoord getPlayerRegionCoord(Vec3 playerPosition) {
         (int)std::floor(playerPosition.z / (CHUNK_SIZE * REGION_SIZE_Z))
     };
 }
-
-void WorldManager::destroyManager(AppState* state) {
-    for (auto& [coord, region] : regions) {
-        region->destroyRegion(state);
-    }
-    regions.clear();
-    renderList.clear();
+RegionCoord getRegionCoordForChunk(ChunkCoord c) {
+    return {
+        (int)std::floor((float)c.x / REGION_SIZE_YX),
+        (int)std::floor((float)c.y / REGION_SIZE_YX),
+        (int)std::floor((float)c.z / REGION_SIZE_Z)
+    };
 }
+

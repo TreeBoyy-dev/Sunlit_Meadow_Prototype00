@@ -37,8 +37,5 @@ extern const int RENDER_DISTANCE;
 
 extern ChunkCoord prevPlayerChunkCoords;
 
-// --- BlockManager ---
-extern BlockManager blockManager;
-
-// --- World generation related ---
-extern FastNoiseLite standartNoise;
+// --- UI ---
+extern UI_Renderer ui;
