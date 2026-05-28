@@ -14,7 +14,7 @@ bool WorldManager::init(SDL_GPUDevice* gpu, SDL_GPUTextureFormat swapchainFormat
     SDL_GPUShader* vert = loadShader(gpu, "shader.vert.spv", 1, 0);
     SDL_GPUShader* frag = loadShader(gpu, "shader.frag.spv", 0, 1);
 
-    if (!vert || !frag) { return SDL_APP_FAILURE; }
+    if (!vert || !frag) { return false; }
 
     SDL_GPUVertexAttribute vertex_attrs[5] = {
     {
@@ -103,7 +103,7 @@ bool WorldManager::init(SDL_GPUDevice* gpu, SDL_GPUTextureFormat swapchainFormat
     if (!UploadTextureArrayLayers(gpu, textureArray))
     {
         SDL_Log("failed loading textures");
-        return SDL_APP_FAILURE;
+        return false;
     }
 
 

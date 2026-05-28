@@ -3,7 +3,6 @@
 #include <SDL3/SDL.h>
 #include "Vectors.h"
 #include "DataStructures.h"
-#include "WorldTypes.h"
 #include "EntityTypes.h"
 
 

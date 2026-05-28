@@ -8,7 +8,7 @@ void PhysicsBody::integrate(Vec3& position, float dt) {
     velocity = vec3Add(velocity, vec3Scale(acceleration, dt));
     position = vec3Add(position, vec3Scale(velocity, dt));
 
-    acceleration = { 0, 0, 0 };
+    acceleration = { 0, 0.01f, 0 };
 }
 
 Vec3 Hitbox::worldMin(Vec3 position) const {

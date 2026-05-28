@@ -12,7 +12,6 @@
 #include "DataStructures.h"
 #include "Vectors.h"
 #include "Mat4.h"
-#include "WorldTypes.h"
 #include "EntityTypes.h"
 
 class EntityManager {
@@ -39,7 +38,7 @@ private:
     bool loadModelFromFile(
         const char* filePath,
         const char* fileName,
-        std::vector<WorldVertex>& outVertices,
+        std::vector<EntityVertex>& outVertices,
         std::vector<Uint16>& outIndices
     );
     SDL_GPUTexture* loadTextureFromFile(
@@ -50,7 +49,7 @@ private:
     bool uploadMeshToGPU(
         AppState* state,
         EntityAsset* asset,
-        const std::vector<WorldVertex>& vertices,
+        const std::vector<EntityVertex>& vertices,
         const std::vector<Uint16>& indices
     );
 

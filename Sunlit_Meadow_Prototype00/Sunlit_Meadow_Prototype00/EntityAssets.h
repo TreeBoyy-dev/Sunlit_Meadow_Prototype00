@@ -10,19 +10,22 @@
 // Call registerEntityAssets() once, AFTER EntityManager::init() (the GPU device
 // and the entity pipeline must already exist). Paths are relative to the same
 // base BuildAbsolutePath() uses for the rest of the engine's assets.
+const char* baseModelPath   = "Models/";
+const char* baseTexturePath = "Textures/Entities";
+
 
 inline bool registerEntityAssets(AppState* state, EntityManager& em) {
     bool ok = true;
 
     // --- Player -------------------------------------------------------------
-    // ~1.8 units tall, feet at the entity origin (center sits at z = 0.9).
+    /*
     ok &= em.loadEntityType(
         state, "player",
-        "Models/", "player.obj",
-        "Textures/", "player.png",
+        baseModelPath, "player.obj",
+        baseTexturePath, "player.png",
         Hitbox{
             .offset = { 0.0f, 0.0f, 0.9f },
-            .halfExtents = { 0.3f, 0.3f, 0.9f },
+            .halfExtents = { 0.4f, 0.4f, 0.9f },
         },
         SpawnData{
             .health = 20.0f,
@@ -31,15 +34,14 @@ inline bool registerEntityAssets(AppState* state, EntityManager& em) {
             .affectedByGravity = true,
         }
         );
-
-    // --- Goose --------------------------------------------------------------
-    // Small and low to the ground (~0.8 units tall), lighter than the player.
+    //*/
+    // --- Rubber Duck --------------------------------------------------------------
     ok &= em.loadEntityType(
-        state, "goose",
-        "Models/", "goose.obj",
-        "Textures/", "goose.png",
+        state, "rubber_duck",
+        baseModelPath, "rubber_duck.obj",
+        baseTexturePath, "rubber_duck.png",
         Hitbox{
-            .offset = { 0.0f, 0.0f, 0.4f },
+            .offset = { 0.0f, 0.0f, 0.3f },
             .halfExtents = { 0.25f, 0.25f, 0.4f },
         },
         SpawnData{

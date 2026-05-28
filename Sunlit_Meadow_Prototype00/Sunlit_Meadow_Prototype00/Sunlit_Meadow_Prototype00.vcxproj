@@ -150,6 +150,7 @@
     </ClCompile>
     <ClCompile Include="Mat4.cpp" />
     <ClCompile Include="Materials.cpp" />
+    <ClCompile Include="ObjParser.cpp" />
     <ClCompile Include="Region.cpp" />
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="SlabBlockModel.cpp" />
@@ -169,6 +170,7 @@
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkMeshWorker.h" />
     <ClInclude Include="EntityAssets.h" />
+    <ClInclude Include="ObjParser.h" />
     <ClInclude Include="WorldTypes.h" />
     <ClInclude Include="ChunkGeneratorWorker.h" />
     <ClInclude Include="Entity.h" />

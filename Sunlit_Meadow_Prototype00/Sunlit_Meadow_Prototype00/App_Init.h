@@ -67,7 +67,7 @@ SDL_AppResult App_Init(void* appstate)
     worldManager.calcVisibleChunksList(RENDER_DISTANCE);
     worldManager.update(state, camera.position);
 
-    skybox.init(state, SDL_GetGPUSwapchainTextureFormat(state->gpu, state->window), "Textures/", "Cubemap_Sky_SBS.png");
+    skybox.init(state, SDL_GetGPUSwapchainTextureFormat(state->gpu, state->window), "Textures/Environment/", "Cubemap_Sky_SBS.png");
     SDL_GPUCommandBuffer* uploadCmd = SDL_AcquireGPUCommandBuffer(state->gpu);
     skybox.upload(state->gpu, uploadCmd);
     SDL_SubmitGPUCommandBuffer(uploadCmd);
