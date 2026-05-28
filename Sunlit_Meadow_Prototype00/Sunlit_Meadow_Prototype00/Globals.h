@@ -7,6 +7,7 @@
 #include "WorldTypes.h"
 #include "FastNoiseLite.h"
 #include "Skybox.h"
+#include "EntityManager.h"
 
 extern const float NEAR_PLANE;
 extern const float FAR_PLANE;
@@ -30,6 +31,9 @@ extern const int ARR_SIZE;
 extern float lst_dt[];
 extern int frame_count;
 extern float sum;
+
+// --- EntityManager ---
+extern EntityManager entityManager;
 
 // --- WorldManager ---
 extern WorldManager worldManager;

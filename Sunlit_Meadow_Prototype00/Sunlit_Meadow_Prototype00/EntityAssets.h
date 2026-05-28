@@ -11,10 +11,10 @@
 // and the entity pipeline must already exist). Paths are relative to the same
 // base BuildAbsolutePath() uses for the rest of the engine's assets.
 const char* baseModelPath   = "Models/";
-const char* baseTexturePath = "Textures/Entities";
+const char* baseTexturePathEntities = "Textures/Entities";
 
 
-inline bool registerEntityAssets(AppState* state, EntityManager& em) {
+inline void registerEntityAssets(AppState* state, EntityManager& em) {
     bool ok = true;
 
     // --- Player -------------------------------------------------------------
@@ -22,7 +22,7 @@ inline bool registerEntityAssets(AppState* state, EntityManager& em) {
     ok &= em.loadEntityType(
         state, "player",
         baseModelPath, "player.obj",
-        baseTexturePath, "player.png",
+        baseTexturePathEntities, "player.png",
         Hitbox{
             .offset = { 0.0f, 0.0f, 0.9f },
             .halfExtents = { 0.4f, 0.4f, 0.9f },
@@ -39,7 +39,7 @@ inline bool registerEntityAssets(AppState* state, EntityManager& em) {
     ok &= em.loadEntityType(
         state, "rubber_duck",
         baseModelPath, "rubber_duck.obj",
-        baseTexturePath, "rubber_duck.png",
+        baseTexturePathEntities, "rubber_duck.png",
         Hitbox{
             .offset = { 0.0f, 0.0f, 0.3f },
             .halfExtents = { 0.25f, 0.25f, 0.4f },
@@ -52,7 +52,12 @@ inline bool registerEntityAssets(AppState* state, EntityManager& em) {
         }
         );
 
-    return ok;
+    if (ok)
+        SDL_Log("all Entity assets loaded");
+    else
+        SDL_Log("failed loading Entity assets");
+
+    return;
 }
 
 // Optional: drop the initial entities into the world. Call after the assets
@@ -60,6 +65,6 @@ inline bool registerEntityAssets(AppState* state, EntityManager& em) {
 // spawned "player" body is only needed for a visible third-person model —
 // hence it is left commented out by default.
 inline void spawnStartingEntities(EntityManager& em) {
-    em.spawn("goose", { 264.0f, 264.0f, 70.0f });
+    em.spawn("rubber_duck", { 264.0f, 264.0f, 70.0f });
     // em.spawn("player", { 264.0f, 264.0f, 70.0f });
 }

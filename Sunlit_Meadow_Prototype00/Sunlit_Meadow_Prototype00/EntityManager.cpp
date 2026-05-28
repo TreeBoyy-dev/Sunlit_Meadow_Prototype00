@@ -34,7 +34,7 @@ bool EntityManager::init(AppState* state) {
     };
     SDL_GPURasterizerState raster = {
         .fill_mode = SDL_GPU_FILLMODE_FILL,
-        .cull_mode = SDL_GPU_CULLMODE_BACK,
+        .cull_mode = SDL_GPU_CULLMODE_FRONT,
         .front_face = SDL_GPU_FRONTFACE_COUNTER_CLOCKWISE,
     };
     SDL_GPUDepthStencilState depth = {
@@ -175,11 +175,12 @@ bool EntityManager::loadModelFromFile(
     std::vector<EntityVertex>& outVertices,
     std::vector<Uint16>& outIndices)
 {
-    obj_parse(
+    if (obj_parse(
         BuildAbsolutePath(filePath, fileName),
         outVertices,
         outIndices
-    );
+    ))
+        return true;
 
     return false;
 }
@@ -342,6 +343,8 @@ Entity* EntityManager::spawnInternal(EntityAsset* asset, Vec3 position, const Sp
 }
 
 Entity* EntityManager::spawn(const std::string& typeName, Vec3 position) {
+    SDL_Log("[Entity] Spawning '%s'", typeName.c_str());
+
     EntityAsset* asset = getAssetByName(typeName);
     if (!asset) {
         SDL_Log("[Entity] spawn: unknown type '%s' (register it first)", typeName.c_str());

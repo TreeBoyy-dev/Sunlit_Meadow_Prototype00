@@ -6,6 +6,7 @@
 
 #include "Globals.h"
 #include "Materials.h"
+#include "EntityAssets.h"
 
 SDL_AppResult App_Init(void* appstate)
 {
@@ -66,6 +67,11 @@ SDL_AppResult App_Init(void* appstate)
 
     worldManager.calcVisibleChunksList(RENDER_DISTANCE);
     worldManager.update(state, camera.position);
+
+    entityManager.init(state);
+
+    registerEntityAssets(state, entityManager);
+    spawnStartingEntities(entityManager);
 
     skybox.init(state, SDL_GetGPUSwapchainTextureFormat(state->gpu, state->window), "Textures/Environment/", "Cubemap_Sky_SBS.png");
     SDL_GPUCommandBuffer* uploadCmd = SDL_AcquireGPUCommandBuffer(state->gpu);

@@ -122,6 +122,7 @@ SDL_AppResult App_Update(void* appstate)
     ChunkCoord playerChunkCoords = getPlayerChunkCoord(camera.position);
 
     worldManager.update(state, camera.position);
+    entityManager.update(dt);
 
     return SDL_APP_CONTINUE;
 }

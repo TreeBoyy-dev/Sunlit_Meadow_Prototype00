@@ -28,6 +28,9 @@ float lst_dt[ARR_SIZE] = { 0 };
 int frame_count = 0;
 float sum = 0.0;
 
+// --- EntityManager ---
+EntityManager entityManager;
+
 // --- WorldManager ---
 WorldManager worldManager;
 const int RENDER_DISTANCE = 12;

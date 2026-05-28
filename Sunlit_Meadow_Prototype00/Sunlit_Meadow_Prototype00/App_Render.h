@@ -118,6 +118,15 @@ SDL_AppResult App_Render(void* appstate)
         worldManager.draw(state, cmd, worldPass, worldUBO);
         SDL_EndGPURenderPass(worldPass);
 
+        SDL_GPURenderPass* entityPass = SDL_BeginGPURenderPass(
+            cmd,
+            &color_target,
+            1,
+            &depth_target
+        );
+        entityManager.draw(cmd, entityPass, mat4Mul(state->projMat, viewMat));
+        SDL_EndGPURenderPass(entityPass);
+
         SDL_GPUColorTargetInfo ui_target = {
             .texture = swapchain_tex,
             .load_op = SDL_GPU_LOADOP_LOAD,

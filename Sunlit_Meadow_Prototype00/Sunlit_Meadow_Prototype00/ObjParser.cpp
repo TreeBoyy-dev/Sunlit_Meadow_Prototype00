@@ -57,7 +57,7 @@ bool obj_parse(
         else if (prefix == "vt") {
             Vec2 t{};
             iss >> t.x >> t.y;
-            // If your textures look flipped vertically, do: t.y = 1.0f - t.y;
+            t.y = 1.0f - t.y;
             uvs.push_back(t);
         }
         else if (prefix == "f") {
