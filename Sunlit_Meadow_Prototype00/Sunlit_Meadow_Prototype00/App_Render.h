@@ -106,7 +106,7 @@ SDL_AppResult App_Render(void* appstate)
             .texture = state->depth_texture,
             .clear_depth = 1.0,
             .load_op = SDL_GPU_LOADOP_CLEAR,
-            .store_op = SDL_GPU_STOREOP_DONT_CARE,
+            .store_op = SDL_GPU_STOREOP_STORE,
         };
 
         SDL_GPURenderPass* worldPass = SDL_BeginGPURenderPass(
@@ -116,16 +116,9 @@ SDL_AppResult App_Render(void* appstate)
             &depth_target
         );
         worldManager.draw(state, cmd, worldPass, worldUBO);
-        SDL_EndGPURenderPass(worldPass);
+        entityManager.draw(cmd, worldPass, mat4Mul(state->projMat, viewMat));
 
-        SDL_GPURenderPass* entityPass = SDL_BeginGPURenderPass(
-            cmd,
-            &color_target,
-            1,
-            &depth_target
-        );
-        entityManager.draw(cmd, entityPass, mat4Mul(state->projMat, viewMat));
-        SDL_EndGPURenderPass(entityPass);
+        SDL_EndGPURenderPass(worldPass);
 
         SDL_GPUColorTargetInfo ui_target = {
             .texture = swapchain_tex,

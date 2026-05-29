@@ -1,8 +1,12 @@
-(done) display debug text using a UI
-
 move rendering to seperate Render Thread
 
-move initPipeline to Worldmanager
+completely restructure chunk class
+	- blocks stored in maps/sets/vectors not array
+	- blockid are remapped to fit in smaller dataelements to safe on storage
+	- last x bits of the id describe the blockstate
+	- think about changing a chunk to be 16x16x256 instead of 16x16x16
+		- basicly cchunks still ontop onanother but ony one per worldLayer
+		- possibly a worldLayer class
 
 (unfinished) change how the generated chunks are handled
 	- new system:
@@ -10,8 +14,6 @@ move initPipeline to Worldmanager
 		-> list loaded chunks
 		-> list rendered chunkmeshes
 		-> when player moves the chunks to far away get removed and the closer ones added
-
-(done) change order in which chunks are generated
 
 (unfinished) fix remeshing bug:
 	- sometimes the adjacend chunk returns null even at the final remeshing
@@ -29,12 +31,12 @@ greedy meshing:
 		-> simplefy faces (combine adjacend faces on the same level)
 		-> load the simplefied faces into the mesh
 
-(done - could use better texture) add skybox
-
-(unfinished) add entity
+(mostly finished) add entity
 	- data
 	- physics
-	- block colission
+-> data needs to be adjusted when i need to idk what could be missing or something
+
+block colission
 
 UI and menues
 	- add class to load/handle all textures
