@@ -10,6 +10,10 @@ typedef struct {
     float x, y;
 }Vec2;
 
+extern const Vec3 WORLD_UP;
+
+Vec3 rightVector(Vec3 forward);
+
 Vec3 vec3Add(Vec3 a, Vec3 b);
 Vec3 vec3Scale(Vec3 v, float s);
 Vec3 vec3Negate(Vec3 v);

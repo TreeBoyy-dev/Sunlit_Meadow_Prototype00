@@ -27,13 +27,7 @@ bool updateCamera(float dt) {
     };
     flatForward = vec3Normalize(flatForward);
 
-    // Right vector on ground plane
-    Vec3 flatRight = {
-        flatForward.y,
-        -flatForward.x,
-        0.0f
-    };
-    flatRight = vec3Normalize(flatRight);
+    Vec3 flatRight = rightVector(flatForward);
 
     Vec3 movement = { 0, 0, 0 };
 

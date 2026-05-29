@@ -10,6 +10,8 @@ struct Frustum {
 
 Frustum buildFrustum(Camera& cam, float fovY, float aspect, float zNear, float zFar) {
     Vec3 f = vec3Normalize(cam.forward);
+    // NOTE: 'r' is a sign-independent scratch axis; planes are built symmetrically.
+    // Do NOT "correct" it to cross(f, WORLD_UP) without also swapping rNear/lNear.
     Vec3 r = vec3Normalize(vec3Cross({ 0, 0, 1 }, f));
     Vec3 u = vec3Cross(f, r);
 

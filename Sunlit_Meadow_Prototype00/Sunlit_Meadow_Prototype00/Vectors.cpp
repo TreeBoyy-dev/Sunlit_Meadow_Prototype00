@@ -1,6 +1,12 @@
 #include "Vectors.h"
 #include "math.h"
 
+const Vec3 WORLD_UP = { 0.0f, 0.0f, 1.0f };
+
+Vec3 rightVector(Vec3 forward) {
+    return vec3Normalize(vec3Cross(forward, WORLD_UP));
+}
+
 Vec3 vec3Add(Vec3 a, Vec3 b) {
     return { a.x + b.x, a.y + b.y, a.z + b.z };
 }
