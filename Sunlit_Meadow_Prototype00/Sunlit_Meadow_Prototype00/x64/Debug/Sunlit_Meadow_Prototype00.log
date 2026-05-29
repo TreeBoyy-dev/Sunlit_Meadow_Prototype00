@@ -12,24 +12,13 @@ C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Proto
   ChunkGeneratorWorker.cpp
   ChunkMesh.cpp
   ChunkMeshWorker.cpp
-  Entity.cpp
-  EntityManager.cpp
   EntityModel.cpp
-  EntityTypes.cpp
   GenerateChunk.cpp
 C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\GenerateChunk.cpp(174,14): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
 C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\GenerateChunk.cpp(228,14): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
   Globals.cpp
-  Mat4.cpp
-  Materials.cpp
-  ObjParser.cpp
   Region.cpp
-  SkyBox.cpp
   SlabBlockModel.cpp
-  UI_Renderer.cpp
-  Generating Code...
-  Compiling...
-  Vectors.cpp
   WorldManager.cpp
 C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(260,28): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
 C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(260,28): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data

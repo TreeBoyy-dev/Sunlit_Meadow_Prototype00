@@ -239,6 +239,9 @@
     <ClInclude Include="ObjParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PalettedContainer.h">
+      <Filter>Header Files\world\worldData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ui.vert.hlsl">

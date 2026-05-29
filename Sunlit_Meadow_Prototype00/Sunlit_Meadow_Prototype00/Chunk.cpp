@@ -19,12 +19,10 @@ Chunk::Chunk(ChunkCoord chunkCoordinates) :
 Chunk::Chunk(Chunk* other) :
 	chunkCoordinates(other->getChunkCoordinates()),
 	isGenerated(other->getIsGenerated()),
-	//borderAir(other->borderAir),
+	storage(other->storage),
 	drawOpaqueMesh(false),
 	drawTransparentMesh(false)
-{
-	memcpy(blockIDs, other->blockIDs, sizeof(blockIDs));
-}
+{}
 
 void Chunk::transferMeshesFrom(Chunk& src) {
 	opaqueMesh = std::move(src.opaqueMesh);
@@ -41,13 +39,14 @@ void Chunk::createMeshes(ChunkBorderAir borderAir, BlockManager& blockManager) {
 		for (int y = 0; y < CHUNK_SIZE; y++) {
 			for (int z = 0; z < CHUNK_SIZE; z++) {
 
+				Uint16 id = storage.getId(x, y, z);
 				LocationalBlockID absLocationalBlockID = {
 					x + chunkCoordinates.x * CHUNK_SIZE,
 					y + chunkCoordinates.y * CHUNK_SIZE,
 					z + chunkCoordinates.z * CHUNK_SIZE,
-					blockIDs[x][y][z]
+					id
 				};
-				Block* block = blockManager.getById(blockIDs[x][y][z]);
+				Block* block = blockManager.getById(id);
 
 				if (block == nullptr)
 					SDL_Log("Block = nullptr in Chunk init meshes!!!");
@@ -119,20 +118,22 @@ ChunkCoord Chunk::getChunkCoordinates() {
 }
 
 void Chunk::getChunkGenerated(BlockManager& blockManager, FastNoiseLite& standartNoise) {
-	generateChunk(blockIDs, chunkCoordinates, blockManager, standartNoise);
+	Uint16 dense[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+	generateChunk(dense, chunkCoordinates, blockManager, standartNoise);
+	storage.fromDenseIds(&dense[0][0][0]);
 	isGenerated = true;
 
 	for (int a = 0; a < CHUNK_SIZE; a++) {
 		for (int b = 0; b < CHUNK_SIZE; b++) {
 			// front/back: remaining axes are [y][z]
-			borderAir.front[a][b] = blockIDs[CHUNK_SIZE - 1][a][b];
-			borderAir.back[a][b] = blockIDs[0][a][b];
+			borderAir.front[a][b]	= dense[CHUNK_SIZE - 1][a][b];
+			borderAir.back[a][b]	= dense[0][a][b];
 			// right/left: remaining axes are [x][z]
-			borderAir.right[a][b] = blockIDs[a][CHUNK_SIZE - 1][b];
-			borderAir.left[a][b] = blockIDs[a][0][b];
+			borderAir.right[a][b]	= dense[a][CHUNK_SIZE - 1][b];
+			borderAir.left[a][b]	= dense[a][0][b];
 			// top/bottom: remaining axes are [x][y]
-			borderAir.top[a][b] = blockIDs[a][b][CHUNK_SIZE - 1];
-			borderAir.bottom[a][b] = blockIDs[a][b][0];
+			borderAir.top[a][b]		= dense[a][b][CHUNK_SIZE - 1];
+			borderAir.bottom[a][b]	= dense[a][b][0];
 		}
 	}
 }

@@ -4,6 +4,7 @@
 #include "WorldTypes.h"
 #include "BlockManager.h"
 #include "FastNoiseLite.h"
+#include "PalettedContainer.h"
 
 //chunksize in blockIDs -> side of a cube
 #define CHUNK_SIZE 16
@@ -12,7 +13,7 @@ class Chunk {
 private:
     bool isGenerated;
     ChunkCoord chunkCoordinates;
-	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+    PalettedContainer storage;;
 	//Biome* biome;
 	//Zone* zone;
 	//Layer* layer;

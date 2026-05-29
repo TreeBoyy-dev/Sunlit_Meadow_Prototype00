@@ -171,6 +171,7 @@
     <ClInclude Include="ChunkMeshWorker.h" />
     <ClInclude Include="EntityAssets.h" />
     <ClInclude Include="ObjParser.h" />
+    <ClInclude Include="PalettedContainer.h" />
     <ClInclude Include="WorldTypes.h" />
     <ClInclude Include="ChunkGeneratorWorker.h" />
     <ClInclude Include="Entity.h" />

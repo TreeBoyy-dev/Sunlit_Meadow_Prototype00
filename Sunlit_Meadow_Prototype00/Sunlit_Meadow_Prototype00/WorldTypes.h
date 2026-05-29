@@ -4,6 +4,8 @@
 #include "Vectors.h"
 
 #define CHUNK_SIZE 16
+#define REGION_SIZE_YX 32
+#define REGION_SIZE_Z 16
 
 typedef struct {
     Vec3 position;
@@ -12,6 +14,22 @@ typedef struct {
     SDL_FColor color;
     float materialIndex;
 }WorldVertex;
+
+struct RegionCoord {
+    int x, y, z;
+
+    bool operator==(const RegionCoord& other) const {
+        return x == other.x && y == other.y && z == other.z;
+    }
+};
+
+struct RegionCoordHash {
+    size_t operator()(const RegionCoord& c) const {
+        return std::hash<int>()(c.x) ^
+            (std::hash<int>()(c.y) << 1) ^
+            (std::hash<int>()(c.z) << 2);
+    }
+};
 
 struct ChunkCoord {
     int x, y, z;
