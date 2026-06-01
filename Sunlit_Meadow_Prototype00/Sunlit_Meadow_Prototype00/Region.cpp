@@ -8,7 +8,7 @@ Region::Region(RegionCoord regionCoordinates, BlockManager* blockManager, FastNo
     m_blockManager(blockManager),
     m_standartNoise(standartNoise)
 {
-    g_worker.start(m_blockManager, m_standartNoise);
+    g_worker.start(m_blockManager, m_standartNoise, regionCoordinates.z * REGION_SIZE_Z);
     m_worker.start(m_blockManager);
 }
 
@@ -23,18 +23,21 @@ Chunk* Region::getChunk(ChunkCoord chunkCoordinates) {
 }
 
 void Region::requestChunkGeneration(ChunkCoord chunkCoordinates) {
-    if (chunks.count(chunkCoordinates))        return; // already generated
-    if (pendingChunks.count(chunkCoordinates)) return; // already queued
+    ColumnCoord column = { chunkCoordinates.x, chunkCoordinates.y };
 
-    pendingChunks.insert(chunkCoordinates);
-    g_worker.requestChunk(chunkCoordinates);
+    if (requestedColumns.count(column)) return; // column already generated or in flight
+
+    requestedColumns.insert(column);
+    g_worker.requestColumn(column);
 }
 
 void Region::cancelChunkGeneration(ChunkCoord chunkCoordinates) {
-    if (!pendingChunks.count(chunkCoordinates)) return;
+    ColumnCoord column = { chunkCoordinates.x, chunkCoordinates.y };
 
-    if (g_worker.cancelRequest(chunkCoordinates))
-        pendingChunks.erase(chunkCoordinates);
+    if (!requestedColumns.count(column)) return;
+
+    if (g_worker.cancelColumn(column))
+        requestedColumns.erase(column);
 }
 
 bool Region::update(AppState* state,
@@ -54,7 +57,6 @@ bool Region::update(AppState* state,
 
         std::unique_ptr<Chunk> chunk = std::move(*result);
         ChunkCoord coord = chunk->getChunkCoordinates();
-        pendingChunks.erase(coord);
 
         chunk->uploadMeshes(state, textureArray);
         chunks.emplace(coord, std::move(chunk));
@@ -255,7 +257,7 @@ void Region::destroyRegion(AppState* state) {
         chunk->destroyMeshes(state);
 
     chunks.clear();
-    pendingChunks.clear();
+    requestedColumns.clear();
     pendingMeshChunks.clear();
     meshedChunks.clear();
 }

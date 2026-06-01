@@ -16,9 +16,9 @@ private:
 
     std::unordered_map<ChunkCoord, std::unique_ptr<Chunk>, ChunkCoordHash> chunks;
 
-    std::unordered_set<ChunkCoord, ChunkCoordHash> pendingChunks;
-    std::unordered_set<ChunkCoord, ChunkCoordHash> pendingMeshChunks;
-    std::unordered_set<ChunkCoord, ChunkCoordHash> meshedChunks;
+    std::unordered_set<ColumnCoord, ColumnCoordHash>    requestedColumns;
+    std::unordered_set<ChunkCoord,  ChunkCoordHash>     pendingMeshChunks;
+    std::unordered_set<ChunkCoord,  ChunkCoordHash>     meshedChunks;
 
     ChunkGeneratorWorker g_worker;
     ChunkMeshWorker m_worker;

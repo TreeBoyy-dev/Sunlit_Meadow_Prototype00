@@ -44,3 +44,23 @@ Vec3 vec3Normalize(Vec3 v){
 
     return { v.x / len, v.y / len, v.z / len };
 }
+
+Vec3 vec3rotate(Vec3 v,
+    float sx, float cx,
+    float sy, float cy,
+    float sz, float cz)
+{
+    // About X
+    float y1 = cx * v.y - sx * v.z;
+    float z1 = sx * v.y + cx * v.z;
+    float x1 = v.x;
+    // About Y
+    float x2 = cy * x1 + sy * z1;
+    float z2 = -sy * x1 + cy * z1;
+    float y2 = y1;
+    // About Z
+    float x3 = cz * x2 - sz * y2;
+    float y3 = sz * x2 + cz * y2;
+    float z3 = z2;
+    return Vec3{ x3, y3, z3 };
+}

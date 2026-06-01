@@ -127,7 +127,7 @@ void WorldManager::destroy(AppState* state) {
 }
 
 
-// Updaating the world ----------------------------------------------------
+// Updating the world ----------------------------------------------------
 void WorldManager::update(AppState* state, Vec3 playerPosition) {
     updatePlayerPosition(playerPosition);
 
@@ -158,27 +158,20 @@ void WorldManager::updatePlayerPosition(Vec3 playerPosition) {
 }
 
 void WorldManager::onPlayerChunkChanged() {
+    const ChunkCoord pp = m_lastPlayerChunkPos;
+
     using clock = std::chrono::steady_clock;
     auto t0 = clock::now();
-
-    // 1) Build the new visible set in absolute coords.
-    std::unordered_set<ChunkCoord, ChunkCoordHash> nowVisible;
-    nowVisible.reserve(visibleChunkCoordsRelative.size());
-    for (const ChunkCoord& rel : visibleChunkCoordsRelative) {
-        nowVisible.insert({ rel.x + m_lastPlayerChunkPos.x,
-                            rel.y + m_lastPlayerChunkPos.y,
-                            rel.z + m_lastPlayerChunkPos.z });
+    
+    // 1) Drop renderList entries that left the view.
+    for (auto it = renderList.begin(); it != renderList.end(); ) {
+        ChunkCoord rel{ it->first.x - pp.x, it->first.y - pp.y, it->first.z - pp.z };
+        if (!visibleRelativeSet.count(rel)) it = renderList.erase(it);
+        else                                ++it;
     }
     auto t1 = clock::now();
 
-    // 2) Drop renderList entries that left the view.
-    for (auto it = renderList.begin(); it != renderList.end(); ) {
-        if (!nowVisible.count(it->first)) it = renderList.erase(it);
-        else                              ++it;
-    }
-    auto t2 = clock::now();
-
-    // 3) Drop pendingChunks entries that left the view, and cancel them.
+    // 2) Drop pendingChunks entries that left the view, and cancel them.
     /*
     for (auto it = pendingChunks.begin(); it != pendingChunks.end(); ) {
         if (!nowVisible.count(*it)) {
@@ -189,39 +182,33 @@ void WorldManager::onPlayerChunkChanged() {
             ++it; 
         }
     }//*/
-    auto t3 = clock::now();
+    auto t2 = clock::now();
 
-    // 4) For every newly visible chunk: ready -> renderList, else -> pending.
+    // 3) For every newly visible chunk: ready -> renderList, else -> pending.
     std::vector<ChunkCoord> toRequest;
     toRequest.reserve(64);
-
-    for (const ChunkCoord& coord : nowVisible) {
+    for (const ChunkCoord& rel : visibleChunkCoordsRelative) {
+        ChunkCoord coord{ rel.x + pp.x, rel.y + pp.y, rel.z + pp.z };
         if (renderList.count(coord) || pendingChunks.count(coord)) continue;
 
         Region* r = getRegion(getRegionCoordForChunk(coord));
-        if (Chunk* c = r->getChunk(coord)) {
-            renderList.emplace(coord, c);
-        }
-        else {
-            pendingChunks.insert(coord);
-            toRequest.push_back(coord);
-        }
+        if (Chunk* c = r->getChunk(coord)) renderList.emplace(coord, c);
+        else { pendingChunks.insert(coord); toRequest.push_back(coord); }
     }
-    auto t4 = clock::now();
+    auto t3 = clock::now();
 
-    // 5) Sort the new pending ones by distance, closest first, then request.
-    const ChunkCoord pp = m_lastPlayerChunkPos;
+    // 4) Sort the new pending ones by distance, closest first, then request.
     std::sort(toRequest.begin(), toRequest.end(),
         [pp](const ChunkCoord& a, const ChunkCoord& b) {
             int ax = a.x - pp.x, ay = a.y - pp.y, az = a.z - pp.z;
             int bx = b.x - pp.x, by = b.y - pp.y, bz = b.z - pp.z;
             return (ax * ax + ay * ay + az * az) < (bx * bx + by * by + bz * bz);
         });
-    auto t5 = clock::now();
+    auto t4 = clock::now();
 
     for (const ChunkCoord& coord : toRequest)
         getRegion(getRegionCoordForChunk(coord))->requestChunkGeneration(coord);
-    auto t6 = clock::now();
+    auto t5 = clock::now();
 
     //Logger to display time usage:
     ///*
@@ -232,8 +219,7 @@ void WorldManager::onPlayerChunkChanged() {
         (long long)std::chrono::duration_cast<us>(t3 - t2).count(),
         (long long)std::chrono::duration_cast<us>(t4 - t3).count(),
         (long long)std::chrono::duration_cast<us>(t5 - t4).count(),
-        (long long)std::chrono::duration_cast<us>(t6 - t5).count(),
-        (long long)std::chrono::duration_cast<us>(t6 - t0).count());
+        (long long)std::chrono::duration_cast<us>(t5 - t0).count());
     //*/
 }
 
@@ -286,6 +272,11 @@ void WorldManager::calcVisibleChunksList(int renderDistance) {
             for (int z = -renderDistance; z <= renderDistance; z++)
                 if (sqrt(x * x + y * y + z * z) <= (double)renderDistance)
                     visibleChunkCoordsRelative.push_back({ x, y, z });
+
+    visibleRelativeSet.clear();
+    visibleRelativeSet.reserve(visibleChunkCoordsRelative.size());
+    for (const ChunkCoord& rel : visibleChunkCoordsRelative)
+        visibleRelativeSet.insert(rel);
 }
 
 

@@ -1,11 +1,13 @@
 #include "ChunkGeneratorWorker.h"
+#include "GenerateColumn.h"
 
 ChunkGeneratorWorker::ChunkGeneratorWorker() : m_running(false) {}
 ChunkGeneratorWorker::~ChunkGeneratorWorker() { stop(); }
 
-void ChunkGeneratorWorker::start(BlockManager* blockManager, FastNoiseLite* standartNoise) {
+void ChunkGeneratorWorker::start(BlockManager* blockManager, FastNoiseLite* standartNoise, int regionChunkZStart) {
     m_blockManager = blockManager;
     m_standartNoise = standartNoise;
+    m_regionChunkZStart = regionChunkZStart;
     m_running = true;
     m_thread = std::thread(&ChunkGeneratorWorker::workerLoop, this);
 }
@@ -16,7 +18,7 @@ void ChunkGeneratorWorker::stop() {
         m_thread.join();
 }
 
-void ChunkGeneratorWorker::requestChunk(ChunkCoord coord) {
+void ChunkGeneratorWorker::requestColumn(ColumnCoord  coord) {
     m_inputQueue.push(coord);
 }
 
@@ -28,12 +30,21 @@ std::optional<std::unique_ptr<Chunk>> ChunkGeneratorWorker::tryGetChunk() {
 void ChunkGeneratorWorker::workerLoop() {
     while (m_running) {
         if (auto coord = m_inputQueue.try_pop()) {
-            auto chunk = std::make_unique<Chunk>(*coord);
+            ColumnCoord columnCoord = coord.value();
 
-            chunk->getChunkGenerated(*m_blockManager, *m_standartNoise);
-            chunk->createMeshes({}, *m_blockManager);
+            std::vector<GeneratedChunkData> column =
+                generateColumn(columnCoord, m_regionChunkZStart, *m_blockManager, *m_standartNoise);
 
-            m_outputQueue.push(std::move(chunk));
+            // Turn each returned PalettedContainer into a Chunk and queue it.
+            for (auto& chunkData : column) {
+                auto chunk = std::make_unique<Chunk>(
+                    chunkData.coordinates,
+                    std::move(chunkData.storage)
+                );
+                chunk->createMeshes({}, *m_blockManager);
+
+                m_outputQueue.push(std::move(chunk));
+            }
         }
         else {
             std::this_thread::sleep_for(std::chrono::microseconds(200));
@@ -41,8 +52,8 @@ void ChunkGeneratorWorker::workerLoop() {
     }
 }
 
-bool ChunkGeneratorWorker::cancelRequest(ChunkCoord coord) {
+bool ChunkGeneratorWorker::cancelColumn(ColumnCoord  coord) {
     return m_inputQueue.remove_if(
-        [&](const ChunkCoord& c) { return c == coord; }
+        [&](const ColumnCoord& c) { return c == coord; }
     );
 }

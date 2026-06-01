@@ -26,10 +26,11 @@ private:
 public:
     Chunk();
     Chunk(ChunkCoord chunkCoordinates);
-    Chunk(Chunk* other);          
+    Chunk(Chunk* other);
+    Chunk(ChunkCoord chunkCoordinates, PalettedContainer storage);
     void transferMeshesFrom(Chunk& src);
 
-    void getChunkGenerated(BlockManager& blockManager, FastNoiseLite& standartNoise);
+    //void getChunkGenerated(BlockManager& blockManager, FastNoiseLite& standartNoise);
 
     bool getIsGenerated();
     ChunkCoord getChunkCoordinates();

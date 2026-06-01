@@ -1,31 +1,3 @@
 ﻿  Scanning sources for module dependencies...
-  GenerateChunk.h
-  Compiling...
-  GenerateChunk.h
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\DataStructures.h(18,28): warning C5260: the constant variable 'depth_texture_format' has internal linkage in an included header file context, but external linkage in imported header unit context; consider declaring it 'inline' as well if it will be shared across translation units, or 'static' to express intent to use it local to this translation unit
-  (compiling source file 'GenerateChunk.h')
-  
-  Block.cpp
-  BlockManager.cpp
-  BlockModel.cpp
-  Chunk.cpp
-  ChunkGeneratorWorker.cpp
-  ChunkMesh.cpp
-  ChunkMeshWorker.cpp
-  EntityModel.cpp
-  GenerateChunk.cpp
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\GenerateChunk.cpp(174,14): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\GenerateChunk.cpp(228,14): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-  Globals.cpp
-  Region.cpp
-  SlabBlockModel.cpp
-  WorldManager.cpp
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(260,28): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(260,28): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(260,48): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(260,48): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(260,68): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(260,68): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-  Generating Code...
   main.cpp
   Sunlit_Meadow_Prototype00.vcxproj -> C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\x64\Debug\Sunlit_Meadow_Prototype00.exe

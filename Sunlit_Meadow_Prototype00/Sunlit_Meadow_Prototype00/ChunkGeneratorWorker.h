@@ -15,12 +15,12 @@ public:
     ChunkGeneratorWorker();
     ~ChunkGeneratorWorker();
 
-    void start(BlockManager* blockManager, FastNoiseLite* standartNoise);
+    void start(BlockManager* blockManager, FastNoiseLite* standartNoise, int regionChunkZStart);
     void stop();
 
-    void requestChunk(ChunkCoord coord);
+    void requestColumn(ColumnCoord coord);
     std::optional<std::unique_ptr<Chunk>> tryGetChunk();
-    bool cancelRequest(ChunkCoord coord);
+    bool cancelColumn(ColumnCoord coord);
 
 private:
     void workerLoop();
@@ -28,9 +28,10 @@ private:
     std::atomic<bool>  m_running;
     std::thread        m_thread;
 
+    int m_regionChunkZStart = 0;
     BlockManager* m_blockManager = nullptr;
     FastNoiseLite* m_standartNoise = nullptr;
 
-    ThreadSafeQueue<ChunkCoord>              m_inputQueue;
+    ThreadSafeQueue<ColumnCoord>              m_inputQueue;
     ThreadSafeQueue<std::unique_ptr<Chunk>>  m_outputQueue;
 };

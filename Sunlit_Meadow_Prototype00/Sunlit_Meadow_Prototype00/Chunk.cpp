@@ -24,6 +24,30 @@ Chunk::Chunk(Chunk* other) :
 	drawTransparentMesh(false)
 {}
 
+Chunk::Chunk(ChunkCoord chunkCoordinates, PalettedContainer storage) :
+	chunkCoordinates(chunkCoordinates),
+	isGenerated(true),
+	storage(std::move(storage)),
+	drawOpaqueMesh(false),
+	drawTransparentMesh(false)
+{
+	// Fill the border-air faces straight from the storage, the same way
+	// getChunkGenerated used to read them out of the dense array.
+	for (int a = 0; a < CHUNK_SIZE; a++) {
+		for (int b = 0; b < CHUNK_SIZE; b++) {
+			// front/back: remaining axes are [y][z]
+			borderAir.front[a][b] = this->storage.getId(CHUNK_SIZE - 1, a, b);
+			borderAir.back[a][b] = this->storage.getId(0, a, b);
+			// right/left: remaining axes are [x][z]
+			borderAir.right[a][b] = this->storage.getId(a, CHUNK_SIZE - 1, b);
+			borderAir.left[a][b] = this->storage.getId(a, 0, b);
+			// top/bottom: remaining axes are [x][y]
+			borderAir.top[a][b] = this->storage.getId(a, b, CHUNK_SIZE - 1);
+			borderAir.bottom[a][b] = this->storage.getId(a, b, 0);
+		}
+	}
+}
+
 void Chunk::transferMeshesFrom(Chunk& src) {
 	opaqueMesh = std::move(src.opaqueMesh);
 	drawOpaqueMesh = src.drawOpaqueMesh;
@@ -117,6 +141,7 @@ ChunkCoord Chunk::getChunkCoordinates() {
 	return chunkCoordinates;
 }
 
+/*
 void Chunk::getChunkGenerated(BlockManager& blockManager, FastNoiseLite& standartNoise) {
 	Uint16 dense[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 	generateChunk(dense, chunkCoordinates, blockManager, standartNoise);
@@ -136,7 +161,7 @@ void Chunk::getChunkGenerated(BlockManager& blockManager, FastNoiseLite& standar
 			borderAir.bottom[a][b]	= dense[a][b][0];
 		}
 	}
-}
+}//*/
 
 // Pass direction as e.g. {1,0,0}, {-1,0,0}, {0,1,0} ...
 // Returns a pointer to the [CHUNK_SIZE][CHUNK_SIZE] face, or nullptr if invalid.

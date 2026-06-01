@@ -1,13 +1,5 @@
 move rendering to seperate Render Thread
 
-completely restructure chunk class
-	- blocks stored in maps/sets/vectors not array
-	- blockid are remapped to fit in smaller dataelements to safe on storage
-	- last x bits of the id describe the blockstate
-	- think about changing a chunk to be 16x16x256 instead of 16x16x16
-		- basicly cchunks still ontop onanother but ony one per worldLayer
-		- possibly a worldLayer class
-
 (unfinished) change how the generated chunks are handled
 	- new system:
 		-> list rendered chunks

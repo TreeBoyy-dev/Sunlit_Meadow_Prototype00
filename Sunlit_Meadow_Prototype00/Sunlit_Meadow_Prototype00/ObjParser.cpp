@@ -10,6 +10,25 @@
 #include <unordered_map>
 #include <cstdio>
 
+const Vec3 MODEL_ROTATION = { 90.0f, 0.0f, -90.0f };
+
+void rotate_model(std::vector<EntityVertex>& vertices, Vec3 eulerDegrees)
+{
+    const float deg2rad = 3.14159265358979323846f / 180.0f;
+    float ax = eulerDegrees.x * deg2rad;
+    float ay = eulerDegrees.y * deg2rad;
+    float az = eulerDegrees.z * deg2rad;
+
+    float sx = std::sin(ax), cx = std::cos(ax);
+    float sy = std::sin(ay), cy = std::cos(ay);
+    float sz = std::sin(az), cz = std::cos(az);
+
+    for (EntityVertex& v : vertices) {
+        v.position = vec3rotate(v.position, sx, cx, sy, cy, sz, cz);
+        v.normal = vec3rotate(v.normal, sx, cx, sy, cy, sz, cz);
+    }
+}
+
 bool obj_parse(
     std::string path,
     std::vector<EntityVertex>& outVertices,
@@ -130,6 +149,8 @@ bool obj_parse(
         }
         // ignored: o, g, s, mtllib, usemtl (material comes from the parameter)
     }
+    // Bake the orientation fix into the loaded geometry (Blockbench Y-up -> game space).
+    rotate_model(outVertices, MODEL_ROTATION);
 
     return true;
 }

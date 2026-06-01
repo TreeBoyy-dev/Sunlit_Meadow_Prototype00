@@ -23,6 +23,7 @@ private:
 
     std::unordered_map<RegionCoord, std::unique_ptr<Region>, RegionCoordHash> regions;
     std::vector<ChunkCoord> visibleChunkCoordsRelative;
+    std::unordered_set<ChunkCoord, ChunkCoordHash> visibleRelativeSet;
 
     std::unordered_map<ChunkCoord, Chunk*, ChunkCoordHash> renderList;
     std::unordered_set<ChunkCoord, ChunkCoordHash> pendingChunks;

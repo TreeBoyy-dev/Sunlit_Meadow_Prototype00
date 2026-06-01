@@ -5,7 +5,9 @@
 
 #define CHUNK_SIZE 16
 #define REGION_SIZE_YX 32
-#define REGION_SIZE_Z 16
+#define REGION_SIZE_Z 32
+
+#define COLUMN_HEIGHT (CHUNK_SIZE * REGION_SIZE_Z)
 
 typedef struct {
     Vec3 position;
@@ -42,6 +44,19 @@ struct ChunkCoordHash {
         return std::hash<int>()(c.x) ^
             (std::hash<int>()(c.y) << 1) ^
             (std::hash<int>()(c.z) << 2);
+    }
+};
+
+struct ColumnCoord {
+    int x, y;
+    bool operator==(const ColumnCoord& other) const {
+        return x == other.x && y == other.y;
+    }
+};
+struct ColumnCoordHash {
+    size_t operator()(const ColumnCoord& c) const {
+        return std::hash<int>()(c.x) ^
+            (std::hash<int>()(c.y) << 1);
     }
 };
 

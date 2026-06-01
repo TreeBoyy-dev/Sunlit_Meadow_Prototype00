@@ -141,6 +141,9 @@
     <ClCompile Include="ObjParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="GenerateColumn.cpp">
+      <Filter>Source Files\world\WorldGen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h">
@@ -241,6 +244,9 @@
     </ClInclude>
     <ClInclude Include="PalettedContainer.h">
       <Filter>Header Files\world\worldData</Filter>
+    </ClInclude>
+    <ClInclude Include="GenerateColumn.h">
+      <Filter>Header Files\world\WorldGen.h</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

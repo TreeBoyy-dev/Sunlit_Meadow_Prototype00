@@ -18,7 +18,6 @@ inline void registerEntityAssets(AppState* state, EntityManager& em) {
     bool ok = true;
 
     // --- Player -------------------------------------------------------------
-    /*
     ok &= em.loadEntityType(
         state, "player",
         baseModelPath, "player.obj",
@@ -31,10 +30,10 @@ inline void registerEntityAssets(AppState* state, EntityManager& em) {
             .health = 20.0f,
             .maxHealth = 20.0f,
             .mass = 1.0f,
-            .affectedByGravity = true,
+            .affectedByGravity = false,
         }
         );
-    //*/
+
     // --- Rubber Duck --------------------------------------------------------------
     ok &= em.loadEntityType(
         state, "rubber_duck",
@@ -66,5 +65,5 @@ inline void registerEntityAssets(AppState* state, EntityManager& em) {
 // hence it is left commented out by default.
 inline void spawnStartingEntities(EntityManager& em) {
     em.spawn("rubber_duck", { 264.0f, 264.0f, 70.0f });
-    // em.spawn("player", { 264.0f, 264.0f, 70.0f });
+    em.spawn("player", { 264.0f, 264.0f, 70.0f });
 }

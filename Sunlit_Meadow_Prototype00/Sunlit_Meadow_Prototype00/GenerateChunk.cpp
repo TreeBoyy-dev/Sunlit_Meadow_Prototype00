@@ -4,115 +4,87 @@
 
 #include <cmath>
 
-bool generateChunk(
-	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
-	ChunkCoord chunkCoordinates,
-	BlockManager& blockManager,
-	FastNoiseLite& noise
-) {
-
-	float heightmap[CHUNK_SIZE][CHUNK_SIZE] = { 0.0f };
-
-	//generate shape: air/stone
-	generateShape(blockIDs, chunkCoordinates, heightmap, blockManager, noise);
-
-	//generate biomes
-	//TODO
-
-	//generate features: grass, vegitation, structures
-	generateFeatures(blockIDs, chunkCoordinates, heightmap, blockManager);
-
-	return true;
-}
-
 void generateShape(
-	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
-	ChunkCoord chunkCoordinates,
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
+	ColumnCoord columnCoordinates,
+	int regionChunkZStart,
 	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
 	BlockManager& blockManager,
 	FastNoiseLite& noise
-){
+) {
+	int columnZStartBlocks = regionChunkZStart * CHUNK_SIZE;
+
+	// Look the two base blocks up once for the whole column.
+	Block* cobble = blockManager.getByName("cobble_stone");
+	Block* air = blockManager.getByName("air");
+	if (cobble == nullptr || air == nullptr) {
+		SDL_Log("Block = nullptr in Chunk generation!!!");
+		return;
+	}
+	Uint16 cobbleID = cobble->getID();
+	Uint16 airID = air->getID();
+
 	for (int x = 0; x < CHUNK_SIZE; x++) {
-		int xAbs = chunkCoordinates.x * CHUNK_SIZE + x;
+		int xAbs = columnCoordinates.x * CHUNK_SIZE + x;
 		for (int y = 0; y < CHUNK_SIZE; y++) {
-			int yAbs = chunkCoordinates.y * CHUNK_SIZE + y;
+			int yAbs = columnCoordinates.y * CHUNK_SIZE + y;
 
-			if (chunkCoordinates.z <= 2) {
-				for (int z = 0; z < CHUNK_SIZE; z++) {
-					Block* block = blockManager.getByName("cobble_stone");
-					blockIDs[x][y][z] = block->getID();
-				}
-			}
-			else if (chunkCoordinates.z >= 5) {
-				for (int z = 0; z < CHUNK_SIZE; z++) {
-					Block* block = blockManager.getByName("air");
-					blockIDs[x][y][z] = block->getID();
-				}
-			}
-			else {
-				float zGenerated = noise.GetNoise((float)xAbs, (float)yAbs);
+			// Surface height for this (x, y) - computed once for the whole column.
+			float zGenerated = noise.GetNoise((float)xAbs, (float)yAbs);
+			float zShape = 60 + zGenerated * 10;
+			heightmap[x][y] = zShape;
 
-				float zShape = 60 + zGenerated * 10;
-				heightmap[x][y] = zShape;
-
-				for (int z = 0; z < CHUNK_SIZE; z++) {
-					int zAbs = chunkCoordinates.z * CHUNK_SIZE + z;
-
-					Block* block;
-
-					if ((float)zAbs <= zShape) {
-						block = blockManager.getByName("cobble_stone");
-					}
-					else {
-						block = blockManager.getByName("air");
-					}
-
-					if (block != nullptr)
-						blockIDs[x][y][z] = block->getID();
-					else
-						SDL_Log("Block = nullptr in Chunk generation!!!");
-				}
+			for (int z = 0; z < COLUMN_HEIGHT; z++) {
+				int zAbs = columnZStartBlocks + z;
+				blockIDs[x][y][z] = ((float)zAbs <= zShape) ? cobbleID : airID;
 			}
 		}
 	}
 }
 
 void generateFeatures(
-	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
-	ChunkCoord chunkCoordinates,
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
+	ColumnCoord columnCoordinates,
+	int regionChunkZStart,
 	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
 	BlockManager& blockManager
 ) {
 	generateFeatures_GrassAndDirt(
 		blockIDs,
-		chunkCoordinates,
+		columnCoordinates,
+		regionChunkZStart,
 		heightmap,
 		blockManager
 	);
 	generateFeatures_Trees(
 		blockIDs,
-		chunkCoordinates,
+		columnCoordinates,
+		regionChunkZStart,
 		heightmap,
 		blockManager
 	);
 	generateFeatures_Boulders(
 		blockIDs,
-		chunkCoordinates,
+		columnCoordinates,
+		regionChunkZStart,
 		heightmap,
 		blockManager
 	);
 }
 
 void generateFeatures_GrassAndDirt(
-	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
-	ChunkCoord chunkCoordinates,
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
+	ColumnCoord columnCoordinates,
+	int regionChunkZStart,
 	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
 	BlockManager& blockManager
 ) {
+	int columnZStartBlocks = regionChunkZStart * CHUNK_SIZE;
+
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int y = 0; y < CHUNK_SIZE; y++) {
-			float zGround = heightmap[x][y] - chunkCoordinates.z * CHUNK_SIZE;
-			if (zGround < 0 || zGround >= CHUNK_SIZE)
+			float zGround = heightmap[x][y] - columnZStartBlocks;
+			if (zGround < 0 || zGround >= COLUMN_HEIGHT)
 				continue;
 
 			Block* block = nullptr;
@@ -121,7 +93,7 @@ void generateFeatures_GrassAndDirt(
 			if (decimalPart >= 0.5f)
 				block = blockManager.getByName("grass_block");
 			else
-				if(rand() % 200 != 0)
+				if (rand() % 200 != 0)
 					block = blockManager.getByName("grass_block_slab");
 				else
 					block = blockManager.getByName("cobble_stone_slab");
@@ -142,13 +114,14 @@ void generateFeatures_GrassAndDirt(
 	}
 }
 void generateFeatures_Trees(
-	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
-	ChunkCoord chunkCoordinates,
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
+	ColumnCoord columnCoordinates,
+	int regionChunkZStart,
 	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
 	BlockManager& blockManager
 )
 {
-	// 1 in 5 chance to generate a boulder
+	// 1 in 2 chance to generate a tree
 	if (rand() % 2 != 0)
 		return;
 
@@ -167,12 +140,13 @@ void generateFeatures_Trees(
 	if (Log == nullptr || Leave == nullptr)
 		return;
 
-	// Random boulder origin between 3 and 11
+	// Random tree origin between 3 and 11
 	int bx = 3 + rand() % 9;
 	int by = 3 + rand() % 9;
 
-	int zGround = heightmap[bx][by] - chunkCoordinates.z * CHUNK_SIZE;
-	if (zGround < 0 || zGround + 7 >= CHUNK_SIZE)
+	int columnZStartBlocks = regionChunkZStart * CHUNK_SIZE;
+	int zGround = (int)heightmap[bx][by] - columnZStartBlocks;
+	if (zGround < 0 || zGround + 7 >= COLUMN_HEIGHT)
 		return;
 
 	// 5x5x5 cube with corners cut out (where |dx|==2 && |dy|==2)
@@ -196,7 +170,7 @@ void generateFeatures_Trees(
 
 				if (wx < 0 || wx >= CHUNK_SIZE) continue;
 				if (wy < 0 || wy >= CHUNK_SIZE) continue;
-				if (wz < 0 || wz >= CHUNK_SIZE) continue;
+				if (wz < 0 || wz >= COLUMN_HEIGHT) continue;
 
 				if (dx == 0 && dy == 0 && dz != 7)
 					blockIDs[wx][wy][wz] = Log->getID();
@@ -207,8 +181,9 @@ void generateFeatures_Trees(
 	}
 }
 void generateFeatures_Boulders(
-	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE],
-	ChunkCoord chunkCoordinates,
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
+	ColumnCoord columnCoordinates,
+	int regionChunkZStart,
 	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
 	BlockManager& blockManager
 )
@@ -225,8 +200,9 @@ void generateFeatures_Boulders(
 	int bx = 3 + rand() % 9;
 	int by = 3 + rand() % 9;
 
-	int zGround = heightmap[bx][by] - chunkCoordinates.z * CHUNK_SIZE;
-	if (zGround - 2 < 0 || zGround + 3 >= CHUNK_SIZE)
+	int columnZStartBlocks = regionChunkZStart * CHUNK_SIZE;
+	int zGround = (int)heightmap[bx][by] - columnZStartBlocks;
+	if (zGround - 2 < 0 || zGround + 3 >= COLUMN_HEIGHT)
 		return;
 
 	// 5x5x5 cube with corners cut out (where |dx|==2 && |dy|==2)
@@ -242,13 +218,13 @@ void generateFeatures_Boulders(
 				if (abs(dz) == 2 && (abs(dx) == 2 || abs(dy) == 2))
 					continue;
 
-				int wx = bx		 + dx;
-				int wy = by		 + dy;
+				int wx = bx + dx;
+				int wy = by + dy;
 				int wz = zGround + dz;
 
 				if (wx < 0 || wx >= CHUNK_SIZE) continue;
 				if (wy < 0 || wy >= CHUNK_SIZE) continue;
-				if (wz < 0 || wz >= CHUNK_SIZE) continue;
+				if (wz < 0 || wz >= COLUMN_HEIGHT) continue;
 
 				blockIDs[wx][wy][wz] = stoneBlock->getID();
 			}
