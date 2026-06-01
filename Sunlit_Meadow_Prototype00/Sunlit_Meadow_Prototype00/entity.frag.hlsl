@@ -18,5 +18,10 @@ float4 main(PSInput input) : SV_Target0
     float lighting = ambient + (1.0 - ambient) * diffuse;
 
     float4 texColor = tex_sampler.Sample(tex_sampler_state, input.uv);
-    return texColor * input.color * lighting;
+    
+    if (texColor.a < 0.5) discard;
+
+    float3 rgb = texColor.rgb * input.color.rgb * lighting;
+    float a = texColor.a * input.color.a;
+    return float4(rgb, a);
 }

@@ -29,8 +29,18 @@ bool EntityManager::init(AppState* state) {
         .pitch = sizeof(EntityVertex),
         .input_rate = SDL_GPU_VERTEXINPUTRATE_VERTEX,
     };
+    SDL_GPUColorTargetBlendState blend = {
+        .src_color_blendfactor = SDL_GPU_BLENDFACTOR_SRC_ALPHA,
+        .dst_color_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA,
+        .color_blend_op = SDL_GPU_BLENDOP_ADD,
+        .src_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE,
+        .dst_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA,
+        .alpha_blend_op = SDL_GPU_BLENDOP_ADD,
+        .enable_blend = true,
+    };
     SDL_GPUColorTargetDescription colorTarget = {
         .format = SDL_GetGPUSwapchainTextureFormat(state->gpu, state->window),
+        .blend_state = blend,
     };
     SDL_GPURasterizerState raster = {
         .fill_mode = SDL_GPU_FILLMODE_FILL,

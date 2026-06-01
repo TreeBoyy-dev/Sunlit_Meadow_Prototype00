@@ -96,7 +96,7 @@ SDL_AppResult App_Render(void* appstate)
         skybox.draw(skyboxPass, cmd, skyboxUBO);
         SDL_EndGPURenderPass(skyboxPass);
 
-        SDL_GPUColorTargetInfo color_target = {
+        SDL_GPUColorTargetInfo world_color = {
             .texture = swapchain_tex,
             .clear_color = { 0.0f, 0.2f, 0.4f, 1.0f },
             .load_op = SDL_GPU_LOADOP_LOAD,
@@ -111,7 +111,7 @@ SDL_AppResult App_Render(void* appstate)
 
         SDL_GPURenderPass* worldPass = SDL_BeginGPURenderPass(
             cmd,
-            &color_target,
+            &world_color,
             1,
             &depth_target
         );
@@ -120,13 +120,13 @@ SDL_AppResult App_Render(void* appstate)
 
         SDL_EndGPURenderPass(worldPass);
 
-        SDL_GPUColorTargetInfo ui_target = {
+        SDL_GPUColorTargetInfo ui_color = {
             .texture = swapchain_tex,
             .load_op = SDL_GPU_LOADOP_LOAD,
             .store_op = SDL_GPU_STOREOP_STORE,
         };
 
-        SDL_GPURenderPass* uiPass = SDL_BeginGPURenderPass(cmd, &ui_target, 1, nullptr);
+        SDL_GPURenderPass* uiPass = SDL_BeginGPURenderPass(cmd, &ui_color, 1, nullptr);
         ui.draw(uiPass);
         SDL_EndGPURenderPass(uiPass);
     }
