@@ -11,6 +11,8 @@ private:
     Uint16    id;
     std::string name;
     bool        transparent;
+    //multiplier for downward acceleration: 1 = no colission, 0.0 = full collision
+    float       collision;
     bool        hasSlab, hasStair, hasPillar, hasWall, hasFence; //hasStep, hasCorner??
 
     std::unique_ptr<BlockModel> model;
@@ -28,7 +30,8 @@ public:
         bool transparent = false,
         bool hasSlab = false,
         bool hasStair = false,
-        bool hasWall = false
+        bool hasWall = false,
+        float collision = 0.0f
     );
 
     void generateMeshFromModel(
@@ -42,6 +45,7 @@ public:
     bool getHasSlab();
     bool getHasStair();
     bool getHasWall();
+    float getCollision();
     std::string getName();
     Uint16 getID();
 

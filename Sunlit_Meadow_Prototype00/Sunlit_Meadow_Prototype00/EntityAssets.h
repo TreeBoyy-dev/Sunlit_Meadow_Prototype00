@@ -65,5 +65,5 @@ inline void registerEntityAssets(AppState* state, EntityManager& em) {
 // hence it is left commented out by default.
 inline void spawnStartingEntities(EntityManager& em) {
     em.spawn("rubber_duck", { 264.0f, 264.0f, 70.0f });
-    em.spawn("player", { 264.0f, 264.0f, 70.0f });
+    //em.spawn("player", { 264.0f, 264.0f, 70.0f });
 }

@@ -24,14 +24,16 @@ private:
         std::unique_ptr<BlockModel> model,
         std::array<bool, 6> obstructs,
         bool transparent = false,
-        bool hasSlab     = false,
-        bool hasStair    = false,
-        bool hasWall     = false
+        bool hasSlab = false,
+        bool hasStair = false,
+        bool hasWall = false,
+        float collision = 0.0
     );
 
 public:
     void init();
 
     Block* getById(Uint16 id);
+    float getCollissionById(Uint16 id);
     Block* getByName(const std::string& name);
 };

@@ -45,6 +45,9 @@ public:
 
     void    calcVisibleChunksList(int renderDistance);
 
+    Uint16  getBlockIdAt(Vec3 pos);
+    float   getBlockCollision(Vec3 pos);
+
 private:
     void    updatePlayerPosition(Vec3 playerPosition);
 

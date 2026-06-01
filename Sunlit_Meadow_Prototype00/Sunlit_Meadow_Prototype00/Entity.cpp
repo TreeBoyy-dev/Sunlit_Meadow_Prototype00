@@ -1,6 +1,12 @@
 #include "Entity.h"
 #include "Mat4.h"
 
+bool sameBlock(Vec3 a, Vec3 b) {
+    return floorf(a.x) == floorf(b.x)
+        && floorf(a.y) == floorf(b.y)
+        && floorf(a.z) == floorf(b.z);
+}
+
 Entity::Entity(
     const EntityAsset* asset,
     EntityData         data,
@@ -9,13 +15,28 @@ Entity::Entity(
     : asset(asset),
     position(position),
     data(std::move(data)),
-    physics(physics) {
+    physics(physics)
+{
 }
 
-void Entity::update(float dt) {
+void Entity::update(float dt, WorldManager* worldManager) {
+    Vec3 initialPos = position;
+
+    if (physics.affectedByGravity)
+        physics.acceleration.z += -9.81f;
+
+    float downAccMult = worldManager->getBlockCollision(position);
+    if (downAccMult == -1) {
+        SDL_Log("[Entity] supporting block id not found");
+        physics.acceleration.z = 0;
+    }
+    else {
+        physics.acceleration.z = physics.acceleration.z * downAccMult;
+        if (downAccMult == 0.0 && physics.velocity.z != 0)
+            physics.velocity.z = 0.0;
+    }
+        
     physics.integrate(position, dt);
-    // TODO: resolve collisions against the world using getHitbox() + worldManager.
-    (void)dt;
 }
 
 Mat4 Entity::getModelMatrix() {

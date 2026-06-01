@@ -1,6 +1,7 @@
 #pragma once
 
 #include "WorldManager.h"
+#include "Globals.h"
 
 bool updateCamera(float dt) {
     camera.yaw   -= mouseMovement.x * -MAX_CAMERA_SPEED_LOOK;
@@ -116,7 +117,7 @@ SDL_AppResult App_Update(void* appstate)
     ChunkCoord playerChunkCoords = getPlayerChunkCoord(camera.position);
 
     worldManager.update(state, camera.position);
-    entityManager.update(dt);
+    entityManager.update(dt, &worldManager);
 
     return SDL_APP_CONTINUE;
 }

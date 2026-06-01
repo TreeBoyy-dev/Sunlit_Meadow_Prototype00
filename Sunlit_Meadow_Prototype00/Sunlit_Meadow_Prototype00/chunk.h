@@ -33,6 +33,7 @@ public:
     //void getChunkGenerated(BlockManager& blockManager, FastNoiseLite& standartNoise);
 
     bool getIsGenerated();
+    Uint16 getBlockId(int x, int y, int z);
     ChunkCoord getChunkCoordinates();
     Uint16(*getBorderAir(ChunkCoord direction))[CHUNK_SIZE];
 

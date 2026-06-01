@@ -9,13 +9,16 @@ Block::Block(
     bool transparent,
     bool hasSlab,
     bool hasStair,
-    bool hasWall)
+    bool hasWall,
+    float collision)
     : id(id),
     name(std::move(name)),
     model(std::move(model)),
     obstructs(obstructs),
     transparent(transparent),
-    hasSlab(hasSlab), hasStair(hasStair), hasWall(hasWall) {
+    hasSlab(hasSlab), hasStair(hasStair), hasWall(hasWall),
+    collision(collision)
+{
 }
 
 void Block::generateMeshFromModel(
@@ -39,6 +42,9 @@ bool Block::getHasStair() {
 }
 bool Block::getHasWall() {
     return hasWall;
+}
+float Block::getCollision() {
+    return collision;
 }
 std::string Block::getName() {
     return name;

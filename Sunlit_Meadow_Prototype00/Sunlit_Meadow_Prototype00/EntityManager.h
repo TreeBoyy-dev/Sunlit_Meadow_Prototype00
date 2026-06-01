@@ -83,7 +83,7 @@ public:
     Entity* spawn(const std::string& typeName, Vec3 position);
     Entity* spawn(const std::string& typeName, Vec3 position, SpawnData overrideData);
 
-    void update(float dt);
+    void update(float dt, WorldManager* worldManager);
 
     void draw(
         SDL_GPUCommandBuffer* cmd,

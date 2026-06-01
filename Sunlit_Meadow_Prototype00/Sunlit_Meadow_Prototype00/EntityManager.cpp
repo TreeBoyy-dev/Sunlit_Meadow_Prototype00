@@ -372,9 +372,9 @@ Entity* EntityManager::spawn(const std::string& typeName, Vec3 position, SpawnDa
     return spawnInternal(asset, position, overrideData);
 }
 
-void EntityManager::update(float dt) {
+void EntityManager::update(float dt, WorldManager* worldManager) {
     for (auto& entity : entities)
-        entity->update(dt);
+        entity->update(dt, worldManager);
 }
 
 // Draw — one bind of the pipeline, then per-entity MVP + asset bind + draw.

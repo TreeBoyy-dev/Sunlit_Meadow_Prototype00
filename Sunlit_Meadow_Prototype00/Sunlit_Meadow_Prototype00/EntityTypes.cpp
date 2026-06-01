@@ -1,9 +1,6 @@
 #include "EntityTypes.h"
 
 void PhysicsBody::integrate(Vec3& position, float dt) {
-    // Gravity along -Z (Z is up). Tune the constant later / move to Globals.
-    if (affectedByGravity)
-        acceleration.z += -9.81f;
 
     velocity = vec3Add(velocity, vec3Scale(acceleration, dt));
     position = vec3Add(position, vec3Scale(velocity, dt));

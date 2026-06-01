@@ -279,6 +279,24 @@ void WorldManager::calcVisibleChunksList(int renderDistance) {
         visibleRelativeSet.insert(rel);
 }
 
+//Block Interactions
+Uint16 WorldManager::getBlockIdAt(Vec3 pos) {
+    Region* region = getRegion(getPlayerRegionCoord(pos));
+    Chunk* chunk = region->getChunk(getPlayerChunkCoord(pos));
+    if (!chunk || !chunk->getIsGenerated())
+        return 0;
+    int x = (int)(pos.x) % CHUNK_SIZE;
+    if (x < 0) x += 16;
+    int y = (int)(pos.y) % CHUNK_SIZE;
+    if (y < 0) y += 16;
+    int z = (int)(pos.z) % CHUNK_SIZE;
+    if (z < 0) z += 16;
+    return chunk->getBlockId(x, y, z);
+}
+
+float WorldManager::getBlockCollision(Vec3 pos) {
+    return blockManager.getCollissionById(getBlockIdAt(pos));
+}
 
 //global helpers -----------------------------------------------------------------
 ChunkCoord getPlayerChunkCoord(Vec3 playerPosition) {

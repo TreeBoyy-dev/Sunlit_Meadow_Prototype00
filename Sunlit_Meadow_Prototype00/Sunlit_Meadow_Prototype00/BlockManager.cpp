@@ -12,7 +12,8 @@ void BlockManager::registerBlock(
     bool transparent,
     bool hasSlab,
     bool hasStair,
-    bool hasWall
+    bool hasWall,
+    float collision
 ){
     Uint16 id = nextId++;
 
@@ -24,7 +25,8 @@ void BlockManager::registerBlock(
         transparent,
         hasSlab,
         hasStair,
-        hasWall
+        hasWall,
+        collision
     );
     Block* ptr = newBlock.get();
 
@@ -36,7 +38,7 @@ void BlockManager::registerBlock(
 
 void BlockManager::init() {
     // --- Register base blocks ---
-    registerBlock("air", std::make_unique<BlockModel>(MATERIAL_COBBLESTONE), { false, false, false, false, false, false }, /*transparent=*/true);
+    registerBlock("air", std::make_unique<BlockModel>(MATERIAL_COBBLESTONE), { false, false, false, false, false, false }, /*transparent=*/true, false, false, false, 1.0);
     registerBlock("cobble_stone",   std::make_unique<BlockModel>(MATERIAL_COBBLESTONE), { true, true, true, true, true, true }, false, true, true, false);
     registerBlock("gneiss",         std::make_unique<BlockModel>(MATERIAL_GNEISS), { true, true, true, true, true, true }, false, true, true, false);
     registerBlock("chalk",          std::make_unique<BlockModel>(MATERIAL_CHALK), { true, true, true, true, true, true }, false, true, true, false);
@@ -66,6 +68,17 @@ void BlockManager::init() {
 Block* BlockManager::getById(Uint16 id) {
     auto it = blocksById.find(id);
     return it != blocksById.end() ? it->second : nullptr;
+}
+
+float BlockManager::getCollissionById(Uint16 id) {
+    auto it = blocksById.find(id);
+    if (it == blocksById.end())
+        return -1;
+    else
+    {
+        Block* block = it->second;
+        return block->getCollision();
+    }
 }
 
 Block* BlockManager::getByName(const std::string& name) {

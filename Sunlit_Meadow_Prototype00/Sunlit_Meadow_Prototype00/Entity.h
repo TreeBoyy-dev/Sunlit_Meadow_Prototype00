@@ -4,8 +4,10 @@
 #include "Vectors.h"
 #include "DataStructures.h"
 #include "EntityTypes.h"
+#include "BlockManager.h"
+#include "WorldManager.h"
 
-
+bool sameBlock(Vec3 a, Vec3 b);
 // ---------------------------------------------------------------------------
 // Entity: a live entity in the world.
 // Holds a pointer to its shared, per-type EntityAsset (model + hitbox, owned by
@@ -14,7 +16,8 @@
 // ---------------------------------------------------------------------------
 class Entity {
 private:
-    const EntityAsset* asset = nullptr;   // shared per-type data (NOT owned)
+    const EntityAsset* asset = nullptr;   // shared per-type data
+    Uint16             supportingBlockID;
 
     Vec3 position = { 0, 0, 0 };
     Vec3 rotation = { 0, 0, 0 };
@@ -33,7 +36,7 @@ public:
 
     // Per-frame step: run physics, then resolve world collisions, then any
     // per-type behaviour (override in subclasses).
-    virtual void update(float dt);
+    virtual void update(float dt, WorldManager* worldManager);
 
     // Build this entity's model matrix (translate * rotate) for rendering.
     Mat4 getModelMatrix();
