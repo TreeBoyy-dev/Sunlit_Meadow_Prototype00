@@ -167,7 +167,6 @@ void UI_Renderer::destroy(SDL_GPUDevice* gpu)
 }
 
 // ---------- geometry helpers ----------
-
 void UI_Renderer::drawTriangle(UIVertex a, UIVertex b, UIVertex c)
 {
     verts.push_back(a);
@@ -233,19 +232,19 @@ void UI_Renderer::drawCrosshair(float cx, float cy,
     drawCircle(cx, cy, circleRadius, r, g, b, a);
 }
 
-void UI_Renderer::drawTexture(SDL_GPUTexture* texture, SDL_GPUSampler* sampler,
+void UI_Renderer::drawTexture(SDL_GPUTexture* texture,
     float x, float y, float w, float h, SDL_FColor tint)
 {
     // find existing batch for this texture, or start a new one
     UITexBatch* batch = nullptr;
     for (auto& b : texBatches) {
-        if (b.texture == texture && b.sampler == sampler) {
+        if (b.texture == texture && b.sampler == textSampler) {
             batch = &b;
             break;
         }
     }
     if (!batch) {
-        texBatches.push_back({ texture, sampler, {} });
+        texBatches.push_back({ texture, textSampler, {} });
         batch = &texBatches.back();
     }
 
@@ -373,7 +372,7 @@ void UI_Renderer::upload(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer* cmd)
 
         // queue a textured quad using the cached texture
         const CachedText& cached = it->second;
-        drawTexture(cached.texture, cached.sampler,
+        drawTexture(cached.texture,
             pending.x, pending.y, cached.w, cached.h,
             pending.color);
     }
@@ -454,3 +453,11 @@ void UI_Renderer::draw(SDL_GPURenderPass* pass)
         texBatches.clear();
     }
 }
+
+float UI_Renderer::getScreenW() {
+    return screenW;
+}
+float UI_Renderer::getScreenH() {
+    return screenH;
+}
+

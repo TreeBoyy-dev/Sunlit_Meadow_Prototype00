@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Globals.h"
+#include "SurvivalUI.h"
 
 void drawDebugUI(void* appstate) {
     AppState* state = (AppState*)appstate;
@@ -38,6 +39,7 @@ SDL_AppResult App_Render(void* appstate)
     float cy = ui.screenH * 0.5f;
     ui.drawCrosshair(cx, cy, 12.0f, 2.0f, 4.0f, 1.0f, 1.0f, 1.0f, 0.9f);
     //ui.drawText("hello UI", 20.0f, 20.0f, { 1.0f, 1.0f, 1.0f, 1.0f });
+    drawSurvivalUI(&ui);
 
     if (renderDebugUI)
         drawDebugUI(state);

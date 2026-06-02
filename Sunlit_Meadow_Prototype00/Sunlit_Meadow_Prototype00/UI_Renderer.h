@@ -7,38 +7,7 @@
 #include <vector>
 
 #include "Vectors.h"
-
-#define MAX_UI_VERTECIES 8192
-
-struct UIVertex {
-    Vec2     pos;
-    SDL_FColor color;
-};
-
-struct UIVertexTextured {
-    Vec2       pos;
-    Vec2       uv;
-    SDL_FColor color; // tint — use {1,1,1,1} for no tint
-};
-
-// One batch per texture used in a frame
-struct UITexBatch {
-    SDL_GPUTexture* texture;
-    SDL_GPUSampler* sampler;
-    std::vector<UIVertexTextured> verts;
-};
-
-struct CachedText {
-    SDL_GPUTexture* texture;
-    SDL_GPUSampler* sampler;
-    float w, h;
-};
-
-struct PendingTextDraw {
-    std::string text;
-    float x, y;
-    SDL_FColor color;
-};
+#include "UITypes.h"
 
 class UI_Renderer {
 public:
@@ -47,14 +16,14 @@ public:
     SDL_GPUGraphicsPipeline* pipeline;
     SDL_GPUBuffer*           vertexBuffer;
     Uint32                   maxVertices;
-    std::vector<UIVertex> verts;
+    std::vector<UIVertex>    verts;
 
     SDL_GPUGraphicsPipeline* texPipeline;
-    SDL_GPUBuffer* texVertexBuffer;
+    SDL_GPUBuffer*           texVertexBuffer;
     std::vector<UITexBatch>  texBatches;
 
-    TTF_Font* font = nullptr;
-    SDL_GPUSampler* textSampler = nullptr;
+    TTF_Font*                                   font = nullptr;
+    SDL_GPUSampler*                             textSampler = nullptr;
     std::unordered_map<std::string, CachedText> textCache;
     std::vector<PendingTextDraw>                pendingText;
 
@@ -84,7 +53,7 @@ public:
         float r, float g, float b, float a);
 
     // textured drawing
-    void drawTexture(SDL_GPUTexture* texture, SDL_GPUSampler* sampler,
+    void drawTexture(SDL_GPUTexture* texture,
         float x, float y, float w, float h,
         SDL_FColor tint = { 1.0f, 1.0f, 1.0f, 1.0f });
 
@@ -95,4 +64,7 @@ public:
 
     void upload(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer* cmd);
     void draw(SDL_GPURenderPass* pass);
+
+    float getScreenW();
+    float getScreenH();
 };

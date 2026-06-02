@@ -7,6 +7,7 @@
 #include "Globals.h"
 #include "Materials.h"
 #include "EntityAssets.h"
+#include "SurvivalUI.h"
 
 SDL_AppResult App_Init(void* appstate)
 {
@@ -51,6 +52,9 @@ SDL_AppResult App_Init(void* appstate)
     ui.screenW = (float)w;
     ui.screenH = (float)h;
     ui.init(state->gpu, SDL_GetGPUSwapchainTextureFormat(state->gpu, state->window));
+
+    if (!InitSurvivalUI(state->gpu))
+        SDL_Log("failed to load UI textures");
 
     SDL_GPUTextureCreateInfo depth_tex_info = {
         .type = SDL_GPU_TEXTURETYPE_2D,

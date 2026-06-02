@@ -33,7 +33,7 @@ EntityManager entityManager;
 
 // --- WorldManager ---
 WorldManager worldManager;
-const int RENDER_DISTANCE = 8;
+const int RENDER_DISTANCE = 5;
 
 ChunkCoord prevPlayerChunkCoords = { 0,0,0 };
 

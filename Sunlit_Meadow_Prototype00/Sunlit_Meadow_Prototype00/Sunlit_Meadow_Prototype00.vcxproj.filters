@@ -144,6 +144,12 @@
     <ClCompile Include="GenerateColumn.cpp">
       <Filter>Source Files\world\WorldGen</Filter>
     </ClCompile>
+    <ClCompile Include="SurvivalUI.cpp">
+      <Filter>Source Files\UIRendering</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadTextureFromFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h">
@@ -247,6 +253,15 @@
     </ClInclude>
     <ClInclude Include="GenerateColumn.h">
       <Filter>Header Files\world\WorldGen.h</Filter>
+    </ClInclude>
+    <ClInclude Include="UITypes.h">
+      <Filter>Header Files\UIRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="SurvivalUI.h">
+      <Filter>Header Files\UIRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadTextureFromFile.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

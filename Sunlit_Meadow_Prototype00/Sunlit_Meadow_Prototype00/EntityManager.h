@@ -13,6 +13,7 @@
 #include "Vectors.h"
 #include "Mat4.h"
 #include "EntityTypes.h"
+#include "LoadTextureFromFile.h"
 
 class EntityManager {
 private:
@@ -40,11 +41,6 @@ private:
         const char* fileName,
         std::vector<EntityVertex>& outVertices,
         std::vector<Uint16>& outIndices
-    );
-    SDL_GPUTexture* loadTextureFromFile(
-        AppState* state,
-        const char* filePath,
-        const char* fileName
     );
     bool uploadMeshToGPU(
         AppState* state,

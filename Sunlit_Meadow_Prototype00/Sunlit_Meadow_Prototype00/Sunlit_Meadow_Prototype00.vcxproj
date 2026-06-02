@@ -146,6 +146,7 @@
     <ClCompile Include="GenerateChunk.h" />
     <ClCompile Include="GenerateColumn.cpp" />
     <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="LoadTextureFromFile.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\SDL3-3.4.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
@@ -155,6 +156,7 @@
     <ClCompile Include="Region.cpp" />
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="SlabBlockModel.cpp" />
+    <ClCompile Include="SurvivalUI.cpp" />
     <ClCompile Include="UI_Renderer.cpp" />
     <ClCompile Include="Vectors.cpp" />
     <ClCompile Include="WorldManager.cpp" />
@@ -172,8 +174,11 @@
     <ClInclude Include="ChunkMeshWorker.h" />
     <ClInclude Include="EntityAssets.h" />
     <ClInclude Include="GenerateColumn.h" />
+    <ClInclude Include="LoadTextureFromFile.h" />
     <ClInclude Include="ObjParser.h" />
     <ClInclude Include="PalettedContainer.h" />
+    <ClInclude Include="SurvivalUI.h" />
+    <ClInclude Include="UITypes.h" />
     <ClInclude Include="WorldTypes.h" />
     <ClInclude Include="ChunkGeneratorWorker.h" />
     <ClInclude Include="Entity.h" />
