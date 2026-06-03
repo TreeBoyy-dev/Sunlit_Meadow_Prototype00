@@ -5,7 +5,8 @@
 #include "LoadTextureFromFile.h"
 #include "BuildAbsolutePath.h"
 
-SDL_GPUTexture* loadTextureFromFile(
+bool loadTextureFromFile(
+    GPUTextureWH* gpuTextureWH,
     SDL_GPUDevice* gpu,
     const char* filePath,
     const char* fileName)
@@ -15,13 +16,13 @@ SDL_GPUTexture* loadTextureFromFile(
     SDL_Surface* loaded = SDL_LoadSurface(fullPath.c_str());
     if (!loaded) {
         SDL_Log("SDL_LoadSurface failed for '%s': %s", fullPath.c_str(), SDL_GetError());
-        return nullptr;
+        return false;
     }
     SDL_Surface* surface = SDL_ConvertSurface(loaded, SDL_PIXELFORMAT_RGBA32);
     SDL_DestroySurface(loaded);
     if (!surface) {
         SDL_Log("SDL_ConvertSurface failed: %s", SDL_GetError());
-        return nullptr;
+        return false;
     }
 
     const Uint32 width = (Uint32)surface->w;
@@ -41,7 +42,7 @@ SDL_GPUTexture* loadTextureFromFile(
     if (!texture) {
         SDL_Log("SDL_CreateGPUTexture failed: %s", SDL_GetError());
         SDL_DestroySurface(surface);
-        return nullptr;
+        return false;
     }
 
     SDL_GPUTransferBufferCreateInfo tInfo = {
@@ -78,5 +79,9 @@ SDL_GPUTexture* loadTextureFromFile(
     SDL_ReleaseGPUTransferBuffer(gpu, transfer);
     SDL_DestroySurface(surface);
 
-    return texture;
+    gpuTextureWH->width = width;
+    gpuTextureWH->height = height;
+    gpuTextureWH->texture = texture;
+
+    return true;
 }

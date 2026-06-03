@@ -167,7 +167,10 @@ bool EntityManager::loadEntityType(
         return false;
     }
 
-    asset->texture = loadTextureFromFile(state->gpu, texturePath, textureFile);
+    GPUTextureWH gpuTextureWH;
+    if(!loadTextureFromFile(&gpuTextureWH, state->gpu, texturePath, textureFile))
+        SDL_Log("[Entity] failed to load texture '%s'", textureFile);
+    asset->texture = gpuTextureWH.texture;
     if (!asset->texture) {
         SDL_Log("[Entity] failed to load texture '%s'", textureFile);
         if (asset->vertexBuffer) SDL_ReleaseGPUBuffer(state->gpu, asset->vertexBuffer);

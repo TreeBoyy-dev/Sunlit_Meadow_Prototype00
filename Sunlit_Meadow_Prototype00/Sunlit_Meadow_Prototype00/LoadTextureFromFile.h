@@ -6,7 +6,14 @@
 #include <memory>
 #include <string>
 
-SDL_GPUTexture* loadTextureFromFile(
+typedef struct GPUTextureWH {
+    SDL_GPUTexture* texture;
+    Uint32 width;
+    Uint32 height;
+};
+
+bool loadTextureFromFile(
+    GPUTextureWH* gpuTextureWH,
     SDL_GPUDevice* gpu,
     const char* filePath,
     const char* fileName

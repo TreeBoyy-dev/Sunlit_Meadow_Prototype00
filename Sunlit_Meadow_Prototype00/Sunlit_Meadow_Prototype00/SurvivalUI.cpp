@@ -9,7 +9,7 @@
 
 static const char* kUITextureFolder = "Textures/UI/";
 
-static bool readPngSize(const std::filesystem::path& file, int& outW, int& outH) {
+/*static bool readPngSize(const std::filesystem::path& file, int& outW, int& outH) {
     std::ifstream in(file, std::ios::binary);
     if (!in) return false;
 
@@ -30,7 +30,7 @@ static bool readPngSize(const std::filesystem::path& file, int& outW, int& outH)
     outW = static_cast<int>(be32(&header[16]));
     outH = static_cast<int>(be32(&header[20]));
     return true;
-}
+}*/
 
 bool InitSurvivalUI(SDL_GPUDevice* gpu) {
     std::string folder = BuildAbsolutePath(kUITextureFolder, "");
@@ -61,19 +61,19 @@ bool InitSurvivalUI(SDL_GPUDevice* gpu) {
         std::string name = p.stem().string();     // "heart"     from "heart.png"
         std::string fileName = p.filename().string();  // "heart.png"
 
-        // loadTextureFromFile() builds its own absolute path from
-        // (filePath, fileName), so pass the *relative* folder + the file name,
-        // matching how the rest of the project calls its loaders.
-        SDL_GPUTexture* tex = loadTextureFromFile(gpu, kUITextureFolder, fileName.c_str());
-        if (!tex) {
+        GPUTextureWH gpuTextureWH;
+        if (!loadTextureFromFile(&gpuTextureWH, gpu, kUITextureFolder, fileName.c_str()))
+        {
             SDL_Log("[SurvivalUI] failed to load UI texture '%s'", fileName.c_str());
             allOk = false;
             continue;
         }
+        SDL_GPUTexture* tex = gpuTextureWH.texture;
 
         UITexture uiTex;
         uiTex.texture = tex;
-        readPngSize(p, uiTex.w, uiTex.h);
+        uiTex.w = (int)gpuTextureWH.width;
+        uiTex.h = (int)gpuTextureWH.height;
 
         auto [it, inserted] = UITextureSet.emplace(std::move(name), std::move(uiTex));
         if (!inserted) {
