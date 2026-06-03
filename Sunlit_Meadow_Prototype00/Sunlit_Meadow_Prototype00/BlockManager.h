@@ -36,4 +36,6 @@ public:
     Block* getById(Uint16 id);
     float getCollissionById(Uint16 id);
     Block* getByName(const std::string& name);
+
+    int getNumberOfBlocks();
 };

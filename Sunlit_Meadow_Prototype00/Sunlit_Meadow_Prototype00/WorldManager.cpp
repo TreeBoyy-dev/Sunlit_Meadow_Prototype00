@@ -297,6 +297,9 @@ Uint16 WorldManager::getBlockIdAt(Vec3 pos) {
 float WorldManager::getBlockCollision(Vec3 pos) {
     return blockManager.getCollissionById(getBlockIdAt(pos));
 }
+BlockManager* WorldManager::getBlockManager() {
+    return &blockManager;
+}
 
 //global helpers -----------------------------------------------------------------
 ChunkCoord getPlayerChunkCoord(Vec3 playerPosition) {

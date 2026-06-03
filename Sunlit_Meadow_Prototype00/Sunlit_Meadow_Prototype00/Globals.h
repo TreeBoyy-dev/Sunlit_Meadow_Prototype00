@@ -8,6 +8,7 @@
 #include "FastNoiseLite.h"
 #include "Skybox.h"
 #include "EntityManager.h"
+#include "ItemManager.h"
 
 extern const float NEAR_PLANE;
 extern const float FAR_PLANE;
@@ -43,3 +44,6 @@ extern ChunkCoord prevPlayerChunkCoords;
 
 // --- UI ---
 extern UI_Renderer ui;
+
+// --- Items ---
+extern ItemManager itemManager;

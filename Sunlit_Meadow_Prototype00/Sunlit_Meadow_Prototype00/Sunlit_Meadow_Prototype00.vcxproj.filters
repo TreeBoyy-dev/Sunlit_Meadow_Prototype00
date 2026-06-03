@@ -64,6 +64,12 @@
     <Filter Include="Source Files\entity">
       <UniqueIdentifier>{fd7a0676-56fe-403d-a251-f2bad241fb9f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\items">
+      <UniqueIdentifier>{5f5bec3f-0ba6-4ee3-8f21-65055557d066}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\items">
+      <UniqueIdentifier>{3edc4fbc-fc2a-482e-9355-2612d91bc03d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -120,9 +126,6 @@
     <ClCompile Include="Entity.cpp">
       <Filter>Source Files\entity</Filter>
     </ClCompile>
-    <ClCompile Include="EntityModel.cpp">
-      <Filter>Source Files\entity</Filter>
-    </ClCompile>
     <ClCompile Include="EntityManager.cpp">
       <Filter>Source Files\entity</Filter>
     </ClCompile>
@@ -149,6 +152,12 @@
     </ClCompile>
     <ClCompile Include="LoadTextureFromFile.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Source Files\items</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemManager.cpp">
+      <Filter>Source Files\items</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -227,9 +236,6 @@
     <ClInclude Include="Entity.h">
       <Filter>Header Files\entity</Filter>
     </ClInclude>
-    <ClInclude Include="EntityModel.h">
-      <Filter>Header Files\entity</Filter>
-    </ClInclude>
     <ClInclude Include="EntityManager.h">
       <Filter>Header Files\entity</Filter>
     </ClInclude>
@@ -262,6 +268,12 @@
     </ClInclude>
     <ClInclude Include="LoadTextureFromFile.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Header Files\items</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemManager.h">
+      <Filter>Header Files\items</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

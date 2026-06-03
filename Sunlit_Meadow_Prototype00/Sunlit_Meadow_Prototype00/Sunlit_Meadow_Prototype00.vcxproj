@@ -140,12 +140,13 @@
     <ClCompile Include="ChunkMeshWorker.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityManager.cpp" />
-    <ClCompile Include="EntityModel.cpp" />
     <ClCompile Include="EntityTypes.cpp" />
     <ClCompile Include="GenerateChunk.cpp" />
     <ClCompile Include="GenerateChunk.h" />
     <ClCompile Include="GenerateColumn.cpp" />
     <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="LoadTextureFromFile.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\SDL3-3.4.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -174,6 +175,8 @@
     <ClInclude Include="ChunkMeshWorker.h" />
     <ClInclude Include="EntityAssets.h" />
     <ClInclude Include="GenerateColumn.h" />
+    <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemManager.h" />
     <ClInclude Include="LoadTextureFromFile.h" />
     <ClInclude Include="ObjParser.h" />
     <ClInclude Include="PalettedContainer.h" />
@@ -183,7 +186,6 @@
     <ClInclude Include="ChunkGeneratorWorker.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityManager.h" />
-    <ClInclude Include="EntityModel.h" />
     <ClInclude Include="FastNoiseLite.h" />
     <ClInclude Include="Frustum.h" />
     <ClInclude Include="InitNoise.h" />

@@ -68,14 +68,14 @@ SDL_AppResult App_Init(void* appstate)
     state->depth_texture = SDL_CreateGPUTexture(state->gpu, &depth_tex_info);
 
     worldManager.init(state->gpu, SDL_GetGPUSwapchainTextureFormat(state->gpu, state->window));
-
     worldManager.calcVisibleChunksList(RENDER_DISTANCE);
     worldManager.update(state, camera.position);
 
     entityManager.init(state);
-
     registerEntityAssets(state, entityManager);
     spawnStartingEntities(entityManager);
+
+    itemManager.initAssets(state->gpu, worldManager.getBlockManager());
 
     skybox.init(state, SDL_GetGPUSwapchainTextureFormat(state->gpu, state->window), "Textures/Environment/", "Cubemap_Sky_SBS.png");
     SDL_GPUCommandBuffer* uploadCmd = SDL_AcquireGPUCommandBuffer(state->gpu);

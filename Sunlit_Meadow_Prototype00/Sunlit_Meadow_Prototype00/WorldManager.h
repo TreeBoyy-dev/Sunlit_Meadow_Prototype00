@@ -47,6 +47,7 @@ public:
 
     Uint16  getBlockIdAt(Vec3 pos);
     float   getBlockCollision(Vec3 pos);
+    BlockManager* getBlockManager();
 
 private:
     void    updatePlayerPosition(Vec3 playerPosition);

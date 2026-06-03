@@ -39,3 +39,6 @@ ChunkCoord prevPlayerChunkCoords = { 0,0,0 };
 
 // --- UI ---
 UI_Renderer ui;
+
+// --- Items ---
+ItemManager itemManager;

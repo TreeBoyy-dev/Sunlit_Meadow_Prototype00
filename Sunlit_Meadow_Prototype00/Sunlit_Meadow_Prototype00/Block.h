@@ -53,4 +53,6 @@ public:
     Material getBottomMaterial();
     Material getSideMaterial();
     bool getObstructs(int faceIndex);
+
+    SDL_GPUTexture* getIcon();
 };

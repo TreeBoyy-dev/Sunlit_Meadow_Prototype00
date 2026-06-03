@@ -57,3 +57,7 @@ Material Block::getTopMaterial() { return model->getTopMaterial(); }
 Material Block::getBottomMaterial() { return model->getBottomMaterial(); }
 Material Block::getSideMaterial() { return model->getSideMaterial(); }
 bool Block::getObstructs(int faceIndex) { return obstructs[faceIndex]; }
+
+SDL_GPUTexture* Block::getIcon() {
+    return nullptr;
+}

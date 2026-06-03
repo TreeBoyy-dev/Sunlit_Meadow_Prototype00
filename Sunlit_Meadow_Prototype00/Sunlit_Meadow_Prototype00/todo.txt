@@ -1,3 +1,10 @@
+make blockmanager global again
+
+change bcloks to be loaded from a model (.obj)
+	- change texture array to atlas
+
+make icons for items - from blockmodels/itemmodels
+
 move rendering to seperate Render Thread
 
 (unfinished) change how the generated chunks are handled
@@ -39,5 +46,3 @@ UI and menues
 add more blocks
 add stairs, slabs (check), walls etc (block varients in generall)
 
-figure out a way to store block/item/entity data
-	- then store the world in a file

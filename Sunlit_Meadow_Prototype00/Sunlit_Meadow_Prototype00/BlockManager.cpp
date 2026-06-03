@@ -85,3 +85,7 @@ Block* BlockManager::getByName(const std::string& name) {
     auto it = blocksByName.find(name);
     return it != blocksByName.end() ? it->second : nullptr;
 }
+
+int BlockManager::getNumberOfBlocks() {
+    return blocks.size();
+}
