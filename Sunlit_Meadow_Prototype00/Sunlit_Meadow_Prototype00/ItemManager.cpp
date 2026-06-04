@@ -5,7 +5,7 @@
 #include "LoadTextureFromFile.h"
 
 static const char* baseTexturePath = "Textures/Items";
-static const char* baseModelPath = "Models/Items";
+static const char* baseModelPath = "Models";
 
 Item* ItemManager::registerItem(
     std::unique_ptr<Item> item,
@@ -82,6 +82,35 @@ void ItemManager::registerPlacableItems(SDL_GPUDevice* gpuDevice, BlockManager* 
 
 void ItemManager::destroy(SDL_GPUDevice* gpuDevice) {
     if (!gpuDevice) return;
+}
+
+void ItemManager::drawItem(
+    UI_Renderer* ui,
+    const std::string name,
+    float panelX, float panelY, float panelW, float panelH,
+    float pitch, float yaw, float roll,
+    float scale,
+    SDL_FColor tint,
+    bool cullBackFaces)
+{
+    Item* item = getItemByName(name);
+    if (item == nullptr) {
+        SDL_Log("[ItemManager] no item returned from item '%s'", name.c_str());
+        return;
+    }
+    ItemModel* model = item->getModel();
+    if (model == nullptr) {
+        SDL_Log("[ItemManager] no model returned from item '%s'", item->getName().c_str());
+        return;
+    }
+
+    ui->drawModel(
+        model,
+        panelX, panelY, panelW, panelH,
+        pitch, yaw, roll,
+        scale,
+        tint,
+        cullBackFaces);
 }
 
 Item* ItemManager::getItemByName(const std::string& name) {

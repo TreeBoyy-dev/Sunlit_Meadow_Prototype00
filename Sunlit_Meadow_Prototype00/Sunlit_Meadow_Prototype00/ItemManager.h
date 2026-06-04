@@ -32,9 +32,18 @@ private:
 
 public:
     void initAssets(SDL_GPUDevice* gpuDevice, BlockManager* blockManager);
-
     // Release the icon textures this manager owns.
     void destroy(SDL_GPUDevice* gpuDevice);
+
+    void drawItem(
+        UI_Renderer* ui,
+        const std::string name,
+        float panelX, float panelY, float panelW, float panelH,
+        float pitch, float yaw, float roll,
+        float scale = 1.0f,
+        SDL_FColor tint = { 1.0f, 1.0f, 1.0f, 1.0f },
+        bool cullBackFaces = true
+    );
 
     Item* getItemByName(const std::string& name);
     Item* getItemById(Uint16 id);

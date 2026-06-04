@@ -59,10 +59,11 @@ public:
 
     // --- accessors ---
     Uint16             getID()           const { return id; }
-    const std::string& getName()         const { return name; }
+    std::string&       getName()               { return name; }
     ItemCategory       getCategory()     const { return category; }
     float              getWeight()       const { return weight; }
     short int          getMaxStackSize() const { return maxStackSize; }
+    ItemModel*         getModel()              { return &model; }
 
     void setID(Uint16 newId) { id = newId; }
 };

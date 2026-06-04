@@ -40,6 +40,7 @@ SDL_AppResult App_Render(void* appstate)
     ui.drawCrosshair(cx, cy, 12.0f, 2.0f, 4.0f, 1.0f, 1.0f, 1.0f, 0.9f);
     //ui.drawText("hello UI", 20.0f, 20.0f, { 1.0f, 1.0f, 1.0f, 1.0f });
     drawSurvivalUI(&ui);
+    itemManager.drawItem(&ui, "stick", cx, cy*0.3, 50, 50, 1.6, 1.6, 0);
 
     if (renderDebugUI)
         drawDebugUI(state);

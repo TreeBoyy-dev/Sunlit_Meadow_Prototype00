@@ -1,12 +1,6 @@
 ﻿  Scanning sources for module dependencies...
-  Item.cpp
+  ItemManager.cpp
 C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\LoadTextureFromFile.h(9,16): warning C4091: 'typedef ': ignored on left of 'GPUTextureWH' when no variable is declared
-  (compiling source file 'Item.cpp')
-  
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Item.cpp(62,50): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Item.cpp(62,45): warning C4305: 'argument': truncation from 'double' to 'float'
-  main.cpp
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\LoadTextureFromFile.h(9,16): warning C4091: 'typedef ': ignored on left of 'GPUTextureWH' when no variable is declared
-  (compiling source file 'main.cpp')
+  (compiling source file 'ItemManager.cpp')
   
   Sunlit_Meadow_Prototype00.vcxproj -> C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\x64\Debug\Sunlit_Meadow_Prototype00.exe
