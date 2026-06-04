@@ -32,3 +32,17 @@ struct PendingTextDraw {
     float x, y;
     SDL_FColor color;
 };
+
+// 3D model queued for display inside a UI panel. Resolved in UI_Renderer::upload(),
+// where the model is rendered to an offscreen texture and then composited as a
+// normal UI quad in the existing textured pass.
+class ItemModel; // defined in ItemModel.h
+
+struct PendingModelDraw {
+    ItemModel* model;
+    float      panelX, panelY, panelW, panelH;
+    float      pitch, yaw, roll;
+    float      scale;
+    SDL_FColor tint;
+    bool       cullBackFaces;
+};

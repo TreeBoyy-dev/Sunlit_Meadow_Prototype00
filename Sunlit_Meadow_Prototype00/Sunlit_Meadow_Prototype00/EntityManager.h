@@ -14,6 +14,7 @@
 #include "Mat4.h"
 #include "EntityTypes.h"
 #include "LoadTextureFromFile.h"
+#include "ObjParser.h"
 
 class EntityManager {
 private:
@@ -39,13 +40,13 @@ private:
     bool loadModelFromFile(
         const char* filePath,
         const char* fileName,
-        std::vector<EntityVertex>& outVertices,
+        std::vector<ModelVertex>& outVertices,
         std::vector<Uint16>& outIndices
     );
     bool uploadMeshToGPU(
         AppState* state,
         EntityAsset* asset,
-        const std::vector<EntityVertex>& vertices,
+        const std::vector<ModelVertex>& vertices,
         const std::vector<Uint16>& indices
     );
 

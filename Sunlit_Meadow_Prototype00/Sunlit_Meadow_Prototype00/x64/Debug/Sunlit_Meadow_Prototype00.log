@@ -1,46 +1,10 @@
 ﻿  Scanning sources for module dependencies...
-  Chunk.cpp
+  Item.cpp
 C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\LoadTextureFromFile.h(9,16): warning C4091: 'typedef ': ignored on left of 'GPUTextureWH' when no variable is declared
-  (compiling source file 'Chunk.cpp')
+  (compiling source file 'Item.cpp')
   
-  ChunkMesh.cpp
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\LoadTextureFromFile.h(9,16): warning C4091: 'typedef ': ignored on left of 'GPUTextureWH' when no variable is declared
-  (compiling source file 'ChunkMesh.cpp')
-  
-  Entity.cpp
-  EntityManager.cpp
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\LoadTextureFromFile.h(9,16): warning C4091: 'typedef ': ignored on left of 'GPUTextureWH' when no variable is declared
-  (compiling source file 'EntityManager.cpp')
-  
-  GenerateChunk.cpp
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\LoadTextureFromFile.h(9,16): warning C4091: 'typedef ': ignored on left of 'GPUTextureWH' when no variable is declared
-  (compiling source file 'GenerateChunk.cpp')
-  
-  GenerateColumn.cpp
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\LoadTextureFromFile.h(9,16): warning C4091: 'typedef ': ignored on left of 'GPUTextureWH' when no variable is declared
-  (compiling source file 'GenerateColumn.cpp')
-  
-  Globals.cpp
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\LoadTextureFromFile.h(9,16): warning C4091: 'typedef ': ignored on left of 'GPUTextureWH' when no variable is declared
-  (compiling source file 'Globals.cpp')
-  
-  ItemManager.cpp
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\LoadTextureFromFile.h(9,16): warning C4091: 'typedef ': ignored on left of 'GPUTextureWH' when no variable is declared
-  (compiling source file 'ItemManager.cpp')
-  
-  WorldManager.cpp
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\LoadTextureFromFile.h(9,16): warning C4091: 'typedef ': ignored on left of 'GPUTextureWH' when no variable is declared
-  (compiling source file 'WorldManager.cpp')
-  
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(246,28): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(246,28): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(246,48): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(246,48): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(246,68): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(246,68): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-  Generating Code...
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\ItemManager.cpp(26,1): warning C4715: 'ItemManager::getIconFromFile': not all control paths return a value
-C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Chunk.cpp(149,1): warning C4715: 'Chunk::getBlockId': not all control paths return a value
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Item.cpp(62,50): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Item.cpp(62,45): warning C4305: 'argument': truncation from 'double' to 'float'
   main.cpp
 C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\LoadTextureFromFile.h(9,16): warning C4091: 'typedef ': ignored on left of 'GPUTextureWH' when no variable is declared
   (compiling source file 'main.cpp')

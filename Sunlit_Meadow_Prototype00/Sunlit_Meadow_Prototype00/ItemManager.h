@@ -18,20 +18,15 @@ private:
 
     SDL_GPUDevice* gpu = nullptr;
 
-    // Icon textures this manager loaded and therefore owns.
-    std::vector<SDL_GPUTexture*> ownedIcons;
-
     // Internal: assign an id, load + attach the icon, run initMesh (so a
     // placeable can resolve its block), then store the item in both maps.
     // Takes ownership of `item`. iconPath/iconFile may be null for no icon.
     Item* registerItem(
         std::unique_ptr<Item> item,
-        SDL_GPUTexture* icon,
+        SDL_GPUDevice* gpu,
+        const char* textureFile,
+        const char* modelFile,
         BlockManager* blockManager
-    );
-    SDL_GPUTexture* getIconFromFile(
-        const char* iconPath,
-        const char* iconFile
     );
     void registerPlacableItems(SDL_GPUDevice* gpuDevice, BlockManager* blockManager);
 

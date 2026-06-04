@@ -4,6 +4,7 @@
 
 #include "BlockManager.h"
 #include "UI_Renderer.h"
+#include "ItemModel.h"
 
 class Item;
 
@@ -33,7 +34,7 @@ protected:
     float        weight = 0.0f;
     short int    maxStackSize = 64;
 
-    SDL_GPUTexture* icon = nullptr;
+    ItemModel model;
 
 public:
     Item(
@@ -45,7 +46,13 @@ public:
     virtual ~Item() = default;
 
     // Prepare this item's visual.
-    virtual void initMesh(BlockManager* blockManager = nullptr);
+    virtual void initModel(
+        SDL_GPUDevice* gpu,
+        const char* texturePath,
+        const char* textureFile,
+        const char* modelPath,
+        const char* modelFile,
+        BlockManager* blockManager = nullptr);
 
     // Draw the item's icon as a square at pixel (x, y) with side length `size`.
     void drawModelAt(UI_Renderer* ui, float x, float y, float size);
@@ -58,7 +65,6 @@ public:
     short int          getMaxStackSize() const { return maxStackSize; }
 
     void setID(Uint16 newId) { id = newId; }
-    void setIcon(SDL_GPUTexture* tex) { icon = tex; }
 };
 
 class Item_Placable : public Item {
@@ -74,7 +80,14 @@ public:
         short int   maxStackSize = 100
     );
 
-    void initMesh(BlockManager* blockManager = nullptr) override;
+    virtual void initModel(
+        SDL_GPUDevice* gpu,
+        const char* texturePath,
+        const char* textureFile,
+        const char* modelPath,
+        const char* modelFile,
+        BlockManager* blockManager = nullptr
+    ) override;
 
     Uint16 getBlockId() const { return blockId; }
     Block* getBlock()   const { return block; }

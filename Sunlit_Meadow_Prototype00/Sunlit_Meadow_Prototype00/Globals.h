@@ -36,6 +36,9 @@ extern float sum;
 // --- EntityManager ---
 extern EntityManager entityManager;
 
+// --- BlockManager ---
+extern BlockManager blockManager;
+
 // --- WorldManager ---
 extern WorldManager worldManager;
 extern const int RENDER_DISTANCE;

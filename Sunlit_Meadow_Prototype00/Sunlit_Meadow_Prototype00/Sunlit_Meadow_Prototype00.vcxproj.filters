@@ -159,6 +159,9 @@
     <ClCompile Include="ItemManager.cpp">
       <Filter>Source Files\items</Filter>
     </ClCompile>
+    <ClCompile Include="ItemModel.cpp">
+      <Filter>Source Files\items</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h">
@@ -273,6 +276,9 @@
       <Filter>Header Files\items</Filter>
     </ClInclude>
     <ClInclude Include="ItemManager.h">
+      <Filter>Header Files\items</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemModel.h">
       <Filter>Header Files\items</Filter>
     </ClInclude>
   </ItemGroup>

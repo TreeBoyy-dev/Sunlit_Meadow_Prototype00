@@ -147,6 +147,7 @@
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemManager.cpp" />
+    <ClCompile Include="ItemModel.cpp" />
     <ClCompile Include="LoadTextureFromFile.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\SDL3-3.4.2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -177,6 +178,7 @@
     <ClInclude Include="GenerateColumn.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemManager.h" />
+    <ClInclude Include="ItemModel.h" />
     <ClInclude Include="LoadTextureFromFile.h" />
     <ClInclude Include="ObjParser.h" />
     <ClInclude Include="PalettedContainer.h" />

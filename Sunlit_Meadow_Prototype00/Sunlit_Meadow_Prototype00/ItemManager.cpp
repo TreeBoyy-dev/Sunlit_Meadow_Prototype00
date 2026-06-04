@@ -4,37 +4,28 @@
 #include "Block.h"
 #include "LoadTextureFromFile.h"
 
-// Where item icon PNGs live, relative to the same base BuildAbsolutePath() uses.
-static const char* baseItemIconPath = "Textures/Items";
-
-SDL_GPUTexture* ItemManager::getIconFromFile(
-    const char* iconPath,
-    const char* iconFile
-) {
-    if (gpu && iconPath && iconFile) {
-        GPUTextureWH gpuTextureWH;
-        if (loadTextureFromFile(&gpuTextureWH, gpu, iconPath, iconFile)) {
-            ownedIcons.push_back(gpuTextureWH.texture);
-            return gpuTextureWH.texture;
-        }
-        else {
-            SDL_Log("[ItemManager]: failed to load icon '%s'", iconFile);
-        }
-    }
-    else
-        SDL_Log("[ItemManager]: failed to load icon '%s' - no gpu, file or path", iconFile);
-}
+static const char* baseTexturePath = "Textures/Items";
+static const char* baseModelPath = "Models/Items";
 
 Item* ItemManager::registerItem(
     std::unique_ptr<Item> item,
-    SDL_GPUTexture* icon,
+    SDL_GPUDevice* gpu,
+    const char* textureFile,
+    const char* modelFile,
     BlockManager* blockManager
 ) {
     Uint16 id = nextId++;
     item->setID(id);
 
     // Let the item resolve any block-derived data (Item_Placable caches its block).
-    item->initMesh(blockManager);
+    item->initModel(
+        gpu,
+        baseTexturePath,
+        textureFile,
+        baseModelPath,
+        modelFile,
+        blockManager
+    );
 
     Item* ptr = item.get();
     itemsById[id] = ptr;
@@ -46,17 +37,13 @@ Item* ItemManager::registerItem(
 void ItemManager::initAssets(SDL_GPUDevice* gpuDevice, BlockManager* blockManager) {
     gpu = gpuDevice;   // cached for registerItem's icon uploads
 
-    registerPlacableItems(gpuDevice, blockManager);
+    registerPlacableItems(gpu, blockManager);
 
     // --- plain items --------------------------------------------------------
-    registerItem(std::make_unique<Item>(
-        "stick", ITEM_CATEGORY_MATERIAL, 0.1f, 64),
-        getIconFromFile(baseItemIconPath, "stick.png"),
-        blockManager
-    );
-    registerItem(std::make_unique<Item>(
-        "apple", ITEM_CATEGORY_FOOD, 0.2f, 16),
-        getIconFromFile(baseItemIconPath, "apple.png"),
+    registerItem(
+        std::make_unique<Item>("stick", ITEM_CATEGORY_MATERIAL, 0.1f, 64),
+        gpu,
+        "stick.png", "stick.png",
         blockManager
     );
 
@@ -76,10 +63,17 @@ void ItemManager::registerPlacableItems(SDL_GPUDevice* gpuDevice, BlockManager* 
         SDL_GPUTexture* icon = b->getIcon();
         if (!icon)
         {
-            registerItem(std::make_unique<Item_Placable>(
-                b->getName(), b->getID()), icon, blockManager
-            );
-            ownedIcons.push_back(icon);
+            std::unique_ptr<Item> item = std::make_unique<Item_Placable>(b->getName(), b->getID());
+
+            Uint16 id = nextId++;
+            item->setID(id);
+
+            item->initModel(gpu, "", "", "", "", blockManager);
+
+            Item* ptr = item.get();
+            itemsById[id] = ptr;
+            itemsByName[ptr->getName()] = ptr;
+            items.push_back(std::move(item));
         }
         else
             SDL_Log("[ItemManager]: no icon from block '%s'", b->getName());
@@ -88,9 +82,6 @@ void ItemManager::registerPlacableItems(SDL_GPUDevice* gpuDevice, BlockManager* 
 
 void ItemManager::destroy(SDL_GPUDevice* gpuDevice) {
     if (!gpuDevice) return;
-    for (SDL_GPUTexture* tex : ownedIcons)
-        if (tex) SDL_ReleaseGPUTexture(gpuDevice, tex);
-    ownedIcons.clear();
 }
 
 Item* ItemManager::getItemByName(const std::string& name) {

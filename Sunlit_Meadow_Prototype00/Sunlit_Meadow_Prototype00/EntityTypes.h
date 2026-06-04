@@ -7,14 +7,6 @@
 
 #include "Vectors.h"
 
-typedef struct {
-    Vec3 position;
-    Vec3 normal;
-    Vec2 uv;
-    SDL_FColor color;
-}EntityVertex;
-
-
 // EntityAsset is the shared, per-type object (model + hitbox + GPU resources).
 // It is defined in EntityManager.h and owned by the EntityManager; an Entity
 // only needs a pointer to it, so a forward declaration is enough here.

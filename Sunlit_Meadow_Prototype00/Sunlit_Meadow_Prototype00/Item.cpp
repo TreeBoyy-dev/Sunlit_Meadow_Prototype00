@@ -3,6 +3,8 @@
 #include "BlockManager.h"
 #include "Block.h"
 #include "UI_Renderer.h"
+#include "ObjParser.h"
+#include "LoadTextureFromFile.h"
 
 // ----------------------------------------------------------------------------
 // Item
@@ -20,17 +22,44 @@ Item::Item(
 {
 }
 
-void Item::initMesh(BlockManager* blockManager) {
-    // Plain items have no block-derived geometry. Their icon is uploaded by the
-    // ItemManager and handed over via setIcon(), so there is nothing to build
-    // here. Kept virtual so Item_Placable (and future item types) can hook in.
+void Item::initModel(
+    SDL_GPUDevice* gpu,
+    const char* texturePath,
+    const char* textureFile,
+    const char* modelPath,
+    const char* modelFile,
+    BlockManager* blockManager)
+{
+    std::vector<ModelVertex> outVertices;
+    std::vector<Uint16> outIndices;
+
+    if (!obj_parse(
+        BuildAbsolutePath(modelPath, modelFile),
+        outVertices,
+        outIndices
+    ))
+        SDL_Log("[Item] failed to load Model '%s'", modelFile);
+
+    model.setMesh(outVertices, outIndices);
+
+    GPUTextureWH gpuTextureWH;
+    if (!loadTextureFromFile(
+        &gpuTextureWH,
+        gpu,
+        texturePath,
+        textureFile
+    ))
+        SDL_Log("[Item] failed to load Texture '%s'", textureFile);
+    
+
+    model.setTexture(gpuTextureWH.texture);
 }
 
 void Item::drawModelAt(UI_Renderer* ui, float x, float y, float size) {
     if (!ui) return;
 
-    if (icon) {
-        ui->drawTexture(icon, x, y, size, size);
+    if (!model.isEmpty()) {
+        ui->drawModel(&model, x, y, 50, 50, 1.6, 1.6, 0);
     }
     else {
         ui->drawRect(x, y, size, size, 1.0f, 0.0f, 1.0f, 1.0f);
@@ -51,7 +80,14 @@ Item_Placable::Item_Placable(
 {
 }
 
-void Item_Placable::initMesh(BlockManager* blockManager) {
+void Item_Placable::initModel(
+    SDL_GPUDevice* gpu,
+    const char* texturePath,
+    const char* textureFile,
+    const char* modelPath,
+    const char* modelFile,
+    BlockManager* blockManager
+) {
     if (!blockManager) {
         SDL_Log("Item_Placable '%s': no BlockManager passed to initMesh", name.c_str());
         return;
@@ -63,4 +99,5 @@ void Item_Placable::initMesh(BlockManager* blockManager) {
         return;
     }
 
+    //TODO - get texture and model from block
 }

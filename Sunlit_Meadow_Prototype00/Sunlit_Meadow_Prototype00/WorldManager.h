@@ -31,13 +31,16 @@ private:
     int        m_renderDistance = 0;
     ChunkCoord m_lastPlayerChunkPos = { 1000, 1000, 10000 };
 
-    BlockManager blockManager;
+    BlockManager* blockManager;
     FastNoiseLite standartNoise;
 
 public:
     WorldManager();
 
-    bool    init(SDL_GPUDevice* gpu, SDL_GPUTextureFormat swapchainFormat);
+    bool    init(
+        SDL_GPUDevice* gpu,
+        SDL_GPUTextureFormat swapchainFormat,
+        BlockManager* blockManagerIn);
     void    destroy(AppState* state);
 
     void    update(AppState* state, Vec3 playerPosition);
@@ -47,7 +50,6 @@ public:
 
     Uint16  getBlockIdAt(Vec3 pos);
     float   getBlockCollision(Vec3 pos);
-    BlockManager* getBlockManager();
 
 private:
     void    updatePlayerPosition(Vec3 playerPosition);

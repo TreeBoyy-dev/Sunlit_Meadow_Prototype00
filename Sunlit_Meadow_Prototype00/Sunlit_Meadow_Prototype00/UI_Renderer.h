@@ -9,21 +9,34 @@
 #include "Vectors.h"
 #include "UITypes.h"
 
+class ItemModel; // forward declaration; full definition in ItemModel.h
+
 class UI_Renderer {
 public:
     UI_Renderer();
 
     SDL_GPUGraphicsPipeline* pipeline;
-    SDL_GPUBuffer*           vertexBuffer;
+    SDL_GPUBuffer* vertexBuffer;
     Uint32                   maxVertices;
     std::vector<UIVertex>    verts;
 
     SDL_GPUGraphicsPipeline* texPipeline;
-    SDL_GPUBuffer*           texVertexBuffer;
+    SDL_GPUBuffer* texVertexBuffer;
     std::vector<UITexBatch>  texBatches;
 
-    TTF_Font*                                   font = nullptr;
-    SDL_GPUSampler*                             textSampler = nullptr;
+    // ---- 3D model rendering (rendered offscreen, composited as a UI quad) ----
+    SDL_GPUGraphicsPipeline* modelPipeline = nullptr; // back-face culling on
+    SDL_GPUGraphicsPipeline* modelPipelineNoCull = nullptr; // culling off
+    SDL_GPUSampler* modelSampler = nullptr;
+    SDL_GPUTextureFormat     modelDepthFormat = SDL_GPU_TEXTUREFORMAT_D16_UNORM;
+    std::vector<PendingModelDraw> pendingModels;
+    std::vector<SDL_GPUTexture*>  frameModelTargets; // offscreen RTs freed next frame
+
+    // Offscreen color format for model previews (independent of the swapchain).
+    static constexpr SDL_GPUTextureFormat MODEL_COLOR_FORMAT = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM;
+
+    TTF_Font* font = nullptr;
+    SDL_GPUSampler* textSampler = nullptr;
     std::unordered_map<std::string, CachedText> textCache;
     std::vector<PendingTextDraw>                pendingText;
 
@@ -57,6 +70,14 @@ public:
         float x, float y, float w, float h,
         SDL_FColor tint = { 1.0f, 1.0f, 1.0f, 1.0f });
 
+    // 3D model drawing (queued; resolved in upload())
+    void drawModel(ItemModel* itemModel,
+        float panelX, float panelY, float panelW, float panelH,
+        float pitch, float yaw, float roll,
+        float scale = 1.0f,
+        SDL_FColor tint = { 1.0f, 1.0f, 1.0f, 1.0f },
+        bool cullBackFaces = true);
+
     // text drawing
     bool loadFont(const char* path, int pointSize);
     void drawText(const char* text, float x, float y, SDL_FColor color);
@@ -67,4 +88,18 @@ public:
 
     float getScreenW();
     float getScreenH();
+
+private:
+    // Shared by drawTexture() and the model compositor — queues a textured quad
+    // using a specific sampler.
+    void pushTexturedQuad(SDL_GPUTexture* texture, SDL_GPUSampler* sampler,
+        float x, float y, float w, float h, SDL_FColor tint);
+
+    // Builds the two model pipelines + sampler. Called from init().
+    bool initModelPipeline(SDL_GPUDevice* gpu);
+
+    // Renders one queued model to a fresh offscreen target and queues the
+    // composite quad. Called from upload().
+    void renderModelOffscreen(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer* cmd,
+        const PendingModelDraw& pm);
 };

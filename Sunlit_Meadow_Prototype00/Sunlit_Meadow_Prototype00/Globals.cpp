@@ -31,6 +31,9 @@ float sum = 0.0;
 // --- EntityManager ---
 EntityManager entityManager;
 
+// --- BlockManager ---
+BlockManager blockManager;
+
 // --- WorldManager ---
 WorldManager worldManager;
 const int RENDER_DISTANCE = 5;

@@ -1,7 +1,6 @@
-make blockmanager global again
-
-change bcloks to be loaded from a model (.obj)
+change blocks to be loaded from a model (.obj)
 	- change texture array to atlas
+	- make getters for model and texture for items
 
 make icons for items - from blockmodels/itemmodels
 
@@ -13,11 +12,6 @@ move rendering to seperate Render Thread
 		-> list loaded chunks
 		-> list rendered chunkmeshes
 		-> when player moves the chunks to far away get removed and the closer ones added
-
-(unfinished) fix remeshing bug:
-	- sometimes the adjacend chunk returns null even at the final remeshing
-	- or something else idk
-	- only one of the six sides fails (alway the same side)(the bigger the renderdistance the more likely it is to happen)
 
 (unfinished) viewing cone:
 	- sometimes a chunk still disappers to early

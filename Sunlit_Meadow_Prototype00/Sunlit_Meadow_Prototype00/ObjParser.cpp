@@ -12,7 +12,7 @@
 
 const Vec3 MODEL_ROTATION = { 90.0f, 0.0f, -90.0f };
 
-void rotate_model(std::vector<EntityVertex>& vertices, Vec3 eulerDegrees)
+void rotate_model(std::vector<ModelVertex>& vertices, Vec3 eulerDegrees)
 {
     const float deg2rad = 3.14159265358979323846f / 180.0f;
     float ax = eulerDegrees.x * deg2rad;
@@ -23,7 +23,7 @@ void rotate_model(std::vector<EntityVertex>& vertices, Vec3 eulerDegrees)
     float sy = std::sin(ay), cy = std::cos(ay);
     float sz = std::sin(az), cz = std::cos(az);
 
-    for (EntityVertex& v : vertices) {
+    for (ModelVertex& v : vertices) {
         v.position = vec3rotate(v.position, sx, cx, sy, cy, sz, cz);
         v.normal = vec3rotate(v.normal, sx, cx, sy, cy, sz, cz);
     }
@@ -31,7 +31,7 @@ void rotate_model(std::vector<EntityVertex>& vertices, Vec3 eulerDegrees)
 
 bool obj_parse(
     std::string path,
-    std::vector<EntityVertex>& outVertices,
+    std::vector<ModelVertex>& outVertices,
     std::vector<Uint16>& outIndices)
 {
     std::ifstream file(path);
@@ -126,7 +126,7 @@ bool obj_parse(
                         return false;
                     }
 
-                    EntityVertex v{};
+                    ModelVertex v{};
                     v.position = positions[pIdx];
                     v.normal = (nIdx >= 0) ? normals[nIdx] : Vec3{ 0.0f, 1.0f, 0.0f };
                     v.uv = (tIdx >= 0) ? uvs[tIdx] : Vec2{ 0.0f, 0.0f };

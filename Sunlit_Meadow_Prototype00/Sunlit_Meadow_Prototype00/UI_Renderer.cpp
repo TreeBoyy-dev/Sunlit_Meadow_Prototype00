@@ -3,6 +3,9 @@
 #include <cstring>
 
 #include "LoadShader.h"
+#include "Mat4.h"
+#include "EntityTypes.h"   // ModelVertex layout (matches the entity shaders)
+#include "ItemModel.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
@@ -16,7 +19,8 @@ UI_Renderer::UI_Renderer()
     texVertexBuffer(nullptr),
     font(nullptr),
     textSampler(nullptr)
-{}
+{
+}
 
 // ---------- pipeline init ----------
 bool UI_Renderer::init(SDL_GPUDevice* gpu, SDL_GPUTextureFormat swapchainFormat)
@@ -70,15 +74,13 @@ bool UI_Renderer::init(SDL_GPUDevice* gpu, SDL_GPUTextureFormat swapchainFormat)
             .has_depth_stencil_target = false,
         },
     };
-    
+
     pipeline = SDL_CreateGPUGraphicsPipeline(gpu, &pipeInfo);
     SDL_ReleaseGPUShader(gpu, vert);
     SDL_ReleaseGPUShader(gpu, frag);
     if (!pipeline) { SDL_Log("[UI] pipeline failed: %s", SDL_GetError()); return false; }
 
     Uint32 bufSize = maxVertices * (Uint32)sizeof(UIVertex);
-    //SDL_Log("[UI] vertex buffer size: %u (maxVerts=%u, vertexSize=%u)",
-    //    bufSize, maxVertices, (Uint32)sizeof(UIVertex));
 
     // Pre-allocate vertex buffer
     SDL_GPUBufferCreateInfo bufInfo = {
@@ -155,15 +157,136 @@ bool UI_Renderer::init(SDL_GPUDevice* gpu, SDL_GPUTextureFormat swapchainFormat)
     .address_mode_v = SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE,
     };
     textSampler = SDL_CreateGPUSampler(gpu, &textSamplerInfo);
-    //SDL_Log("[UI] textSampler created: %p", textSampler);
+
+    // ---- 3D model pipeline ----
+    if (!initModelPipeline(gpu)) {
+        SDL_Log("[UI] model pipeline failed: %s", SDL_GetError());
+        return false;
+    }
 
     return vertexBuffer != nullptr && texVertexBuffer != nullptr && textSampler != nullptr;
 }
 
+// Creates the two model pipelines (culling on/off) + the model sampler.
+// Reuses the existing entity.*.spv shaders, which expect:
+//   - vertex: column_major float4x4 mvp at register(b0, space1)
+//   - fragment: Texture2D + SamplerState at space2
+//   - input layout = ModelVertex (pos float3, normal float3, uv float2, color float4)
+bool UI_Renderer::initModelPipeline(SDL_GPUDevice* gpu)
+{
+    // Pick a supported depth format (D16 is essentially universal; prefer D24 if present).
+    if (SDL_GPUTextureSupportsFormat(gpu, SDL_GPU_TEXTUREFORMAT_D24_UNORM,
+        SDL_GPU_TEXTURETYPE_2D, SDL_GPU_TEXTUREUSAGE_DEPTH_STENCIL_TARGET)) {
+        modelDepthFormat = SDL_GPU_TEXTUREFORMAT_D24_UNORM;
+    }
+    else {
+        modelDepthFormat = SDL_GPU_TEXTUREFORMAT_D16_UNORM;
+    }
+
+    SDL_GPUShader* mvs = loadShader(gpu, "entity.vert.spv", 1, 0); // 1 uniform buffer (mvp)
+    SDL_GPUShader* mfs = loadShader(gpu, "entity.frag.spv", 0, 1); // 1 sampler
+    if (!mvs || !mfs) return false;
+
+    SDL_GPUVertexAttribute modelAttrs[4] = {
+        {.location = 0, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3,
+          .offset = (Uint32)offsetof(ModelVertex, position) },
+        {.location = 1, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT3,
+          .offset = (Uint32)offsetof(ModelVertex, normal) },
+        {.location = 2, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT2,
+          .offset = (Uint32)offsetof(ModelVertex, uv) },
+        {.location = 3, .format = SDL_GPU_VERTEXELEMENTFORMAT_FLOAT4,
+          .offset = (Uint32)offsetof(ModelVertex, color) },
+    };
+    SDL_GPUVertexBufferDescription modelVBDesc = {
+        .slot = 0,
+        .pitch = sizeof(ModelVertex),
+    };
+
+    // Opaque 3D render into the offscreen target. No blend: the clear color
+    // alpha of 0 leaves untouched pixels transparent, and drawn pixels write
+    // their own alpha. Transparency vs. the UI happens later, when the offscreen
+    // texture is composited in the textured pass.
+    SDL_GPUColorTargetDescription modelColorDesc = {
+        .format = MODEL_COLOR_FORMAT,
+    };
+
+    SDL_GPUDepthStencilState modelDepth = {
+        .compare_op = SDL_GPU_COMPAREOP_LESS,
+        .enable_depth_test = true,
+        .enable_depth_write = true,
+    };
+
+    // front_face / cull chosen to match the engine's entity & world pipelines,
+    // so the same meshes look identical here. The projection flips Y for Vulkan
+    // NDC, which inverts winding in screen space; culling FRONT keeps the
+    // exterior faces. cullBackFaces=false selects the no-cull pipeline below.
+    SDL_GPURasterizerState rasterCull = {
+        .fill_mode = SDL_GPU_FILLMODE_FILL,
+        .cull_mode = SDL_GPU_CULLMODE_FRONT,
+        .front_face = SDL_GPU_FRONTFACE_COUNTER_CLOCKWISE,
+    };
+    SDL_GPURasterizerState rasterNoCull = {
+        .fill_mode = SDL_GPU_FILLMODE_FILL,
+        .cull_mode = SDL_GPU_CULLMODE_NONE,
+        .front_face = SDL_GPU_FRONTFACE_COUNTER_CLOCKWISE,
+    };
+
+    SDL_GPUGraphicsPipelineCreateInfo modelPipeInfo = {
+        .vertex_shader = mvs,
+        .fragment_shader = mfs,
+        .vertex_input_state = {
+            .vertex_buffer_descriptions = &modelVBDesc,
+            .num_vertex_buffers = 1,
+            .vertex_attributes = modelAttrs,
+            .num_vertex_attributes = 4,
+        },
+        .primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST,
+        .rasterizer_state = rasterCull,
+        .depth_stencil_state = modelDepth,
+        .target_info = {
+            .color_target_descriptions = &modelColorDesc,
+            .num_color_targets = 1,
+            .depth_stencil_format = modelDepthFormat,
+            .has_depth_stencil_target = true,
+        },
+    };
+
+    modelPipeline = SDL_CreateGPUGraphicsPipeline(gpu, &modelPipeInfo);
+
+    modelPipeInfo.rasterizer_state = rasterNoCull;
+    modelPipelineNoCull = SDL_CreateGPUGraphicsPipeline(gpu, &modelPipeInfo);
+
+    SDL_ReleaseGPUShader(gpu, mvs);
+    SDL_ReleaseGPUShader(gpu, mfs);
+
+    if (!modelPipeline || !modelPipelineNoCull) return false;
+
+    SDL_GPUSamplerCreateInfo modelSamplerInfo = {
+        .min_filter = SDL_GPU_FILTER_LINEAR,
+        .mag_filter = SDL_GPU_FILTER_LINEAR,
+        .address_mode_u = SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE,
+        .address_mode_v = SDL_GPU_SAMPLERADDRESSMODE_CLAMP_TO_EDGE,
+    };
+    modelSampler = SDL_CreateGPUSampler(gpu, &modelSamplerInfo);
+
+    return modelSampler != nullptr;
+}
+
 void UI_Renderer::destroy(SDL_GPUDevice* gpu)
 {
-    if (vertexBuffer) SDL_ReleaseGPUBuffer(gpu, vertexBuffer);
-    if (pipeline)     SDL_ReleaseGPUGraphicsPipeline(gpu, pipeline);
+    if (vertexBuffer)    SDL_ReleaseGPUBuffer(gpu, vertexBuffer);
+    if (texVertexBuffer) SDL_ReleaseGPUBuffer(gpu, texVertexBuffer);
+    if (pipeline)        SDL_ReleaseGPUGraphicsPipeline(gpu, pipeline);
+    if (texPipeline)     SDL_ReleaseGPUGraphicsPipeline(gpu, texPipeline);
+
+    if (modelPipeline)       SDL_ReleaseGPUGraphicsPipeline(gpu, modelPipeline);
+    if (modelPipelineNoCull) SDL_ReleaseGPUGraphicsPipeline(gpu, modelPipelineNoCull);
+    if (modelSampler)        SDL_ReleaseGPUSampler(gpu, modelSampler);
+    for (SDL_GPUTexture* t : frameModelTargets) SDL_ReleaseGPUTexture(gpu, t);
+    frameModelTargets.clear();
+
+    if (textSampler) SDL_ReleaseGPUSampler(gpu, textSampler);
+    clearTextCache(gpu);
 }
 
 // ---------- geometry helpers ----------
@@ -179,7 +302,7 @@ void UI_Renderer::drawRect(float px, float py, float w, float h,
 {
     float x0 = ndcX(px), y0 = ndcY(py);
     float x1 = ndcX(px + w), y1 = ndcY(py + h);
-    UIVertex tl = { {x0, y0 }, { r, g, b, a }};
+    UIVertex tl = { {x0, y0 }, { r, g, b, a } };
     UIVertex tr = { {x1, y0 }, { r, g, b, a } };
     UIVertex bl = { {x0, y1 }, { r, g, b, a } };
     UIVertex br = { {x1, y1 }, { r, g, b, a } };
@@ -232,19 +355,19 @@ void UI_Renderer::drawCrosshair(float cx, float cy,
     drawCircle(cx, cy, circleRadius, r, g, b, a);
 }
 
-void UI_Renderer::drawTexture(SDL_GPUTexture* texture,
+void UI_Renderer::pushTexturedQuad(SDL_GPUTexture* texture, SDL_GPUSampler* sampler,
     float x, float y, float w, float h, SDL_FColor tint)
 {
-    // find existing batch for this texture, or start a new one
+    // find existing batch for this texture+sampler, or start a new one
     UITexBatch* batch = nullptr;
     for (auto& b : texBatches) {
-        if (b.texture == texture && b.sampler == textSampler) {
+        if (b.texture == texture && b.sampler == sampler) {
             batch = &b;
             break;
         }
     }
     if (!batch) {
-        texBatches.push_back({ texture, textSampler, {} });
+        texBatches.push_back({ texture, sampler, {} });
         batch = &texBatches.back();
     }
 
@@ -259,19 +382,143 @@ void UI_Renderer::drawTexture(SDL_GPUTexture* texture,
     batch->verts.insert(batch->verts.end(), { tl, tr, bl, tr, br, bl });
 }
 
+void UI_Renderer::drawTexture(SDL_GPUTexture* texture,
+    float x, float y, float w, float h, SDL_FColor tint)
+{
+    pushTexturedQuad(texture, textSampler, x, y, w, h, tint);
+}
+
+// ---------- 3D model drawing ----------
+void UI_Renderer::drawModel(ItemModel* itemModel,
+    float panelX, float panelY, float panelW, float panelH,
+    float pitch, float yaw, float roll,
+    float scale, SDL_FColor tint, bool cullBackFaces)
+{
+    if (!itemModel) return;
+    pendingModels.push_back({
+        itemModel, panelX, panelY, panelW, panelH,
+        pitch, yaw, roll, scale, tint, cullBackFaces
+        });
+}
+
+// Renders one queued model to a fresh offscreen RGBA+depth target, then queues
+// a textured quad that composites that target onto the panel rect.
+void UI_Renderer::renderModelOffscreen(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer* cmd,
+    const PendingModelDraw& pm)
+{
+    ItemModel* model = pm.model;
+    if (!model) return;
+    if (!model->ensureUploaded(gpu, cmd)) return;
+    if (model->isEmpty()) return;
+    if (!model->getTexture()) {
+        SDL_Log("[UI] drawModel: model has no texture; the shader needs one. Skipping.");
+        return;
+    }
+
+    Uint32 texW = (Uint32)SDL_max(1.0f, pm.panelW);
+    Uint32 texH = (Uint32)SDL_max(1.0f, pm.panelH);
+
+    SDL_GPUTextureCreateInfo colInfo = {
+        .type = SDL_GPU_TEXTURETYPE_2D,
+        .format = MODEL_COLOR_FORMAT,
+        .usage = SDL_GPU_TEXTUREUSAGE_COLOR_TARGET | SDL_GPU_TEXTUREUSAGE_SAMPLER,
+        .width = texW,
+        .height = texH,
+        .layer_count_or_depth = 1,
+        .num_levels = 1,
+    };
+    SDL_GPUTexture* colorTex = SDL_CreateGPUTexture(gpu, &colInfo);
+
+    SDL_GPUTextureCreateInfo depInfo = {
+        .type = SDL_GPU_TEXTURETYPE_2D,
+        .format = modelDepthFormat,
+        .usage = SDL_GPU_TEXTUREUSAGE_DEPTH_STENCIL_TARGET,
+        .width = texW,
+        .height = texH,
+        .layer_count_or_depth = 1,
+        .num_levels = 1,
+    };
+    SDL_GPUTexture* depthTex = SDL_CreateGPUTexture(gpu, &depInfo);
+
+    if (!colorTex || !depthTex) {
+        if (colorTex) SDL_ReleaseGPUTexture(gpu, colorTex);
+        if (depthTex) SDL_ReleaseGPUTexture(gpu, depthTex);
+        SDL_Log("[UI] drawModel: failed to create offscreen target: %s", SDL_GetError());
+        return;
+    }
+
+    // ---- build MVP ----
+    // model = R * S * T(-center): center the mesh on the origin, scale, rotate.
+    Mat4 S = mat4Identity();
+    S.m[0][0] = S.m[1][1] = S.m[2][2] = pm.scale;
+    Vec3 c = model->getCenter();
+    Mat4 T = mat4Translate(-c.x, -c.y, -c.z);
+    Mat4 R = mat4Rotate(pm.pitch, pm.yaw, pm.roll);
+    Mat4 modelMat = mat4Mul(R, mat4Mul(S, T));
+
+    // Camera framed so the model's bounding sphere fits the panel.
+    float effR = model->getRadius() * pm.scale;
+    if (effR < 0.0001f) effR = 1.0f;
+    const float fovY = 0.7853982f;                 // 45 degrees
+    float aspect = (float)texW / (float)texH;
+    float dist = effR / tanf(fovY * 0.5f);
+    if (aspect < 1.0f) dist /= aspect;             // fit width on tall/narrow panels
+    dist *= 1.3f;                                  // a little breathing room
+    float nearP = SDL_max(0.01f, dist - effR * 2.0f);
+    float farP = dist + effR * 2.0f;
+
+    Mat4 view = mat4LookAt(Vec3{ 0.0f, 0.0f, dist },
+        Vec3{ 0.0f, 0.0f, 0.0f },
+        Vec3{ 0.0f, 1.0f, 0.0f });
+    Mat4 proj = mat4Perspective(fovY, aspect, nearP, farP);
+    Mat4 mvp = mat4Mul(proj, mat4Mul(view, modelMat));
+
+    // ---- render the model into the offscreen target ----
+    SDL_GPUColorTargetInfo colTarget = {
+        .texture = colorTex,
+        .clear_color = { 0.0f, 0.0f, 0.0f, 0.0f },  // transparent background
+        .load_op = SDL_GPU_LOADOP_CLEAR,
+        .store_op = SDL_GPU_STOREOP_STORE,
+    };
+    SDL_GPUDepthStencilTargetInfo depTarget = {
+        .texture = depthTex,
+        .clear_depth = 1.0f,
+        .load_op = SDL_GPU_LOADOP_CLEAR,
+        .store_op = SDL_GPU_STOREOP_DONT_CARE,      // depth not needed after the pass
+    };
+
+    SDL_GPURenderPass* mp = SDL_BeginGPURenderPass(cmd, &colTarget, 1, &depTarget);
+    SDL_BindGPUGraphicsPipeline(mp, pm.cullBackFaces ? modelPipeline : modelPipelineNoCull);
+
+    SDL_GPUBufferBinding vb = { .buffer = model->getVertexBuffer(), .offset = 0 };
+    SDL_BindGPUVertexBuffers(mp, 0, &vb, 1);
+    SDL_GPUBufferBinding ib = { .buffer = model->getIndexBuffer(), .offset = 0 };
+    SDL_BindGPUIndexBuffer(mp, &ib, SDL_GPU_INDEXELEMENTSIZE_16BIT);
+
+    SDL_GPUTextureSamplerBinding sb = { .texture = model->getTexture(), .sampler = modelSampler };
+    SDL_BindGPUFragmentSamplers(mp, 0, &sb, 1);
+
+    SDL_PushGPUVertexUniformData(cmd, 0, &mvp, sizeof(Mat4));
+    SDL_DrawGPUIndexedPrimitives(mp, model->getIndexCount(), 1, 0, 0, 0);
+    SDL_EndGPURenderPass(mp);
+
+    // Composite the rendered model as a normal UI quad (in the textured pass).
+    pushTexturedQuad(colorTex, modelSampler, pm.panelX, pm.panelY, pm.panelW, pm.panelH, pm.tint);
+
+    // Keep the targets alive until the frame is submitted; freed next upload().
+    frameModelTargets.push_back(colorTex);
+    frameModelTargets.push_back(depthTex);
+}
+
 bool UI_Renderer::loadFont(const char* path, int pointSize)
 {
     font = TTF_OpenFont(path, (float)pointSize);
-    //SDL_Log("[UI] loadFont '%s' size=%d font=%p error=%s",
-    //    path, pointSize, font, SDL_GetError());
     return font != nullptr;
 }
 
 void UI_Renderer::drawText(const char* text, float x, float y, SDL_FColor color)
 {
     pendingText.push_back({ std::string(text), x, y, color });
-
-    //SDL_Log("[UI] draw text");
 }
 
 void UI_Renderer::clearTextCache(SDL_GPUDevice* gpu)
@@ -279,14 +526,15 @@ void UI_Renderer::clearTextCache(SDL_GPUDevice* gpu)
     for (auto& [key, entry] : textCache)
         SDL_ReleaseGPUTexture(gpu, entry.texture);
     textCache.clear();
-
-    //SDL_Log("[UI] clear text cache %d", textCache.size());
 }
 
 void UI_Renderer::upload(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer* cmd)
 {
-    //SDL_Log("[UI] upload called — verts:%d pending:%d batches:%d",
-    //    (int)verts.size(), (int)pendingText.size(), (int)texBatches.size());
+    // Free last frame's offscreen model targets. By now that frame has been
+    // submitted; SDL_gpu also defers the actual destruction until the GPU is
+    // finished with them, so this is safe even if the GPU is still reading.
+    for (SDL_GPUTexture* t : frameModelTargets) SDL_ReleaseGPUTexture(gpu, t);
+    frameModelTargets.clear();
 
     // --- text ---
     for (auto& pending : pendingText)
@@ -295,7 +543,6 @@ void UI_Renderer::upload(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer* cmd)
         auto it = textCache.find(pending.text);
         if (it == textCache.end())
         {
-            //SDL_Log("[UI] rendering new string: '%s'", pending.text.c_str());
             if (!font) {
                 SDL_Log("[UI] ERROR: font is null! Did you call loadFont()?");
                 continue;
@@ -312,7 +559,6 @@ void UI_Renderer::upload(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer* cmd)
                 SDL_Log("[UI] TTF_RenderText_Blended failed: %s", SDL_GetError());
                 continue;
             }
-            //SDL_Log("[UI] surface created: %dx%d", surf->w, surf->h);
 
             // ensure RGBA format
             SDL_Surface* rgba = SDL_ConvertSurface(surf, SDL_PIXELFORMAT_RGBA32);
@@ -378,6 +624,15 @@ void UI_Renderer::upload(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer* cmd)
     }
     pendingText.clear();
 
+    // --- 3D models ---
+    // Each model is rendered to its own offscreen target here and then queued
+    // into texBatches as a textured quad, so it must run BEFORE the textured
+    // vertex upload below.
+    for (const auto& pm : pendingModels) {
+        renderModelOffscreen(gpu, cmd, pm);
+    }
+    pendingModels.clear();
+
     // --- color verts ---
     if (!verts.empty()) {
         Uint32 uploadSize = (Uint32)(verts.size() * sizeof(UIVertex));
@@ -414,9 +669,6 @@ void UI_Renderer::upload(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer* cmd)
 
 void UI_Renderer::draw(SDL_GPURenderPass* pass)
 {
-    //SDL_Log("[UI] draw — verts:%d batches:%d",
-    //    (int)verts.size(), (int)texBatches.size());
-
     // --- color draws ---
     if (!verts.empty()) {
         SDL_BindGPUGraphicsPipeline(pass, pipeline);
@@ -426,8 +678,7 @@ void UI_Renderer::draw(SDL_GPURenderPass* pass)
         verts.clear();
     }
 
-    // --- textured draws ---
-    //SDL_Log("[UI] texBatches count: %d", (int)texBatches.size());
+    // --- textured draws (text + model previews) ---
     Uint32 offset = 0;
     if (!texBatches.empty()) {
         SDL_BindGPUGraphicsPipeline(pass, texPipeline);
@@ -435,9 +686,6 @@ void UI_Renderer::draw(SDL_GPURenderPass* pass)
         SDL_BindGPUVertexBuffers(pass, 0, &binding, 1);
 
         for (auto& batch : texBatches) {
-            //SDL_Log("[UI] drawing batch: tex=%p verts:%d",
-            //    batch.texture, (int)batch.verts.size());
-
             if (batch.verts.empty()) continue;
             SDL_GPUTextureSamplerBinding samplerBinding = {
                 .texture = batch.texture,
@@ -445,8 +693,6 @@ void UI_Renderer::draw(SDL_GPURenderPass* pass)
             };
             SDL_BindGPUFragmentSamplers(pass, 0, &samplerBinding, 1);
             Uint32 firstVert = offset / (Uint32)sizeof(UIVertexTextured);
-            //SDL_Log("[UI] DrawPrimitives: count=%d firstVert=%d offset=%d",
-            //    (int)batch.verts.size(), firstVert, offset);
             SDL_DrawGPUPrimitives(pass, (Uint32)batch.verts.size(), 1, firstVert, 0);
             offset += (Uint32)(batch.verts.size() * sizeof(UIVertexTextured));
         }
@@ -460,4 +706,3 @@ float UI_Renderer::getScreenW() {
 float UI_Renderer::getScreenH() {
     return screenH;
 }
-

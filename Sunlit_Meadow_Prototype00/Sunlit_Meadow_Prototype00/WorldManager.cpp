@@ -9,7 +9,12 @@
 
 WorldManager::WorldManager() {}
 
-bool WorldManager::init(SDL_GPUDevice* gpu, SDL_GPUTextureFormat swapchainFormat) {
+bool WorldManager::init(
+    SDL_GPUDevice* gpu,
+    SDL_GPUTextureFormat swapchainFormat,
+    BlockManager* blockManagerIn)
+{
+    blockManager = blockManagerIn;
 
     SDL_GPUShader* vert = loadShader(gpu, "shader.vert.spv", 1, 0);
     SDL_GPUShader* frag = loadShader(gpu, "shader.frag.spv", 0, 1);
@@ -106,8 +111,6 @@ bool WorldManager::init(SDL_GPUDevice* gpu, SDL_GPUTextureFormat swapchainFormat
         return false;
     }
 
-
-    blockManager.init();
     initNoise(&standartNoise);
 
     return true;
@@ -259,7 +262,7 @@ Region* WorldManager::getRegion(RegionCoord regionCoordinates) {
 
     auto [newIt, inserted] = regions.emplace(
         regionCoordinates,
-        std::make_unique<Region>(regionCoordinates, &blockManager, &standartNoise)
+        std::make_unique<Region>(regionCoordinates, blockManager, &standartNoise)
     );
     return newIt->second.get();
 }
@@ -295,10 +298,7 @@ Uint16 WorldManager::getBlockIdAt(Vec3 pos) {
 }
 
 float WorldManager::getBlockCollision(Vec3 pos) {
-    return blockManager.getCollissionById(getBlockIdAt(pos));
-}
-BlockManager* WorldManager::getBlockManager() {
-    return &blockManager;
+    return blockManager->getCollissionById(getBlockIdAt(pos));
 }
 
 //global helpers -----------------------------------------------------------------
