@@ -9,6 +9,10 @@ void ItemModel::setMesh(const std::vector<ModelVertex>& verts,
     indices = inds;
     uploaded = false;
     computeBounds();
+
+    if (vertices.empty() || indices.empty()) {
+        SDL_Log("[ItemModel] setMesh: indices or vertecies empty");
+    }
 }
 
 void ItemModel::computeBounds()
@@ -40,8 +44,14 @@ void ItemModel::computeBounds()
 
 bool ItemModel::ensureUploaded(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer* cmd)
 {
-    if (uploaded) return (vbo != nullptr && ibo != nullptr);
-    if (vertices.empty() || indices.empty()) return false;
+    if (uploaded) {
+        //SDL_Log("[ItemModel] ensureUploaded: is already uploaded");
+        return (vbo != nullptr && ibo != nullptr);
+    }
+    if (vertices.empty() || indices.empty()) {
+        SDL_Log("[ItemModel] ensureUploaded: indices or vertecies empty");
+        return false;
+    }
 
     const Uint32 vbSize = (Uint32)(vertices.size() * sizeof(ModelVertex));
     const Uint32 ibSize = (Uint32)(indices.size() * sizeof(Uint16));

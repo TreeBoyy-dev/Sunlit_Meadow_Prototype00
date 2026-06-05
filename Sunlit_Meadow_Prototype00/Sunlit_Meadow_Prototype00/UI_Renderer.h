@@ -71,7 +71,7 @@ public:
         SDL_FColor tint = { 1.0f, 1.0f, 1.0f, 1.0f });
 
     // 3D model drawing (queued; resolved in upload())
-    void drawModel(ItemModel* itemModel,
+    void drawItemModel(ItemModel* itemModel,
         float panelX, float panelY, float panelW, float panelH,
         float pitch, float yaw, float roll,
         float scale = 1.0f,

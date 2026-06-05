@@ -389,7 +389,7 @@ void UI_Renderer::drawTexture(SDL_GPUTexture* texture,
 }
 
 // ---------- 3D model drawing ----------
-void UI_Renderer::drawModel(ItemModel* itemModel,
+void UI_Renderer::drawItemModel(ItemModel* itemModel,
     float panelX, float panelY, float panelW, float panelH,
     float pitch, float yaw, float roll,
     float scale, SDL_FColor tint, bool cullBackFaces)
@@ -407,11 +407,20 @@ void UI_Renderer::renderModelOffscreen(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer*
     const PendingModelDraw& pm)
 {
     ItemModel* model = pm.model;
-    if (!model) return;
-    if (!model->ensureUploaded(gpu, cmd)) return;
-    if (model->isEmpty()) return;
+    if (!model) {
+        SDL_Log("[UI] renderModelOffscreen: no itemModel");
+        return;
+    }
+    if (!model->ensureUploaded(gpu, cmd)) {
+        SDL_Log("[UI] renderModelOffscreen: couldn't ensureUploaded()");
+        return;
+    }
+    if (model->isEmpty()) {
+        SDL_Log("[UI] renderModelOffscreen: ItemModel is empty");
+        return;
+    }
     if (!model->getTexture()) {
-        SDL_Log("[UI] drawModel: model has no texture; the shader needs one. Skipping.");
+        SDL_Log("[UI] drawItemModel: model has no texture; the shader needs one. Skipping.");
         return;
     }
 
@@ -443,7 +452,7 @@ void UI_Renderer::renderModelOffscreen(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer*
     if (!colorTex || !depthTex) {
         if (colorTex) SDL_ReleaseGPUTexture(gpu, colorTex);
         if (depthTex) SDL_ReleaseGPUTexture(gpu, depthTex);
-        SDL_Log("[UI] drawModel: failed to create offscreen target: %s", SDL_GetError());
+        SDL_Log("[UI] drawItemModel: failed to create offscreen target: %s", SDL_GetError());
         return;
     }
 

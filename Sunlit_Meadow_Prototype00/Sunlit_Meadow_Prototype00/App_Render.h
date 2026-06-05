@@ -38,9 +38,8 @@ SDL_AppResult App_Render(void* appstate)
     float cx = ui.screenW * 0.5f;
     float cy = ui.screenH * 0.5f;
     ui.drawCrosshair(cx, cy, 12.0f, 2.0f, 4.0f, 1.0f, 1.0f, 1.0f, 0.9f);
-    //ui.drawText("hello UI", 20.0f, 20.0f, { 1.0f, 1.0f, 1.0f, 1.0f });
     drawSurvivalUI(&ui);
-    itemManager.drawItem(&ui, "stick", cx, cy*0.3, 50, 50, 1.6, 1.6, 0);
+    //itemManager.drawItem(&ui, "stick", cx, cy*0.3, 250, 250, 1.6, 0, 0, 4.0f);
 
     if (renderDebugUI)
         drawDebugUI(state);

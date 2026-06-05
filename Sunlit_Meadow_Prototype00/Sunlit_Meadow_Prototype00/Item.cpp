@@ -59,7 +59,7 @@ void Item::drawModelAt(UI_Renderer* ui, float x, float y, float size) {
     if (!ui) return;
 
     if (!model.isEmpty()) {
-        ui->drawModel(&model, x, y, 50, 50, 1.6, 1.6, 0);
+        ui->drawItemModel(&model, x, y, 50, 50, 1.6, 1.6, 0);
     }
     else {
         ui->drawRect(x, y, size, size, 1.0f, 0.0f, 1.0f, 1.0f);

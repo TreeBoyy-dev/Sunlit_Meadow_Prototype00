@@ -43,7 +43,7 @@ void ItemManager::initAssets(SDL_GPUDevice* gpuDevice, BlockManager* blockManage
     registerItem(
         std::make_unique<Item>("stick", ITEM_CATEGORY_MATERIAL, 0.1f, 64),
         gpu,
-        "stick.png", "stick.png",
+        "stick.png", "stick.obj",
         blockManager
     );
 
@@ -104,7 +104,7 @@ void ItemManager::drawItem(
         return;
     }
 
-    ui->drawModel(
+    ui->drawItemModel(
         model,
         panelX, panelY, panelW, panelH,
         pitch, yaw, roll,
