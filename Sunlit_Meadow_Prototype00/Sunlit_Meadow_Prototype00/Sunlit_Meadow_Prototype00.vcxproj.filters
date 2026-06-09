@@ -43,12 +43,6 @@
     <Filter Include="Resource Files\shaders">
       <UniqueIdentifier>{a7523635-993a-4144-a937-4c0e87ab04bd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\world\Blocks\BlockModels">
-      <UniqueIdentifier>{80a66c91-6fe4-4544-9a4e-eff4e204f2b6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\world\Blocks\BlockModels">
-      <UniqueIdentifier>{6fd95466-2892-48c7-a595-e141c73e11ab}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\UIRendering">
       <UniqueIdentifier>{4dad79a3-8830-4735-8f35-3a23913886a3}</UniqueIdentifier>
     </Filter>
@@ -111,12 +105,6 @@
     <ClCompile Include="GenerateChunk.cpp">
       <Filter>Source Files\world\WorldGen</Filter>
     </ClCompile>
-    <ClCompile Include="BlockModel.cpp">
-      <Filter>Source Files\world\Blocks\BlockModels</Filter>
-    </ClCompile>
-    <ClCompile Include="SlabBlockModel.cpp">
-      <Filter>Source Files\world\Blocks\BlockModels</Filter>
-    </ClCompile>
     <ClCompile Include="UI_Renderer.cpp">
       <Filter>Source Files\UIRendering</Filter>
     </ClCompile>
@@ -161,6 +149,9 @@
     </ClCompile>
     <ClCompile Include="ItemModel.cpp">
       <Filter>Source Files\items</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockModel.cpp">
+      <Filter>Source Files\world\Blocks</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -218,12 +209,6 @@
     <ClInclude Include="ThreadSafeQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BlockModel.h">
-      <Filter>Header Files\world\Blocks\BlockModels</Filter>
-    </ClInclude>
-    <ClInclude Include="SlabBlockModel.h">
-      <Filter>Header Files\world\Blocks\BlockModels</Filter>
-    </ClInclude>
     <ClInclude Include="Frustum.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
@@ -280,6 +265,9 @@
     </ClInclude>
     <ClInclude Include="ItemModel.h">
       <Filter>Header Files\items</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockModel.h">
+      <Filter>Header Files\world\Blocks</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

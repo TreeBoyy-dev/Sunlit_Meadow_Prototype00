@@ -1,5 +1,8 @@
 #include "BlockModel.h"
 #include "Materials.h"
+#include "ObjParser.h"
+
+static const char* baseModelPath = "Models/";
 
 BlockModel::BlockModel(
     Material topMaterial,
@@ -26,108 +29,67 @@ BlockModel::BlockModel(
 {
 }
 
-void BlockModel::addFace(
-    std::vector<WorldVertex>& vertices,
-    std::vector<Uint16>& indices,
-    const Vec3           corners[4],
-    Material             materialIndex)
-{
-    // UV coordinates are the same for every face
-    const Vec2 uvs[4] = {
-        { 0.0f, 0.0f },
-        { 1.0f, 0.0f },
-        { 1.0f, 1.0f },
-        { 0.0f, 1.0f },
-    };
-
-    const SDL_FColor white = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-    // Compute face normal from two edges (consistent with winding order)
-    Vec3 edge1 = { corners[1].x - corners[0].x, corners[1].y - corners[0].y, corners[1].z - corners[0].z };
-    Vec3 edge2 = { corners[3].x - corners[0].x, corners[3].y - corners[0].y, corners[3].z - corners[0].z };
-    Vec3 normal = {
-        edge1.y * edge2.z - edge1.z * edge2.y,
-        edge1.z * edge2.x - edge1.x * edge2.z,
-        edge1.x * edge2.y - edge1.y * edge2.x,
-    };
-
-    // Indices are relative to the current end of the vertex buffer
-    Uint16 base = static_cast<Uint16>(vertices.size());
-
-    for (int i = 0; i < 4; i++) {
-        vertices.push_back({ corners[i], normal, uvs[i], white, (float)materialIndex });
-    }
-
-    indices.insert(indices.end(), {
-        base, (Uint16)(base + 1), (Uint16)(base + 2),
-        base, (Uint16)(base + 2), (Uint16)(base + 3)
-    });
+Material BlockModel::materialForNormal(const Vec3& normal) const {
+    if (normal.z > 0.5f)  return topMaterial;
+    if (normal.z < -0.5f) return bottomMaterial;
+    return sideMaterial;
 }
 
-void BlockModel::generateMesh(
-    std::vector<WorldVertex>& vertices,
-    std::vector<Uint16>& indices,
-    AdjacencyInfo        adj,
+bool BlockModel::init(const char* fileName) {
+    std::vector<ModelVertex> modelVertices;
+    std::vector<Uint16>      modelIndices;
+
+    if (!obj_parse(BuildAbsolutePath(baseModelPath, fileName), modelVertices, modelIndices)) {
+        return false;
+        SDL_Log("[BlockModel] init: obj_parse retured false");
+    }
+    else
+        SDL_Log("[BlockModel] init: obj_parse retured mesh");
+
+    // Blockbench exports the model shifted by -0.5 in x and y, so nudge it
+    // back into block space here (rotation is already handled by obj_parse).
+    const float kPlacementOffsetX = 0.5f;
+    const float kPlacementOffsetY = 0.5f;
+
+    // Convert ModelVertex -> WorldVertex (adds the materialIndex field).
+    vertices.clear();
+    vertices.reserve(modelVertices.size());
+
+    for (const ModelVertex& mv : modelVertices) {
+        Material material = materialForNormal(mv.normal);
+        vertices.push_back({
+            { mv.position.x + kPlacementOffsetX,
+              mv.position.y + kPlacementOffsetY,
+              mv.position.z },
+            mv.normal,
+            mv.uv,
+            mv.color,
+            static_cast<float>(material)
+            });
+    }
+
+    indices = std::move(modelIndices);
+    return true;
+}
+
+void BlockModel::getMesh(
+    std::vector<WorldVertex>& outVertices,
+    std::vector<Uint16>& outIndices,
     int x, int y, int z)
 {
-    if (!adj.top) {
-        const Vec3 corners[4] = {
-            { x + 1.0f, y + 0.0f, z + 1.0f },
-            { x + 1.0f, y + 1.0f, z + 1.0f },
-            { x + 0.0f, y + 1.0f, z + 1.0f },
-            { x + 0.0f, y + 0.0f, z + 1.0f },
-        };
-        addFace(vertices, indices, corners, topMaterial);
+    // Indices are relative to where this model's vertices land in the buffer.
+    const Uint16 base = static_cast<Uint16>(outVertices.size());
+
+    for (const WorldVertex& v : vertices) {
+        WorldVertex moved = v;
+        moved.position.x += static_cast<float>(x);
+        moved.position.y += static_cast<float>(y);
+        moved.position.z += static_cast<float>(z);
+        outVertices.push_back(moved);
     }
 
-    if (!adj.bottom) {
-        const Vec3 corners[4] = {
-            { x + 0.0f, y + 0.0f, z + 0.0f },
-            { x + 0.0f, y + 1.0f, z + 0.0f },
-            { x + 1.0f, y + 1.0f, z + 0.0f },
-            { x + 1.0f, y + 0.0f, z + 0.0f },
-        };
-        addFace(vertices, indices, corners, bottomMaterial);
-    }
-
-    if (!adj.front) {
-        const Vec3 corners[4] = {
-            { x + 1.0f, y + 1.0f, z + 1.0f },
-            { x + 1.0f, y + 0.0f, z + 1.0f },
-            { x + 1.0f, y + 0.0f, z + 0.0f },
-            { x + 1.0f, y + 1.0f, z + 0.0f },
-        };
-        addFace(vertices, indices, corners, sideMaterial);
-    }
-
-    if (!adj.back) {
-        const Vec3 corners[4] = {
-            { x + 0.0f, y + 0.0f, z + 1.0f },
-            { x + 0.0f, y + 1.0f, z + 1.0f },
-            { x + 0.0f, y + 1.0f, z + 0.0f },
-            { x + 0.0f, y + 0.0f, z + 0.0f },
-        };
-        addFace(vertices, indices, corners, sideMaterial);
-    }
-
-    if (!adj.right) {
-        const Vec3 corners[4] = {
-            { x + 0.0f, y + 1.0f, z + 1.0f },
-            { x + 1.0f, y + 1.0f, z + 1.0f },
-            { x + 1.0f, y + 1.0f, z + 0.0f },
-            { x + 0.0f, y + 1.0f, z + 0.0f },
-        };
-        addFace(vertices, indices, corners, sideMaterial);
-    }
-
-    if (!adj.left) {
-        const Vec3 corners[4] = {
-            { x + 1.0f, y + 0.0f, z + 1.0f },
-            { x + 0.0f, y + 0.0f, z + 1.0f },
-            { x + 0.0f, y + 0.0f, z + 0.0f },
-            { x + 1.0f, y + 0.0f, z + 0.0f },
-        };
-        addFace(vertices, indices, corners, sideMaterial);
+    for (const Uint16 index : indices) {
+        outIndices.push_back(static_cast<Uint16>(base + index));
     }
 }
 

@@ -13,13 +13,15 @@ void BlockManager::registerBlock(
     bool hasSlab,
     bool hasStair,
     bool hasWall,
-    float collision
+    float collision,
+    const char* modelFileName
 ){
     Uint16 id = nextId++;
 
     auto newBlock = std::make_unique<Block>(
         id,
         name,
+        modelFileName,
         std::move(model),
         obstructs,
         transparent,
@@ -38,7 +40,7 @@ void BlockManager::registerBlock(
 
 void BlockManager::init() {
     // --- Register base blocks ---
-    registerBlock("air", std::make_unique<BlockModel>(MATERIAL_COBBLESTONE), { false, false, false, false, false, false }, /*transparent=*/true, false, false, false, 1.0);
+    registerBlock("air",            std::make_unique<BlockModel>(MATERIAL_COBBLESTONE), { false, false, false, false, false, false }, /*transparent=*/true, false, false, false, 1.0);
     registerBlock("cobble_stone",   std::make_unique<BlockModel>(MATERIAL_COBBLESTONE), { true, true, true, true, true, true }, false, true, true, false);
     registerBlock("gneiss",         std::make_unique<BlockModel>(MATERIAL_GNEISS), { true, true, true, true, true, true }, false, true, true, false);
     registerBlock("chalk",          std::make_unique<BlockModel>(MATERIAL_CHALK), { true, true, true, true, true, true }, false, true, true, false);
@@ -59,10 +61,19 @@ void BlockManager::init() {
     for (size_t i = 0; i < baseCount; i++) {
         Block* b = blocks[i].get();
         
-        if (b->getHasSlab())  registerBlock(b->getName() + "_slab", std::make_unique<SlabBlockModel>(b->getTopMaterial(), b->getBottomMaterial(), b->getSideMaterial()), { false, false, false, false, false, true });
+        if (b->getHasSlab())
+            registerBlock(b->getName() + "_slab",
+                std::make_unique<SlabBlockModel>(b->getTopMaterial(), b->getBottomMaterial(), b->getSideMaterial()),
+                { false, false, false, false, false, true },
+                false, false, false, false,
+                b->getCollision(), "slab.obj");
+
         //if (b.getHasStair()) registerBlock(b.getName() + "_stair", stairModelFrom(b.model));
         //if (b.getHasWall())  registerBlock(b.getName() + "_Wall",  wallModelFrom(b.model));
     }
+
+    registerBlock("flower_alpine_quill", std::make_unique<BlockModel>(MATERIAL_BIRCH_LEAVES), { false, false, false, false, false, false }, false, false, false, false, 1.0, "flower_alpine_quill.obj");
+
 }
 
 Block* BlockManager::getById(Uint16 id) {

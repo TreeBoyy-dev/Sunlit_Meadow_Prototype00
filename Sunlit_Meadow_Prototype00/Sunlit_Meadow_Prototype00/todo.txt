@@ -2,8 +2,6 @@ change blocks to be loaded from a model (.obj)
 	- change texture array to atlas
 	- make getters for model and texture for items
 
-make icons for items - from blockmodels/itemmodels
-
 move rendering to seperate Render Thread
 
 (unfinished) change how the generated chunks are handled
@@ -12,9 +10,6 @@ move rendering to seperate Render Thread
 		-> list loaded chunks
 		-> list rendered chunkmeshes
 		-> when player moves the chunks to far away get removed and the closer ones added
-
-(unfinished) viewing cone:
-	- sometimes a chunk still disappers to early
 
 greedy meshing:
 	- idk if its called that but what ever

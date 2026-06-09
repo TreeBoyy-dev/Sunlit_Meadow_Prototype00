@@ -4,6 +4,7 @@
 Block::Block(
     Uint16 id,
     std::string name,
+    const char* modelFileName,
     std::unique_ptr<BlockModel> model,
     std::array<bool, 6> obstructs,
     bool transparent,
@@ -13,21 +14,26 @@ Block::Block(
     float collision)
     : id(id),
     name(std::move(name)),
+    modelFileName(modelFileName),
     model(std::move(model)),
     obstructs(obstructs),
     transparent(transparent),
     hasSlab(hasSlab), hasStair(hasStair), hasWall(hasWall),
-    collision(collision)
+    collision(collision),
+    modelInit(false)
 {
 }
 
 void Block::generateMeshFromModel(
     std::vector<WorldVertex>& vertices,
     std::vector<Uint16>& indices,
-    AdjacencyInfo            adj,
     int x, int y, int z
 ) {
-    model->generateMesh(vertices, indices, adj, x, y, z);
+    if (!modelInit) {
+        model->init(modelFileName);
+        modelInit = true;
+    }
+    model->getMesh(vertices, indices, x, y, z);
 }
 
 

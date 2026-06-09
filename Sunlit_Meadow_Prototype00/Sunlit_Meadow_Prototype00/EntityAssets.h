@@ -10,8 +10,8 @@
 // Call registerEntityAssets() once, AFTER EntityManager::init() (the GPU device
 // and the entity pipeline must already exist). Paths are relative to the same
 // base BuildAbsolutePath() uses for the rest of the engine's assets.
-const char* baseModelPath   = "Models/";
-const char* baseTexturePathEntities = "Textures/Entities";
+static const char* baseModelPath   = "Models/";
+static const char* baseTexturePathEntities = "Textures/Entities";
 
 
 inline void registerEntityAssets(AppState* state, EntityManager& em) {

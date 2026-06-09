@@ -195,6 +195,9 @@ void generateFeatures_Boulders(
 	Block* stoneBlock = blockManager.getByName("chalk");
 	if (stoneBlock == nullptr)
 		return;
+	Block* flowerBlock = blockManager.getByName("flower_alpine_quill");
+	if (flowerBlock == nullptr)
+		return;
 
 	// Random boulder origin between 3 and 11
 	int bx = 3 + rand() % 9;
@@ -230,4 +233,5 @@ void generateFeatures_Boulders(
 			}
 		}
 	}
+	blockIDs[bx][by][zGround+3] = flowerBlock->getID();
 }

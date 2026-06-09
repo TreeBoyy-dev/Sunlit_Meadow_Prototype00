@@ -157,7 +157,6 @@
     <ClCompile Include="ObjParser.cpp" />
     <ClCompile Include="Region.cpp" />
     <ClCompile Include="SkyBox.cpp" />
-    <ClCompile Include="SlabBlockModel.cpp" />
     <ClCompile Include="SurvivalUI.cpp" />
     <ClCompile Include="UI_Renderer.cpp" />
     <ClCompile Include="Vectors.cpp" />
@@ -198,7 +197,6 @@
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Mat4.h" />
     <ClInclude Include="SkyBox.h" />
-    <ClInclude Include="SlabBlockModel.h" />
     <ClInclude Include="ThreadSafeQueue.h" />
     <ClInclude Include="UI_Renderer.h" />
     <ClInclude Include="Vectors.h" />

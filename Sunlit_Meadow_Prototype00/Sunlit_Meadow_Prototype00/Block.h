@@ -10,6 +10,7 @@ class Block {
 private:
     Uint16    id;
     std::string name;
+    const char* modelFileName;
     bool        transparent;
     //multiplier for downward acceleration: 1 = no colission, 0.0 = full collision
     float       collision;
@@ -21,10 +22,12 @@ private:
     //front, back, right, left, up, down
     std::array<bool, 6> obstructs;
 
+    bool modelInit;
 public:
     Block(
         Uint16 id,
         std::string name,
+        const char* modelFileName,
         std::unique_ptr<BlockModel> model,
         std::array<bool, 6> obstructs,
         bool transparent = false,
@@ -37,7 +40,6 @@ public:
     void generateMeshFromModel(
         std::vector<WorldVertex>& vertices,
         std::vector<Uint16>&   indices,
-        AdjacencyInfo            adj,
         int x, int y, int z
     );
 

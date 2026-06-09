@@ -71,7 +71,12 @@ void ChunkMesh::buildMesh(
 
         Block* b = blockManager.getById(block.id);
 
+        if (!b) {
+            SDL_Log("[ChunkMesh] buildMesh: unknown block id %u at %d,%d,%d", block.id, block.x, block.y, block.z);
+            continue;
+        }
         // In buildMesh, replace the AdjacencyInfo block:
+        /*
         AdjacencyInfo adj = {
             neighborObstructs(getNeighborId(block.x + 1, block.y, block.z, borderAir), 0, blockManager), // front:  neighbor's back
             neighborObstructs(getNeighborId(block.x - 1, block.y, block.z, borderAir), 0, blockManager), // back:   neighbor's front
@@ -80,7 +85,7 @@ void ChunkMesh::buildMesh(
             neighborObstructs(getNeighborId(block.x, block.y, block.z + 1, borderAir), 0, blockManager), // top:    neighbor's down
             neighborObstructs(getNeighborId(block.x, block.y, block.z - 1, borderAir), 0, blockManager), // bottom: neighbor's up
         };
-        /*
+        
         SDL_Log("pos: %f|%f|%f  adj: %d %d %d %d %d %d  ids: %d %d %d %d %d %d  ",
             x, y, z,
             adj.front, adj.back, adj.right, adj.left, adj.top, adj.bottom,
@@ -92,7 +97,7 @@ void ChunkMesh::buildMesh(
             getNeighborId(block.x, block.y, block.z - 1, borderAir) // bottom: neighbor's up
         );//*/
 
-        b->generateMeshFromModel(vertices, indices, adj, block.x, block.y, block.z);
+        b->generateMeshFromModel(vertices, indices, block.x, block.y, block.z);
     }
 
     numIndices = (uint32_t)indices.size();

@@ -27,7 +27,8 @@ private:
         bool hasSlab = false,
         bool hasStair = false,
         bool hasWall = false,
-        float collision = 0.0
+        float collision = 0.0,
+        const char* modelFileName = "block.obj"
     );
 
 public:
