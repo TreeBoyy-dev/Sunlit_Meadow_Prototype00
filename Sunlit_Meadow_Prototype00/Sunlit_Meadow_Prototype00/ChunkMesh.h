@@ -9,6 +9,7 @@
 #include "Vectors.h"
 #include "WorldTypes.h"
 #include "BlockManager.h"
+#include "PalettedContainer.h"
 
 class ChunkMesh
 {
@@ -24,10 +25,11 @@ public:
 
 
     void buildMesh(
-        std::vector<LocationalBlockID>& blocks,
-        ChunkBorderAir borderAir,
+        PalettedContainer* storage,
         ChunkCoord chunkCoords,
-        BlockManager& blockManager);
+        BlockManager& blockManager,
+        bool isTranperent);
+    //void optimizeMesh();
     bool uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn);
 
     SDL_GPUBuffer* getVertexBuffer() const { return vertexBuffer; }
@@ -36,10 +38,12 @@ public:
     uint32_t getNumIndices() const { return numIndices; }
 
 private:
-    Uint16 getNeighborId(int x, int y, int z, ChunkBorderAir borderAir) const;
+    Uint16 getNeighborId(int x, int y, int z) const;
     bool neighborObstructs(Uint16 id, int faceIndex, BlockManager& blockManager);
 
 private:
+    bool isTranperentMesh = false;
+
     std::vector<WorldVertex> vertices;
     std::vector<Uint16> indices;
     std::unordered_set<LocationalBlockID, LocationalBlockIDHash> blockSet;

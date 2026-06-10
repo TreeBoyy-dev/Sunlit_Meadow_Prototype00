@@ -45,7 +45,6 @@ public:
     void destroyRegion(AppState* state);
 
 private:
-    bool buildBorderAir(ChunkBorderAir* border, ChunkCoord coord);
     void queueMeshUpdate(ChunkCoord coord);
     bool collectMeshResults(AppState* state,
         SDL_GPUTexture* textureArray,

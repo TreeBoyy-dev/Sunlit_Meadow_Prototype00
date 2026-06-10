@@ -43,11 +43,7 @@ bool BlockModel::init(const char* fileName) {
         return false;
         SDL_Log("[BlockModel] init: obj_parse retured false");
     }
-    else
-        SDL_Log("[BlockModel] init: obj_parse retured mesh");
 
-    // Blockbench exports the model shifted by -0.5 in x and y, so nudge it
-    // back into block space here (rotation is already handled by obj_parse).
     const float kPlacementOffsetX = 0.5f;
     const float kPlacementOffsetY = 0.5f;
 

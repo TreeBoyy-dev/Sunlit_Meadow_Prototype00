@@ -17,7 +17,7 @@ public:
     void start(BlockManager* blockManager);
     void stop();
 
-    void requestChunk(Chunk chunk, ChunkBorderAir borderAir);
+    void requestChunk(Chunk chunk);
     std::optional<Chunk> tryGetChunk();
     bool cancelRequest(ChunkCoord coord);
 
@@ -29,6 +29,6 @@ private:
 
     BlockManager* m_blockManager = nullptr;
 
-    ThreadSafeQueue_2T<Chunk, ChunkBorderAir>  m_inputQueue;
-    ThreadSafeQueue<Chunk>                     m_outputQueue;
+    ThreadSafeQueue<Chunk> m_inputQueue;
+    ThreadSafeQueue<Chunk> m_outputQueue;
 };

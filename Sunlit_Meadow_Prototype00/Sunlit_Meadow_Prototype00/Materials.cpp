@@ -109,6 +109,11 @@ bool UploadTextureArrayLayers(
     SDL_GPUDevice* gpu,
     SDL_GPUTexture* textureArray
 ) {
+    if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, "air.png", MATERIAL_AIR))
+    {
+        SDL_Log("Failed to load Texture: air");
+        return false;
+    }
     if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, "cobblestone.png", MATERIAL_COBBLESTONE))
     {
         SDL_Log("Failed to load Texture: cobblestone");

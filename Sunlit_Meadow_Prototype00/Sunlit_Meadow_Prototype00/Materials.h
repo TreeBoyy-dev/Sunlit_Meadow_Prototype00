@@ -4,6 +4,7 @@
 #include <string>
 
 typedef enum {
+    MATERIAL_AIR,
     //Stone Types
     MATERIAL_COBBLESTONE,
     MATERIAL_DIORITE,

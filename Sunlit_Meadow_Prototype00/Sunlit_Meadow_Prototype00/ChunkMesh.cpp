@@ -22,7 +22,7 @@ void ChunkMesh::destroy(AppState* state)
     textureArray = nullptr;
 }
 
-Uint16 ChunkMesh::getNeighborId(int x, int y, int z, ChunkBorderAir borderAir) const
+Uint16 ChunkMesh::getNeighborId(int x, int y, int z) const
 {
     const int baseX = m_chunkCoord.x * CHUNK_SIZE;
     const int baseY = m_chunkCoord.y * CHUNK_SIZE;
@@ -32,12 +32,12 @@ Uint16 ChunkMesh::getNeighborId(int x, int y, int z, ChunkBorderAir borderAir) c
     const int ly = y - baseY;
     const int lz = z - baseZ;
 
-    if (x == baseX + CHUNK_SIZE) return borderAir.front[ly][lz];
-    if (x == baseX - 1)          return borderAir.back[ly][lz];
-    if (y == baseY + CHUNK_SIZE) return borderAir.right[lx][lz];
-    if (y == baseY - 1)          return borderAir.left[lx][lz];
-    if (z == baseZ + CHUNK_SIZE) return borderAir.top[lx][ly];
-    if (z == baseZ - 1)          return borderAir.bottom[lx][ly];
+    if (x == baseX + CHUNK_SIZE) return 0;
+    if (x == baseX - 1)          return 0;
+    if (y == baseY + CHUNK_SIZE) return 0;
+    if (y == baseY - 1)          return 0;
+    if (z == baseZ + CHUNK_SIZE) return 0;
+    if (z == baseZ - 1)          return 0;
 
     auto it = blockSet.find({ x, y, z, 0 });
     return it != blockSet.end() ? it->id : 0;
@@ -49,58 +49,42 @@ bool ChunkMesh::neighborObstructs(Uint16 id, int faceIndex, BlockManager& blockM
 }
 
 void ChunkMesh::buildMesh(
-    std::vector<LocationalBlockID>& blocks,
-    ChunkBorderAir borderAir,
+    PalettedContainer* storage,
     ChunkCoord chunkCoords,
-    BlockManager& blockManager)
+    BlockManager& blockManager,
+    bool isTranperent)
 {
     m_chunkCoord = chunkCoords;
+    isTranperentMesh = isTranperent;
 
     vertices.clear();
     indices.clear();
     blockSet.clear();
 
-    for (LocationalBlockID& block : blocks) {
-        blockSet.insert(block);
-    }
+    for (int x = 0; x < CHUNK_SIZE; x++) {
+        for (int y = 0; y < CHUNK_SIZE; y++) {
+            for (int z = 0; z < CHUNK_SIZE; z++) {
 
-    for (LocationalBlockID& block : blocks) {
-        float x = (float)block.x;
-        float y = (float)block.y;
-        float z = (float)block.z;
+                Uint16 id = storage->getId(x, y, z);
+                Block* b = blockManager.getById(id);
+                if (!b) {
+                    SDL_Log("[ChunkMesh] buildMesh: unknown block id %u at %d,%d,%d", id, x, y, z);
+                    continue;
+                }
+                if(b->isTransparent() != isTranperentMesh || id == 0)
+                    continue;
 
-        Block* b = blockManager.getById(block.id);
-
-        if (!b) {
-            SDL_Log("[ChunkMesh] buildMesh: unknown block id %u at %d,%d,%d", block.id, block.x, block.y, block.z);
-            continue;
+                b->generateMeshFromModel(
+                    vertices, indices,
+                    x + chunkCoords.x * CHUNK_SIZE,
+                    y + chunkCoords.y * CHUNK_SIZE,
+                    z + chunkCoords.z * CHUNK_SIZE
+                );
+            }
         }
-        // In buildMesh, replace the AdjacencyInfo block:
-        /*
-        AdjacencyInfo adj = {
-            neighborObstructs(getNeighborId(block.x + 1, block.y, block.z, borderAir), 0, blockManager), // front:  neighbor's back
-            neighborObstructs(getNeighborId(block.x - 1, block.y, block.z, borderAir), 0, blockManager), // back:   neighbor's front
-            neighborObstructs(getNeighborId(block.x, block.y + 1, block.z, borderAir), 0, blockManager), // right:  neighbor's left
-            neighborObstructs(getNeighborId(block.x, block.y - 1, block.z, borderAir), 0, blockManager), // left:   neighbor's right
-            neighborObstructs(getNeighborId(block.x, block.y, block.z + 1, borderAir), 0, blockManager), // top:    neighbor's down
-            neighborObstructs(getNeighborId(block.x, block.y, block.z - 1, borderAir), 0, blockManager), // bottom: neighbor's up
-        };
-        
-        SDL_Log("pos: %f|%f|%f  adj: %d %d %d %d %d %d  ids: %d %d %d %d %d %d  ",
-            x, y, z,
-            adj.front, adj.back, adj.right, adj.left, adj.top, adj.bottom,
-            getNeighborId(block.x + 1, block.y, block.z, borderAir), // front:  neighbor's back
-            getNeighborId(block.x - 1, block.y, block.z, borderAir), // back:   neighbor's front
-            getNeighborId(block.x, block.y + 1, block.z, borderAir), // right:  neighbor's left
-            getNeighborId(block.x, block.y - 1, block.z, borderAir), // left:   neighbor's right
-            getNeighborId(block.x, block.y, block.z + 1, borderAir), // top:    neighbor's down
-            getNeighborId(block.x, block.y, block.z - 1, borderAir) // bottom: neighbor's up
-        );//*/
-
-        b->generateMeshFromModel(vertices, indices, block.x, block.y, block.z);
     }
-
     numIndices = (uint32_t)indices.size();
+    //SDL_Log("[ChunkMesh] buildMesh: (transperent: %d) numIndices - %d", isTranperentMesh, numIndices);
 }
 
 bool ChunkMesh::uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn)

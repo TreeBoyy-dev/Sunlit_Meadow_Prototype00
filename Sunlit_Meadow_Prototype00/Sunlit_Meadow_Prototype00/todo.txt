@@ -1,6 +1,6 @@
-change blocks to be loaded from a model (.obj)
+(unfinished) change blocks to be loaded from a model (.obj)
 	- change texture array to atlas
-	- make getters for model and texture for items
+	- (!!) make getters for model and texture for items
 
 move rendering to seperate Render Thread
 
@@ -11,13 +11,7 @@ move rendering to seperate Render Thread
 		-> list rendered chunkmeshes
 		-> when player moves the chunks to far away get removed and the closer ones added
 
-greedy meshing:
-	- idk if its called that but what ever
-	- make face/quad class instead of adding the face directly to the mesh
-	- when making the chunkmesh split it into stages:
-		-> get all faces
-		-> simplefy faces (combine adjacend faces on the same level)
-		-> load the simplefied faces into the mesh
+!!!!!!!!!!!!!!!!!!!!!!!!!! greedy meshing 
 
 (mostly finished) add entity
 	- data

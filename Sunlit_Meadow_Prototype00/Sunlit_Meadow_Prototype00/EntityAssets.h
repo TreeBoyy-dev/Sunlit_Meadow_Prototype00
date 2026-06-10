@@ -64,6 +64,6 @@ inline void registerEntityAssets(AppState* state, EntityManager& em) {
 // spawned "player" body is only needed for a visible third-person model —
 // hence it is left commented out by default.
 inline void spawnStartingEntities(EntityManager& em) {
-    em.spawn("rubber_duck", { 261.0f, 266.0f, 110.0f });
+    em.spawn("rubber_duck", { 262.0f, 263.0f, 110.0f });
     em.spawn("player", { 264.0f, 264.0f, 70.0f });
 }

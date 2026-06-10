@@ -13,12 +13,11 @@ class Chunk {
 private:
     bool isGenerated;
     ChunkCoord chunkCoordinates;
-    PalettedContainer storage;;
+    PalettedContainer storage;
 	//Biome* biome;
 	//Zone* zone;
 	//Layer* layer;
 
-    ChunkBorderAir borderAir;
 	ChunkMesh opaqueMesh;
 	ChunkMesh transparentMesh;
     bool drawOpaqueMesh;
@@ -35,9 +34,8 @@ public:
     bool getIsGenerated();
     Uint16 getBlockId(int x, int y, int z);
     ChunkCoord getChunkCoordinates();
-    Uint16(*getBorderAir(ChunkCoord direction))[CHUNK_SIZE];
 
-    void createMeshes(ChunkBorderAir borderAir, BlockManager& blockManager);
+    void createMeshes(BlockManager& blockManager);
     bool uploadMeshes(
         AppState* state,
         SDL_GPUTexture* textureArray

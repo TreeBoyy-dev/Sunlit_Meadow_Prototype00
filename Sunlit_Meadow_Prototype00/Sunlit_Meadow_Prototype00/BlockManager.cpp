@@ -1,6 +1,5 @@
 #include "BlockManager.h"
 #include "BlockModel.h"
-#include "SlabBlockModel.h"
 #include <stdexcept>
 #include <vector>
 #include <memory>
@@ -40,7 +39,7 @@ void BlockManager::registerBlock(
 
 void BlockManager::init() {
     // --- Register base blocks ---
-    registerBlock("air",            std::make_unique<BlockModel>(MATERIAL_COBBLESTONE), { false, false, false, false, false, false }, /*transparent=*/true, false, false, false, 1.0);
+    registerBlock("air",            std::make_unique<BlockModel>(MATERIAL_AIR), { false, false, false, false, false, false }, /*transparent=*/true, false, false, false, 1.0);
     registerBlock("cobble_stone",   std::make_unique<BlockModel>(MATERIAL_COBBLESTONE), { true, true, true, true, true, true }, false, true, true, false);
     registerBlock("gneiss",         std::make_unique<BlockModel>(MATERIAL_GNEISS), { true, true, true, true, true, true }, false, true, true, false);
     registerBlock("chalk",          std::make_unique<BlockModel>(MATERIAL_CHALK), { true, true, true, true, true, true }, false, true, true, false);
@@ -63,7 +62,7 @@ void BlockManager::init() {
         
         if (b->getHasSlab())
             registerBlock(b->getName() + "_slab",
-                std::make_unique<SlabBlockModel>(b->getTopMaterial(), b->getBottomMaterial(), b->getSideMaterial()),
+                std::make_unique<BlockModel>(b->getTopMaterial(), b->getBottomMaterial(), b->getSideMaterial()),
                 { false, false, false, false, false, true },
                 false, false, false, false,
                 b->getCollision(), "slab.obj");

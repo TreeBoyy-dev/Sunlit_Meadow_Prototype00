@@ -1,6 +1,6 @@
 ﻿  Scanning sources for module dependencies...
-  GenerateChunk.cpp
+  ChunkMesh.cpp
 C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\LoadTextureFromFile.h(9,16): warning C4091: 'typedef ': ignored on left of 'GPUTextureWH' when no variable is declared
-  (compiling source file 'GenerateChunk.cpp')
+  (compiling source file 'ChunkMesh.cpp')
   
   Sunlit_Meadow_Prototype00.vcxproj -> C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\x64\Debug\Sunlit_Meadow_Prototype00.exe

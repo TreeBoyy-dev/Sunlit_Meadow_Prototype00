@@ -41,7 +41,7 @@ void ChunkGeneratorWorker::workerLoop() {
                     chunkData.coordinates,
                     std::move(chunkData.storage)
                 );
-                chunk->createMeshes({}, *m_blockManager);
+                chunk->createMeshes(*m_blockManager);
 
                 m_outputQueue.push(std::move(chunk));
             }
