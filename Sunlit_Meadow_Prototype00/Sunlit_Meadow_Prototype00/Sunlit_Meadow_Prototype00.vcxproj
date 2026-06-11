@@ -145,6 +145,7 @@
     <ClCompile Include="GenerateChunk.h" />
     <ClCompile Include="GenerateColumn.cpp" />
     <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="ItemModel.cpp" />
@@ -174,8 +175,10 @@
     <ClInclude Include="ChunkMesh.h" />
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="ChunkMeshWorker.h" />
+    <ClInclude Include="Data.h" />
     <ClInclude Include="EntityAssets.h" />
     <ClInclude Include="GenerateColumn.h" />
+    <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemManager.h" />
     <ClInclude Include="ItemModel.h" />

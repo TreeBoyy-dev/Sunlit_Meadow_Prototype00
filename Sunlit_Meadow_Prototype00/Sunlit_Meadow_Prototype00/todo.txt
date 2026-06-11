@@ -11,7 +11,7 @@ move rendering to seperate Render Thread
 		-> list rendered chunkmeshes
 		-> when player moves the chunks to far away get removed and the closer ones added
 
-!!!!!!!!!!!!!!!!!!!!!!!!!! greedy meshing 
+greedy meshing & face culling
 
 (mostly finished) add entity
 	- data
