@@ -61,6 +61,8 @@ bool Region::update(AppState* state,
 
         chunk->uploadMeshes(state, textureArray);
         chunks.emplace(coord, std::move(chunk));
+
+        outNewlyReady.push_back(coord);
         newlyAdded.push_back(coord);
 
         uploads++;
