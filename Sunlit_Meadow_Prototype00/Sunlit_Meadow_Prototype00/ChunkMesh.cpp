@@ -67,14 +67,14 @@ void ChunkMesh::buildMesh(
         }
     }
     numIndices = (uint32_t)indices.size();
-    if (!isTranperentMesh) {
+    /*
         SDL_Log("[ChunkMesh] (transperent: %d) buildMesh at %d|%d|%d:",
             isTranperentMesh, chunkCoords.x, chunkCoords.y, chunkCoords.z);
         Uint32 maxIdx = 0;
         for (Uint32 i : indices) maxIdx = SDL_max(maxIdx, i);
         SDL_Log("verts=%zu maxIndex=%u",
             vertices.size(), maxIdx);
-    }
+    */
 }
 
 

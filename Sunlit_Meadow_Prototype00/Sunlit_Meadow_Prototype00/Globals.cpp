@@ -36,7 +36,7 @@ BlockManager blockManager;
 
 // --- WorldManager ---
 WorldManager worldManager;
-const int RENDER_DISTANCE = 5;
+const int RENDER_DISTANCE = 12;
 
 ChunkCoord prevPlayerChunkCoords = { 0,0,0 };
 

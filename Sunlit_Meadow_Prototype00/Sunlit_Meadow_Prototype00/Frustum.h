@@ -33,8 +33,8 @@ Frustum buildFrustum(Camera& cam, float fovY, float aspect, float zNear, float z
 
     out.planes[2] = vec3Normalize(vec3Cross(rNear, u));     // right
     out.planes[3] = vec3Normalize(vec3Cross(u, lNear));     // left
-    out.planes[4] = vec3Normalize(vec3Cross(rNear, tNear)); // top
-    out.planes[5] = vec3Normalize(vec3Cross(lNear, bNear)); // bottom
+    out.planes[4] = vec3Normalize(vec3Cross(r, tNear));   // top
+    out.planes[5] = vec3Normalize(vec3Cross(bNear, r));   // bottom
 
     for (int i = 2; i < 6; i++)
         out.dists[i] = vec3Dot(out.planes[i], cam.position);
