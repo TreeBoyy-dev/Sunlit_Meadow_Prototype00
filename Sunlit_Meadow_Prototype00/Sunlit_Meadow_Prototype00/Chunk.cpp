@@ -40,48 +40,17 @@ void Chunk::transferMeshesFrom(Chunk& src) {
 }
 
 void Chunk::createMeshes(BlockManager& blockManager) {
-
 	drawOpaqueMesh = true;
 	opaqueMesh.buildMesh(&storage, chunkCoordinates, blockManager, false);
 
 	drawTransparentMesh = true;
 	transparentMesh.buildMesh(&storage, chunkCoordinates, blockManager, true);
-		/*
-	std::vector<LocationalBlockID> opaqueblocks;
-	std::vector<LocationalBlockID> transparentblocks;
-
-	for (int x = 0; x < CHUNK_SIZE; x++) {
-		for (int y = 0; y < CHUNK_SIZE; y++) {
-			for (int z = 0; z < CHUNK_SIZE; z++) {
-
-				Uint16 id = storage.getId(x, y, z);
-				LocationalBlockID absLocationalBlockID = {
-					x + chunkCoordinates.x * CHUNK_SIZE,
-					y + chunkCoordinates.y * CHUNK_SIZE,
-					z + chunkCoordinates.z * CHUNK_SIZE,
-					id
-				};
-				Block* block = blockManager.getById(id);
-
-				if (block == nullptr)
-					SDL_Log("Block = nullptr in Chunk init meshes!!!");
-				else if (!block->isTransparent())
-					opaqueblocks.push_back(absLocationalBlockID);
-				else if (block->getName() != "air")
-					transparentblocks.push_back(absLocationalBlockID);
-			}
-		}
-	}
-	if (opaqueblocks.size() > 0) {
-		drawOpaqueMesh = true;
-		opaqueMesh.buildMesh(opaqueblocks, chunkCoordinates, blockManager);
-	}
-	if (transparentblocks.size() > 0) {
-		drawTransparentMesh = true;
-		transparentMesh.buildMesh(transparentblocks, chunkCoordinates, blockManager);
-	}*/
 }
 
+void Chunk::optimizeMeshes() {
+	opaqueMesh.optimizeMesh();
+	transparentMesh.optimizeMesh();
+}
 
 bool Chunk::uploadMeshes(AppState* state, SDL_GPUTexture* textureArray) {
 	if (drawOpaqueMesh) {

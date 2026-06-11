@@ -70,11 +70,11 @@ bool BlockModel::init(const char* fileName) {
 
 void BlockModel::getMesh(
     std::vector<WorldVertex>& outVertices,
-    std::vector<Uint16>& outIndices,
+    std::vector<Uint32>& outIndices,
     int x, int y, int z)
 {
     // Indices are relative to where this model's vertices land in the buffer.
-    const Uint16 base = static_cast<Uint16>(outVertices.size());
+    const Uint32 base = static_cast<Uint32>(outVertices.size());
 
     for (const WorldVertex& v : vertices) {
         WorldVertex moved = v;
@@ -85,7 +85,7 @@ void BlockModel::getMesh(
     }
 
     for (const Uint16 index : indices) {
-        outIndices.push_back(static_cast<Uint16>(base + index));
+        outIndices.push_back(base + index);
     }
 }
 

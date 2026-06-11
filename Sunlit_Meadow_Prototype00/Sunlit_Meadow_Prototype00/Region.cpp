@@ -26,6 +26,7 @@ void Region::requestChunkGeneration(ChunkCoord chunkCoordinates) {
     ColumnCoord column = { chunkCoordinates.x, chunkCoordinates.y };
 
     if (requestedColumns.count(column)) return; // column already generated or in flight
+    SDL_Log("[Region] requesting column: %d|%d", chunkCoordinates.x, chunkCoordinates.y);
 
     requestedColumns.insert(column);
     g_worker.requestColumn(column);
@@ -66,8 +67,8 @@ bool Region::update(AppState* state,
         changed = true;
     }
 
-    for (const auto& coord : newlyAdded)
-        queueMeshUpdate(coord);
+    //for (const auto& coord : newlyAdded)
+    //    queueMeshUpdate(coord);
 
     // --- drain m_worker: re-meshed chunks (these are the "drawable" events) ---
     if (collectMeshResults(state, textureArray, outNewlyReady))

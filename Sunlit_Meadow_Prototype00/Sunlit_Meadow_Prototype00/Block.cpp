@@ -26,7 +26,7 @@ Block::Block(
 
 void Block::generateMeshFromModel(
     std::vector<WorldVertex>& vertices,
-    std::vector<Uint16>& indices,
+    std::vector<Uint32>& indices,
     int x, int y, int z
 ) {
     if (!modelInit) {

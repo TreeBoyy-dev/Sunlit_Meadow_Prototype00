@@ -28,7 +28,7 @@ void ChunkMeshWorker::workerLoop() {
     while (m_running) {
         if (auto chunk = m_inputQueue.try_pop()) {
 
-            chunk->createMeshes(*m_blockManager);
+            chunk->optimizeMeshes();
 
             m_outputQueue.push(*chunk);
         }

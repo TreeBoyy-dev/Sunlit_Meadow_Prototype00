@@ -155,6 +155,7 @@
     <ClCompile Include="Mat4.cpp" />
     <ClCompile Include="Materials.cpp" />
     <ClCompile Include="ObjParser.cpp" />
+    <ClCompile Include="OptimizeChunkMesh.cpp" />
     <ClCompile Include="Region.cpp" />
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="SurvivalUI.cpp" />

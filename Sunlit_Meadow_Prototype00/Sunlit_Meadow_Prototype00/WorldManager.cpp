@@ -175,15 +175,14 @@ void WorldManager::onPlayerChunkChanged() {
     auto t1 = clock::now();
 
     // 2) Drop pendingChunks entries that left the view, and cancel them.
-    /*
+    ///*
     for (auto it = pendingChunks.begin(); it != pendingChunks.end(); ) {
-        if (!nowVisible.count(*it)) {
-            getRegion(regionCoordForChunk(*it))->cancelChunkGeneration(*it);
+        ChunkCoord rel{ it->x - pp.x, it->y - pp.y, it->z - pp.z };
+        if (!visibleRelativeSet.count(rel)) {
+            getRegion(getRegionCoordForChunk(*it))->cancelChunkGeneration(*it);
             it = pendingChunks.erase(it);
         }
-        else {
-            ++it; 
-        }
+        else { ++it; }
     }//*/
     auto t2 = clock::now();
 
@@ -209,14 +208,16 @@ void WorldManager::onPlayerChunkChanged() {
         });
     auto t4 = clock::now();
 
-    for (const ChunkCoord& coord : toRequest)
+    for (const ChunkCoord& coord : toRequest) {
         getRegion(getRegionCoordForChunk(coord))->requestChunkGeneration(coord);
+        //SDL_Log("[WorldManager] requesting column: %d|%d", coord.x, coord.y);
+    }
     auto t5 = clock::now();
 
     //Logger to display time usage:
     ///*
     using us = std::chrono::microseconds;
-    SDL_Log("time usage onPlayerChunkChanged: step1=%lldus step2=%lldus step3=%lldus step4=%lldus step5=%lldus step6=%lldus (total=%lldus)",
+    SDL_Log("time usage onPlayerChunkChanged: step1=%lldus step2=%lldus step3=%lldus step4=%lldus step5=%lldus (total=%lldus)",
         (long long)std::chrono::duration_cast<us>(t1 - t0).count(),
         (long long)std::chrono::duration_cast<us>(t2 - t1).count(),
         (long long)std::chrono::duration_cast<us>(t3 - t2).count(),

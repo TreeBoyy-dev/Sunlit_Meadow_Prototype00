@@ -23,13 +23,12 @@ public:
         const UBO& ubo
     );
 
-
     void buildMesh(
         PalettedContainer* storage,
         ChunkCoord chunkCoords,
         BlockManager& blockManager,
         bool isTranperent);
-    //void optimizeMesh();
+    void optimizeMesh();
     bool uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn);
 
     SDL_GPUBuffer* getVertexBuffer() const { return vertexBuffer; }
@@ -45,8 +44,7 @@ private:
     bool isTranperentMesh = false;
 
     std::vector<WorldVertex> vertices;
-    std::vector<Uint16> indices;
-    std::unordered_set<LocationalBlockID, LocationalBlockIDHash> blockSet;
+    std::vector<Uint32> indices;
 
     SDL_GPUBuffer* vertexBuffer = nullptr;
     SDL_GPUBuffer* indexBuffer = nullptr;

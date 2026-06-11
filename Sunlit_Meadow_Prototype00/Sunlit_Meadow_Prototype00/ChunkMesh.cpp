@@ -17,30 +17,14 @@ void ChunkMesh::destroy(AppState* state)
 
     vertices.clear();
     indices.clear();
-    blockSet.clear();
     numIndices = 0;
     textureArray = nullptr;
 }
 
 Uint16 ChunkMesh::getNeighborId(int x, int y, int z) const
 {
-    const int baseX = m_chunkCoord.x * CHUNK_SIZE;
-    const int baseY = m_chunkCoord.y * CHUNK_SIZE;
-    const int baseZ = m_chunkCoord.z * CHUNK_SIZE;
-
-    const int lx = x - baseX;
-    const int ly = y - baseY;
-    const int lz = z - baseZ;
-
-    if (x == baseX + CHUNK_SIZE) return 0;
-    if (x == baseX - 1)          return 0;
-    if (y == baseY + CHUNK_SIZE) return 0;
-    if (y == baseY - 1)          return 0;
-    if (z == baseZ + CHUNK_SIZE) return 0;
-    if (z == baseZ - 1)          return 0;
-
-    auto it = blockSet.find({ x, y, z, 0 });
-    return it != blockSet.end() ? it->id : 0;
+    //auto it = blockSet.find({ x, y, z, 0 });
+    return 0; //it != blockSet.end() ? it->id : 0;
 }
 bool ChunkMesh::neighborObstructs(Uint16 id, int faceIndex, BlockManager& blockManager)
 {
@@ -59,7 +43,6 @@ void ChunkMesh::buildMesh(
 
     vertices.clear();
     indices.clear();
-    blockSet.clear();
 
     for (int x = 0; x < CHUNK_SIZE; x++) {
         for (int y = 0; y < CHUNK_SIZE; y++) {
@@ -84,8 +67,16 @@ void ChunkMesh::buildMesh(
         }
     }
     numIndices = (uint32_t)indices.size();
-    //SDL_Log("[ChunkMesh] buildMesh: (transperent: %d) numIndices - %d", isTranperentMesh, numIndices);
+    if (!isTranperentMesh) {
+        SDL_Log("[ChunkMesh] (transperent: %d) buildMesh at %d|%d|%d:",
+            isTranperentMesh, chunkCoords.x, chunkCoords.y, chunkCoords.z);
+        Uint32 maxIdx = 0;
+        for (Uint32 i : indices) maxIdx = SDL_max(maxIdx, i);
+        SDL_Log("verts=%zu maxIndex=%u",
+            vertices.size(), maxIdx);
+    }
 }
+
 
 bool ChunkMesh::uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn)
 {
@@ -117,7 +108,7 @@ bool ChunkMesh::uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn)
 
     SDL_GPUBufferCreateInfo ibInfo = {
         .usage = SDL_GPU_BUFFERUSAGE_INDEX,
-        .size = (Uint32)(indices.size() * sizeof(Uint16)),
+        .size = (Uint32)(indices.size() * sizeof(Uint32)),
     };
     indexBuffer = SDL_CreateGPUBuffer(state->gpu, &ibInfo);
     if (!indexBuffer) {
@@ -133,7 +124,7 @@ bool ChunkMesh::uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn)
 
     SDL_GPUTransferBufferCreateInfo transferIBInfo = {
         .usage = SDL_GPU_TRANSFERBUFFERUSAGE_UPLOAD,
-        .size = (Uint32)(indices.size() * sizeof(Uint16)),
+        .size = (Uint32)(indices.size() * sizeof(Uint32)),
     };
     SDL_GPUTransferBuffer* transferIB = SDL_CreateGPUTransferBuffer(state->gpu, &transferIBInfo);
 
@@ -147,7 +138,7 @@ bool ChunkMesh::uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn)
     SDL_UnmapGPUTransferBuffer(state->gpu, transferVB);
 
     void* ibMapped = SDL_MapGPUTransferBuffer(state->gpu, transferIB, false);
-    SDL_memcpy(ibMapped, indices.data(), indices.size() * sizeof(Uint16));
+    SDL_memcpy(ibMapped, indices.data(), indices.size() * sizeof(Uint32));
     SDL_UnmapGPUTransferBuffer(state->gpu, transferIB);
 
     SDL_GPUCommandBuffer* cmd = SDL_AcquireGPUCommandBuffer(state->gpu);
@@ -176,7 +167,7 @@ bool ChunkMesh::uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn)
     bufferRegion = {
         .buffer = indexBuffer,
         .offset = 0,
-        .size = (Uint32)(indices.size() * sizeof(Uint16)),
+        .size = (Uint32)(indices.size() * sizeof(Uint32)),
     };
     SDL_UploadToGPUBuffer(
         copyPass,
@@ -203,6 +194,7 @@ void ChunkMesh::draw(
 {
     if (!vertexBuffer || !indexBuffer || !textureArray || numIndices == 0) {
         return;
+        SDL_Log("[ChunkMesh] draw: couldn't draw Chunkmesh (indices: &d)", numIndices);
     }
 
     SDL_GPUBufferBinding vertex_buffer_binding = {
@@ -221,7 +213,7 @@ void ChunkMesh::draw(
     };
 
     SDL_BindGPUVertexBuffers(pass, 0, &vertex_buffer_binding, 1);
-    SDL_BindGPUIndexBuffer(pass, &index_buffer_binding, SDL_GPU_INDEXELEMENTSIZE_16BIT);
+    SDL_BindGPUIndexBuffer(pass, &index_buffer_binding, SDL_GPU_INDEXELEMENTSIZE_32BIT);
     SDL_PushGPUVertexUniformData(cmd, 0, &ubo, (Uint32)sizeof(ubo));
     SDL_BindGPUFragmentSamplers(pass, 0, &tex_sampler_binding, 1);
     SDL_DrawGPUIndexedPrimitives(pass, numIndices, 1, 0, 0, 0);

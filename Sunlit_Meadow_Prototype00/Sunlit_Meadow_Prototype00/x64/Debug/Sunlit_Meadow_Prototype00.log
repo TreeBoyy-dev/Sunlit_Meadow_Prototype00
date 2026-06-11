@@ -1,6 +1,12 @@
 ﻿  Scanning sources for module dependencies...
-  ChunkMesh.cpp
+  WorldManager.cpp
 C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\LoadTextureFromFile.h(9,16): warning C4091: 'typedef ': ignored on left of 'GPUTextureWH' when no variable is declared
-  (compiling source file 'ChunkMesh.cpp')
+  (compiling source file 'WorldManager.cpp')
   
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(250,28): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(250,28): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(250,48): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(250,48): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(250,68): warning C4838: conversion from 'int' to 'float' requires a narrowing conversion
+C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\WorldManager.cpp(250,68): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
   Sunlit_Meadow_Prototype00.vcxproj -> C:\MyData\Sunlit_Meadow\Prototypes\Sunlit_Meadow_Prototype00\Sunlit_Meadow_Prototype00\x64\Debug\Sunlit_Meadow_Prototype00.exe

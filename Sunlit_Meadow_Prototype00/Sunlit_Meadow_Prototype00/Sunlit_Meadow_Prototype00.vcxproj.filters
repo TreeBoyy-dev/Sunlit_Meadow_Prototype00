@@ -153,6 +153,9 @@
     <ClCompile Include="BlockModel.cpp">
       <Filter>Source Files\world\Blocks</Filter>
     </ClCompile>
+    <ClCompile Include="OptimizeChunkMesh.cpp">
+      <Filter>Source Files\world\WorldGen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h">

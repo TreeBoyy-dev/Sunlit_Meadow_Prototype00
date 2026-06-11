@@ -42,6 +42,8 @@ void ChunkGeneratorWorker::workerLoop() {
                     std::move(chunkData.storage)
                 );
                 chunk->createMeshes(*m_blockManager);
+                SDL_Log("[GeneratorWorker] creating mesh at: %d|%d|%d",
+                    chunkData.coordinates.x, chunkData.coordinates.y, chunkData.coordinates.z);
 
                 m_outputQueue.push(std::move(chunk));
             }

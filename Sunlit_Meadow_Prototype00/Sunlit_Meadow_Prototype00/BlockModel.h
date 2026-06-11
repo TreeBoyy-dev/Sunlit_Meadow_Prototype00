@@ -46,7 +46,7 @@ public:
     // No longer takes adjacency info: the whole obj mesh is always emitted.
     virtual void getMesh(
         std::vector<WorldVertex>& outVertices,
-        std::vector<Uint16>& outIndices,
+        std::vector<Uint32>& outIndices,
         int x, int y, int z
     );
 

@@ -36,6 +36,7 @@ public:
     ChunkCoord getChunkCoordinates();
 
     void createMeshes(BlockManager& blockManager);
+    void optimizeMeshes();
     bool uploadMeshes(
         AppState* state,
         SDL_GPUTexture* textureArray
