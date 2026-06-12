@@ -1,5 +1,6 @@
 #include <cstring>
 
+#include "EntityData.h"
 #include "EntityManager.h"
 #include "LoadShader.h"
 #include "BuildAbsolutePath.h"
@@ -118,7 +119,7 @@ void EntityManager::destroy(AppState* state) {
 // Type registration
 EntityAsset* EntityManager::registerType(
     std::unique_ptr<EntityAsset> asset,
-    SpawnData                    defaults)
+    EntityData                   defaults)
 {
     Uint16 id = nextTypeId++;
     asset->id = id;
@@ -142,8 +143,8 @@ bool EntityManager::loadEntityType(
     const std::string& name,
     const char* modelPath, const char* modelFile,
     const char* texturePath, const char* textureFile,
-    Hitbox    hitbox,
-    SpawnData spawnDefaults)
+    Hitbox     hitbox,
+    EntityData spawnDefaults)
 {
     if (assetsByName.find(name) != assetsByName.end()) {
         SDL_Log("[Entity] type '%s' already registered", name.c_str());
@@ -257,6 +258,7 @@ bool EntityManager::uploadMeshToGPU(
 }
 
 // Spawning / updating
+/*
 Entity* EntityManager::spawnInternal(EntityAsset* asset, Vec3 position, const SpawnData& sd) {
     // Build this entity's own per-instance data from the spawn parameters.
     EntityData data;
@@ -275,18 +277,6 @@ Entity* EntityManager::spawnInternal(EntityAsset* asset, Vec3 position, const Sp
     entities.push_back(std::move(entity));
     return raw;
 }
-
-Entity* EntityManager::spawn(const std::string& typeName, Vec3 position) {
-    SDL_Log("[Entity] Spawning '%s'", typeName.c_str());
-
-    EntityAsset* asset = getAssetByName(typeName);
-    if (!asset) {
-        SDL_Log("[Entity] spawn: unknown type '%s' (register it first)", typeName.c_str());
-        return nullptr;
-    }
-    return spawnInternal(asset, position, spawnDefaults[asset->id]);
-}
-
 Entity* EntityManager::spawn(const std::string& typeName, Vec3 position, SpawnData overrideData) {
     EntityAsset* asset = getAssetByName(typeName);
     if (!asset) {
@@ -294,6 +284,31 @@ Entity* EntityManager::spawn(const std::string& typeName, Vec3 position, SpawnDa
         return nullptr;
     }
     return spawnInternal(asset, position, overrideData);
+//*/
+
+Entity* EntityManager::spawn(const std::string& typeName, Vec3 position, std::vector<Data*> data) {
+    EntityAsset* asset = getAssetByName(typeName);
+    if (!asset) {
+        SDL_Log("[Entity] spawn: unknown type '%s' (register it first)", typeName.c_str());
+        return nullptr;
+    }
+    
+    EntityData* entityData;
+    Data* found = findByType(&data, ENTITY);
+    if (found == nullptr)
+        entityData = &spawnDefaults[asset->id];
+    else
+        entityData = static_cast<EntityData*>(found);
+
+    PhysicsBody physics;
+    physics.mass = entityData->mass;
+    physics.affectedByGravity = entityData->affectedByGravity;
+
+    // The entity stores a pointer to the shared asset; it does NOT copy it.
+    auto entity = std::make_unique<Entity>(asset, data, physics, position);
+    Entity* raw = entity.get();
+    entities.push_back(std::move(entity));
+    return raw;
 }
 
 void EntityManager::update(float dt, WorldManager* worldManager) {

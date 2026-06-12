@@ -15,6 +15,7 @@
 #include "EntityTypes.h"
 #include "LoadTextureFromFile.h"
 #include "ObjParser.h"
+#include "EntityData.h"
 
 class EntityManager {
 private:
@@ -28,7 +29,7 @@ private:
     std::unordered_map<std::string, EntityAsset*> assetsByName;
 
     // === SPAWN PARAMETERS ==================================================
-    std::vector<SpawnData> spawnDefaults;
+    std::vector<EntityData> spawnDefaults;
 
     // === LIVE ENTITIES =====================================================
     std::vector<std::unique_ptr<Entity>> entities;
@@ -54,11 +55,8 @@ private:
     // and store both in their respective lists
     EntityAsset* registerType(
         std::unique_ptr<EntityAsset> asset,
-        SpawnData                    defaults
+        EntityData                   defaults
     );
-
-    // Shared spawn path used by both public spawn overloads
-    Entity* spawnInternal(EntityAsset* asset, Vec3 position, const SpawnData& sd);
 
 public:
     EntityManager();
@@ -73,12 +71,11 @@ public:
         const std::string& name,
         const char* modelPath, const char* modelFile,
         const char* texturePath, const char* textureFile,
-        Hitbox    hitbox,
-        SpawnData spawnDefaults
+        Hitbox     hitbox,
+        EntityData spawnDefaults
     );
 
-    Entity* spawn(const std::string& typeName, Vec3 position);
-    Entity* spawn(const std::string& typeName, Vec3 position, SpawnData overrideData);
+    Entity* spawn(const std::string& typeName, Vec3 position, std::vector<Data*> data = {});
 
     void update(float dt, WorldManager* worldManager);
 

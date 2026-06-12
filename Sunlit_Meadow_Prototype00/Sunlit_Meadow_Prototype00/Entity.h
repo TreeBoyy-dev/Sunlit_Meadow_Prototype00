@@ -6,14 +6,10 @@
 #include "EntityTypes.h"
 #include "BlockManager.h"
 #include "WorldManager.h"
+#include "EntityData.h"
 
 bool sameBlock(Vec3 a, Vec3 b);
-// ---------------------------------------------------------------------------
-// Entity: a live entity in the world.
-// Holds a pointer to its shared, per-type EntityAsset (model + hitbox, owned by
-// the EntityManager) plus its own per-instance data (position, rotation,
-// EntityData, PhysicsBody). Many entities share one asset.
-// ---------------------------------------------------------------------------
+
 class Entity {
 private:
     const EntityAsset* asset = nullptr;   // shared per-type data
@@ -22,13 +18,13 @@ private:
     Vec3 position = { 0, 0, 0 };
     Vec3 rotation = { 0, 0, 0 };
 
-    EntityData  data;
-    PhysicsBody physics;
+    std::vector<Data*>  data;
+    PhysicsBody         physics;
 
 public:
     Entity(
         const EntityAsset* asset,
-        EntityData         data,
+        std::vector<Data*> data,
         PhysicsBody        physics,
         Vec3               position = { 0, 0, 0 }
     );
@@ -42,15 +38,16 @@ public:
     Mat4 getModelMatrix();
 
     // --- Accessors ---
+    Data* getData(Datatype type);
+
     Vec3 getPosition() const;
     void setPosition(Vec3 p);
     Vec3 getRotation() const;
     void setRotation(Vec3 r);
 
-    EntityData& getData();
     PhysicsBody& getPhysics();
     const EntityAsset* getAsset() const;     // shared per-type asset
     const Hitbox& getHitbox() const;    // pulled from the shared asset
 
-    bool isAlive() const;
+    bool isAlive();
 };

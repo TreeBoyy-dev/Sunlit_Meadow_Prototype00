@@ -12,17 +12,6 @@
 // only needs a pointer to it, so a forward declaration is enough here.
 struct EntityAsset;
 
-// EntityData: per-instance MUTABLE state.
-// Seeded from the type's SpawnData when the entity is spawned, then changes
-// over the entity's lifetime (e.g. it takes damage). NOT shared between
-// entities of the same type.
-struct EntityData {
-    Uint32 id = 0;       // unique per live entity (assigned by the manager)
-    float  health = 1.0f;
-    float  maxHealth = 1.0f;
-    bool   alive = true;
-};
-
 struct PhysicsBody {
     Vec3  velocity = { 0, 0, 0 };
     Vec3  acceleration = { 0, 0, 0 };
@@ -65,17 +54,4 @@ struct EntityAsset {
 
     // --- Collision: same shape for every entity of this type ---
     Hitbox hitbox;
-};
-
-// SpawnData: the per-TYPE default INSTANCE values. These are the values an
-// entity is born with (a sheep always spawns with 20 hp), but which then
-// diverge per instance over time. One SpawnData exists per type and is copied
-// into a fresh entity's EntityData / PhysicsBody at spawn time. This is the
-// "spawn parameters list" — same idea as the asset list, but for the data that
-// differs per individual entity.
-struct SpawnData {
-    float health = 1.0f;
-    float maxHealth = 1.0f;
-    float mass = 1.0f;
-    bool  affectedByGravity = true;
 };

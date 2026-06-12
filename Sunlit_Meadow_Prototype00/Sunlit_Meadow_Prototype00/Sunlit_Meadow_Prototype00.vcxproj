@@ -139,6 +139,7 @@
     <ClCompile Include="ChunkGeneratorWorker.cpp" />
     <ClCompile Include="ChunkMeshWorker.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="EntityData.h" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="EntityTypes.cpp" />
     <ClCompile Include="GenerateChunk.cpp" />
@@ -207,6 +208,7 @@
     <ClInclude Include="WorldManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\.gitignore" />
     <None Include="build_shaders.bat">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </None>

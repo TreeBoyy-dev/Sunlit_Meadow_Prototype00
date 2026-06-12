@@ -9,7 +9,7 @@ bool sameBlock(Vec3 a, Vec3 b) {
 
 Entity::Entity(
     const EntityAsset* asset,
-    EntityData         data,
+    std::vector<Data*> data,
     PhysicsBody        physics,
     Vec3               position)
     : asset(asset),
@@ -45,14 +45,27 @@ Mat4 Entity::getModelMatrix() {
     return mat4Mul(t, r);
 }
 
+Data* Entity::getData(Datatype type)
+{
+    return findByType(&data, type);
+}
+
 Vec3 Entity::getPosition() const { return position; }
 void Entity::setPosition(Vec3 p) { position = p; }
 Vec3 Entity::getRotation() const { return rotation; }
 void Entity::setRotation(Vec3 r) { rotation = r; }
 
-EntityData& Entity::getData() { return data; }
 PhysicsBody& Entity::getPhysics() { return physics; }
 const EntityAsset* Entity::getAsset() const { return asset; }
 const Hitbox& Entity::getHitbox() const { return asset->hitbox; }
 
-bool Entity::isAlive() const { return data.alive; }
+bool Entity::isAlive() {
+    EntityData* entityData;
+    Data* found = findByType(&data, ENTITY);
+    if (found == nullptr)
+        return false;
+    else
+        entityData = static_cast<EntityData*>(found);
+
+    return entityData->alive;
+}

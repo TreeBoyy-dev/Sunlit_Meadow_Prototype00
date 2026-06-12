@@ -48,7 +48,10 @@ public:
 
     void    calcVisibleChunksList(int renderDistance);
 
+
+    void    setBlockIdAt(Vec3 pos);
     Uint16  getBlockIdAt(Vec3 pos);
+    Vec3    getBlockLookingAt(Vec3 lookTarget);
     float   getBlockCollision(Vec3 pos);
 
 private:

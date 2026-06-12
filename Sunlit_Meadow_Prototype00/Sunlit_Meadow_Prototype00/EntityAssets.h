@@ -18,6 +18,7 @@ inline void registerEntityAssets(AppState* state, EntityManager& em) {
     bool ok = true;
 
     // --- Player -------------------------------------------------------------
+
     ok &= em.loadEntityType(
         state, "player",
         baseModelPath, "player.obj",
@@ -26,12 +27,7 @@ inline void registerEntityAssets(AppState* state, EntityManager& em) {
             .offset = { 0.0f, 0.0f, 0.9f },
             .halfExtents = { 0.4f, 0.4f, 0.9f },
         },
-        SpawnData{
-            .health = 20.0f,
-            .maxHealth = 20.0f,
-            .mass = 1.0f,
-            .affectedByGravity = true,
-        }
+        EntityData(20.0f, 20.0f, 1.0f)
         );
 
     // --- Rubber Duck --------------------------------------------------------------
@@ -43,12 +39,7 @@ inline void registerEntityAssets(AppState* state, EntityManager& em) {
             .offset = { 0.0f, 0.0f, 0.3f },
             .halfExtents = { 0.25f, 0.25f, 0.4f },
         },
-        SpawnData{
-            .health = 10.0f,
-            .maxHealth = 10.0f,
-            .mass = 0.5f,
-            .affectedByGravity = true,
-        }
+        EntityData(10.0f, 10.0f, 0.5f)
         );
 
     if (ok)

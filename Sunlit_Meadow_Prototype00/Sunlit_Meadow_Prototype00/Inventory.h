@@ -4,16 +4,16 @@
 
 #include <unordered_map>
 
-
 class Inventory : public Data{
 protected:
-	std::unordered_map<ItemInstance, int> items;
+	std::unordered_map<int, ItemInstance> items;
 
 public:
 	Inventory(Datatype datatype) : Data(datatype) {};
 
 	ItemInstance getItemsFromSlot(int slot);
-	int			 setItemsToSlot  (ItemInstance items);
+	ItemInstance setItemsToSlot  (ItemInstance items, int slot);
 
+	//returns the slot a type of item is or -1 if none is present
 	int			 hasItem         (Uint16 id);
 };

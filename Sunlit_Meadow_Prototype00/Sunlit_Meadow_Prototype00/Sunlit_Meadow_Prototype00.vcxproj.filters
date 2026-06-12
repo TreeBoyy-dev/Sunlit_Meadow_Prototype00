@@ -144,6 +144,9 @@
     <ClCompile Include="Region.cpp">
       <Filter>Source Files\world\worldData</Filter>
     </ClCompile>
+    <ClCompile Include="EntityData.h">
+      <Filter>Source Files\Data</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App_Render.h">
@@ -280,6 +283,7 @@
     <None Include="EntityTypes.h">
       <Filter>Source Files\entity</Filter>
     </None>
+    <None Include="..\..\.gitignore" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="shader.frag.hlsl">
