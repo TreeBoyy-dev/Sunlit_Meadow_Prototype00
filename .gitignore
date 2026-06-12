@@ -1,1 +1,16 @@
+# Build output
+x64/
+x86/
+Debug/
+Release/
+*.pdb
+*.obj
+*.ilk
+*.exe
+# *.dll
+
+# VS files
 .vs/
+*.user
+*.suo
+*.aps
