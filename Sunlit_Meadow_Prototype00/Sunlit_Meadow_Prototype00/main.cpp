@@ -39,6 +39,8 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 
 SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
 {
+    AppState* state = (AppState*)appstate;
+
     if (event->type == SDL_EVENT_QUIT) {
         return SDL_APP_SUCCESS;
     }
@@ -64,6 +66,57 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
     if (event->type == SDL_EVENT_MOUSE_MOTION) {
         mouseMovement.x += event->motion.xrel;
         mouseMovement.y += event->motion.yrel;
+    }
+    if (event->type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+    {
+        switch (event->button.button)
+        {
+        case 1:
+        {
+            //left click
+            Vec3 pos = worldManager.getBlockLookingAt(camera, 20.0f);
+            if (!std::isnan(pos.x)) {
+                Block* b = blockManager.getById(worldManager.getBlockIdAt(pos));
+                if (!b) {
+                    SDL_Log("left_click at %.0f|%.0f|%.0f (block not found)",
+                        pos.x, pos.x, pos.z);
+                    break;
+                }
+                    
+                worldManager.setBlockIdAt(pos, 0, state);
+
+                Entity* player = entityManager.getEntityById(0);
+                Inventory* inventory;
+                Data* found = player->getData(INVENTORY);
+                if (found == nullptr)
+                    break;
+                else
+                    inventory = static_cast<Inventory*>(found);
+
+                SDL_Log("left_click at %.0f|%.0f|%.0f",
+                    pos.x, pos.x, pos.z);
+                ItemInstance items{
+                    itemManager.getItemByName(b->getName()),
+                    1
+                };
+                inventory->addItemToInventory(items);
+            }
+
+            break;
+        }
+
+        case 3:
+        {
+            //right click
+
+            break;
+        }
+
+        default:
+        {
+            break;
+        }
+        }
     }
 
     return SDL_APP_CONTINUE;

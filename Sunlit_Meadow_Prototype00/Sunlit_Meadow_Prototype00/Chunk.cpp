@@ -48,8 +48,8 @@ void Chunk::createMeshes(BlockManager& blockManager) {
 }
 
 void Chunk::optimizeMeshes() {
-	opaqueMesh.optimizeMesh();
-	transparentMesh.optimizeMesh();
+	//opaqueMesh.optimizeMesh();
+	//transparentMesh.optimizeMesh();
 }
 
 bool Chunk::uploadMeshes(AppState* state, SDL_GPUTexture* textureArray) {
@@ -106,6 +106,16 @@ Uint16 Chunk::getBlockId(int x, int y, int z) {
 			x, y, z, chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
 	else
 		return storage.getId(x, y, z);
+}
+
+void Chunk::setBlockId(int x, int y, int z, Uint16 id) {
+	if (x < 0 || x > 15 ||
+		y < 0 || y > 15 ||
+		z < 0 || z > 15)
+		SDL_Log("[Chunk] couldn't get BlockID at: %d:%d:%d in chunk %d:%d:%d",
+			x, y, z, chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
+	else
+		storage.set(x, y, z, id);
 }
 
 ChunkCoord Chunk::getChunkCoordinates() {

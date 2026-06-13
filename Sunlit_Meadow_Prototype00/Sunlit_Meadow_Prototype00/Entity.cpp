@@ -8,11 +8,13 @@ bool sameBlock(Vec3 a, Vec3 b) {
 }
 
 Entity::Entity(
+    Uint16 id,
     const EntityAsset* asset,
     std::vector<Data*> data,
     PhysicsBody        physics,
     Vec3               position)
-    : asset(asset),
+    : id(id),
+    asset(asset),
     position(position),
     data(std::move(data)),
     physics(physics)
@@ -50,6 +52,7 @@ Data* Entity::getData(Datatype type)
     return findByType(&data, type);
 }
 
+Uint16 Entity::getId() { return id; }
 Vec3 Entity::getPosition() const { return position; }
 void Entity::setPosition(Vec3 p) { position = p; }
 Vec3 Entity::getRotation() const { return rotation; }

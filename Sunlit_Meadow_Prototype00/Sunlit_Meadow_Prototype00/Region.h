@@ -44,8 +44,9 @@ public:
     RegionCoord getCoordinates();
     void destroyRegion(AppState* state);
 
-private:
     void queueMeshUpdate(ChunkCoord coord);
+
+private:
     bool collectMeshResults(AppState* state,
         SDL_GPUTexture* textureArray,
         std::vector<ChunkCoord>& outNewlyReady);

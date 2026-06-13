@@ -49,7 +49,7 @@ public:
     void    calcVisibleChunksList(int renderDistance);
 
 
-    void    setBlockIdAt(Vec3 pos);
+    void    setBlockIdAt(Vec3 pos, Uint16 id, AppState* state);
     Uint16  getBlockIdAt(Vec3 pos);
     Vec3    getBlockLookingAt(Camera cam, const float MAX_REACH);
     float   getBlockCollision(Vec3 pos);

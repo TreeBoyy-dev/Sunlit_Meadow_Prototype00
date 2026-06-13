@@ -12,6 +12,8 @@ bool sameBlock(Vec3 a, Vec3 b);
 
 class Entity {
 private:
+    Uint16 id;
+
     const EntityAsset* asset = nullptr;   // shared per-type data
     Uint16             supportingBlockID;
 
@@ -23,6 +25,7 @@ private:
 
 public:
     Entity(
+        Uint16 id,
         const EntityAsset* asset,
         std::vector<Data*> data,
         PhysicsBody        physics,
@@ -40,6 +43,7 @@ public:
     // --- Accessors ---
     Data* getData(Datatype type);
 
+    Uint16 getId();
     Vec3 getPosition() const;
     void setPosition(Vec3 p);
     Vec3 getRotation() const;

@@ -5,7 +5,7 @@
 #include "LoadShader.h"
 #include "BuildAbsolutePath.h"
 
-EntityManager::EntityManager() {}
+EntityManager::EntityManager() : nextId(0){}
 
 // Pipeline: its own vertex/fragment shaders, but reuses the engine WorldVertex
 // layout and UBO so it slots into the same view/projection math as the world.
@@ -305,9 +305,11 @@ Entity* EntityManager::spawn(const std::string& typeName, Vec3 position, std::ve
     physics.affectedByGravity = entityData->affectedByGravity;
 
     // The entity stores a pointer to the shared asset; it does NOT copy it.
-    auto entity = std::make_unique<Entity>(asset, data, physics, position);
+    auto entity = std::make_unique<Entity>(nextId, asset, data, physics, position);
     Entity* raw = entity.get();
     entities.push_back(std::move(entity));
+
+    nextId++;
     return raw;
 }
 
@@ -355,4 +357,15 @@ EntityAsset* EntityManager::getAssetById(Uint16 id) {
 EntityAsset* EntityManager::getAssetByName(const std::string& name) {
     auto it = assetsByName.find(name);
     return it != assetsByName.end() ? it->second : nullptr;
+}
+
+Entity* EntityManager::getEntityById(Uint16 id) {
+    for (const auto& entity : entities) {
+        if (entity)
+        {
+            if(entity->getId() == id)
+                return entity.get();   // raw pointer, ownership stays with the vector
+        }
+    }
+    return nullptr;
 }

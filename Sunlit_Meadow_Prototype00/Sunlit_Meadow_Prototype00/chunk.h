@@ -33,6 +33,7 @@ public:
 
     bool getIsGenerated();
     Uint16 getBlockId(int x, int y, int z);
+    void   setBlockId(int x, int y, int z, Uint16 id);
     ChunkCoord getChunkCoordinates();
 
     void createMeshes(BlockManager& blockManager);

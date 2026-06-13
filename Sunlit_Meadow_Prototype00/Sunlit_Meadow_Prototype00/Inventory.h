@@ -9,7 +9,7 @@ protected:
 	std::unordered_map<int, ItemInstance> items;
 
 public:
-	Inventory(Datatype datatype) : Data(datatype) {};
+	Inventory() : Data(datatype) {};
 
 	ItemInstance getItemsFromSlot  (int slot);
 	ItemInstance setItemsToSlot    (ItemInstance items, int slot);

@@ -35,9 +35,10 @@ void drawDebugUI(void* appstate) {
     }
     else
     {
-        //SDL_Log("closesed Block: %d  %d  %d",pos.x, pos.y, pos.z);
-        snprintf(buffer, sizeof(buffer), "closesed Block: %.0f  %.0f  %.0f | id: %d",
-            pos.x, pos.y, pos.z, worldManager.getBlockIdAt(pos));
+        Block* b = blockManager.getById(worldManager.getBlockIdAt(pos));
+        snprintf(buffer, sizeof(buffer),
+            "closesed Block: %.0f  %.0f  %.0f | %s",
+            pos.x, pos.y, pos.z, b->getName().c_str());
         ui.drawText(buffer, 8.0f, y, white); y += lineH;
     }
 }

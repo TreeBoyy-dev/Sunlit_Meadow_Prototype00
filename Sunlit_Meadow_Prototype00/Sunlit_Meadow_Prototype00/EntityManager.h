@@ -32,6 +32,7 @@ private:
     std::vector<EntityData> spawnDefaults;
 
     // === LIVE ENTITIES =====================================================
+    Uint16 nextId;
     std::vector<std::unique_ptr<Entity>> entities;
 
     Uint16 nextTypeId = 0;
@@ -88,4 +89,7 @@ public:
     // --- Type-asset lookups ---
     EntityAsset* getAssetById(Uint16 id);
     EntityAsset* getAssetByName(const std::string& name);
+
+    // entity lookup
+    Entity* getEntityById(Uint16 id);
 };

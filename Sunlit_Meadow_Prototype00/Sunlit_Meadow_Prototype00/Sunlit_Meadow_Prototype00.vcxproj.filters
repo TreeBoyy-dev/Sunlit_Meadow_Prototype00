@@ -49,6 +49,9 @@
     <Filter Include="Source Files\world\WorldGen.h\Noise">
       <UniqueIdentifier>{68bd1e19-e6b3-4013-81f2-37f6ca3cccbd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\world\WorldGen.h\MeshOptimizations">
+      <UniqueIdentifier>{5a2feda6-889f-4b6e-834c-1ea73bf3eb2d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GenerateChunk.h">

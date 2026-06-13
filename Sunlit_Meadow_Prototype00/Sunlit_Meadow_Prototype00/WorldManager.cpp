@@ -298,6 +298,22 @@ Uint16 WorldManager::getBlockIdAt(Vec3 pos) {
     if (z < 0) z += 16;
     return chunk->getBlockId(x, y, z);
 }
+void   WorldManager::setBlockIdAt(Vec3 pos, Uint16 id, AppState* state) {
+    Region* region = getRegion(getPlayerRegionCoord(pos));
+    Chunk* chunk = region->getChunk(getPlayerChunkCoord(pos));
+    if (!chunk || !chunk->getIsGenerated())
+        return;
+    int x = (int)(pos.x) % CHUNK_SIZE;
+    if (x < 0) x += 16;
+    int y = (int)(pos.y) % CHUNK_SIZE;
+    if (y < 0) y += 16;
+    int z = (int)(pos.z) % CHUNK_SIZE;
+    if (z < 0) z += 16;
+    chunk->setBlockId(x, y, z, id);
+    chunk->createMeshes(*blockManager);
+    //region->queueMeshUpdate(chunk->getChunkCoordinates());
+    chunk->uploadMeshes(state, textureArray);
+}
 
 Vec3 WorldManager::getBlockLookingAt(Camera cam, const float MAX_REACH) {
     
@@ -348,14 +364,14 @@ float WorldManager::getBlockCollision(Vec3 pos) {
 }
 
 //global helpers -----------------------------------------------------------------
-ChunkCoord getPlayerChunkCoord(Vec3 playerPosition) {
+ChunkCoord  getPlayerChunkCoord   (Vec3 playerPosition) {
     return {
         (int)std::floor(playerPosition.x / CHUNK_SIZE),
         (int)std::floor(playerPosition.y / CHUNK_SIZE),
         (int)std::floor(playerPosition.z / CHUNK_SIZE)
     };
 }
-RegionCoord getPlayerRegionCoord(Vec3 playerPosition) {
+RegionCoord getPlayerRegionCoord  (Vec3 playerPosition) {
     return {
         (int)std::floor(playerPosition.x / (CHUNK_SIZE * REGION_SIZE_YX)),
         (int)std::floor(playerPosition.y / (CHUNK_SIZE * REGION_SIZE_YX)),
