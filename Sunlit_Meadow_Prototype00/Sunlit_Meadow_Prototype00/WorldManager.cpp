@@ -1,3 +1,4 @@
+#include <limits.h>
 #include <math.h>
 #include <chrono>
 #include <algorithm>
@@ -296,6 +297,50 @@ Uint16 WorldManager::getBlockIdAt(Vec3 pos) {
     int z = (int)(pos.z) % CHUNK_SIZE;
     if (z < 0) z += 16;
     return chunk->getBlockId(x, y, z);
+}
+
+Vec3 WorldManager::getBlockLookingAt(Camera cam, const float MAX_REACH) {
+    
+    Vec3 origin = cam.position;
+    Vec3 dir = vec3Normalize(vec3Sub(cam.lookTarget, origin));
+
+    // voxel the ray starts in
+    int x = (int)std::floor(origin.x);
+    int y = (int)std::floor(origin.y);
+    int z = (int)std::floor(origin.z);
+
+    const float INF = std::numeric_limits<float>::infinity();
+
+    int stepX = (dir.x > 0.0f) ? 1 : -1;
+    int stepY = (dir.y > 0.0f) ? 1 : -1;
+    int stepZ = (dir.z > 0.0f) ? 1 : -1;
+
+    // distance along the ray to cross one full block on each axis
+    float tDeltaX = (dir.x != 0.0f) ? fabsf(1.0f / dir.x) : INF;
+    float tDeltaY = (dir.y != 0.0f) ? fabsf(1.0f / dir.y) : INF;
+    float tDeltaZ = (dir.z != 0.0f) ? fabsf(1.0f / dir.z) : INF;
+
+    // distance along the ray to the first boundary on each axis
+    float tMaxX = (dir.x != 0.0f)
+        ? ((stepX > 0 ? (float)(x + 1) - origin.x : origin.x - (float)x) * tDeltaX) : INF;
+    float tMaxY = (dir.y != 0.0f)
+        ? ((stepY > 0 ? (float)(y + 1) - origin.y : origin.y - (float)y) * tDeltaY) : INF;
+    float tMaxZ = (dir.z != 0.0f)
+        ? ((stepZ > 0 ? (float)(z + 1) - origin.z : origin.z - (float)z) * tDeltaZ) : INF;
+
+    float t = 0.0f;
+    while (t <= MAX_REACH) {
+        // sample the center of the current voxel
+        if (getBlockIdAt({ x + 0.5f, y + 0.5f, z + 0.5f }) != 0)
+            return { (float)x, (float)y, (float)z };
+
+        // step into the next voxel across the nearest boundary
+        if (tMaxX <= tMaxY && tMaxX <= tMaxZ) { x += stepX; t = tMaxX; tMaxX += tDeltaX; }
+        else if (tMaxY <= tMaxZ) { y += stepY; t = tMaxY; tMaxY += tDeltaY; }
+        else { z += stepZ; t = tMaxZ; tMaxZ += tDeltaZ; }
+    }
+
+    return { NAN, NAN, NAN };   // nothing solid within reach
 }
 
 float WorldManager::getBlockCollision(Vec3 pos) {

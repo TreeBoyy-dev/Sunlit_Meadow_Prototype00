@@ -26,7 +26,7 @@ void Region::requestChunkGeneration(ChunkCoord chunkCoordinates) {
     ColumnCoord column = { chunkCoordinates.x, chunkCoordinates.y };
 
     if (requestedColumns.count(column)) return; // column already generated or in flight
-    SDL_Log("[Region] requesting column: %d|%d", chunkCoordinates.x, chunkCoordinates.y);
+    //SDL_Log("[Region] requesting column: %d|%d", chunkCoordinates.x, chunkCoordinates.y);
 
     requestedColumns.insert(column);
     g_worker.requestColumn(column);

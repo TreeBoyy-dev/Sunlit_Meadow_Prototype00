@@ -27,6 +27,19 @@ void drawDebugUI(void* appstate) {
     snprintf(buffer, sizeof(buffer), "Region: %d  %d  %d",
         playerRegionCoords.x, playerRegionCoords.y, playerRegionCoords.z);
     ui.drawText(buffer, 8.0f, y, white); y += lineH;
+
+    Vec3 pos = worldManager.getBlockLookingAt(camera, 20.0f);
+    if (std::isnan(pos.x))
+    {
+        ui.drawText("[no Block in reach]", 8.0f, y, white); y += lineH;
+    }
+    else
+    {
+        //SDL_Log("closesed Block: %d  %d  %d",pos.x, pos.y, pos.z);
+        snprintf(buffer, sizeof(buffer), "closesed Block: %.0f  %.0f  %.0f | id: %d",
+            pos.x, pos.y, pos.z, worldManager.getBlockIdAt(pos));
+        ui.drawText(buffer, 8.0f, y, white); y += lineH;
+    }
 }
 
 SDL_AppResult App_Render(void* appstate)
