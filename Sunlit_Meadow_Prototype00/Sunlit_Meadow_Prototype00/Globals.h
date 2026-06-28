@@ -19,6 +19,8 @@ extern float aspect;
 extern bool renderDebugUI;
 extern float fps;
 
+extern int selectedSlot; //HotbarSlot
+
 extern Skybox skybox;
 
 // --- Camera ---

@@ -155,7 +155,7 @@ void drawHotbar(UI_Renderer* ui) {
 
     const UITexture& hb = it->second;
 
-    constexpr float kHotbarScale = 15.0f;
+    constexpr float kHotbarScale = 5.0f;
 
     float w = static_cast<float>(hb.w) * kHotbarScale;
     float h = static_cast<float>(hb.h) * kHotbarScale;

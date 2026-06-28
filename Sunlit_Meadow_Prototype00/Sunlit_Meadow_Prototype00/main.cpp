@@ -112,8 +112,58 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
         case 3:
         {
             //right click
-            Vec3 pos = worldManager.getBlockLookingAt(camera, 20.0f);
+            int face;
+            Vec3 pos = worldManager.getBlockLookingAt(camera, 20.0f, &face);
             if (!std::isnan(pos.x)) {
+                switch (face) {
+                case FACE_BACK:
+                    pos.x--; break;
+
+                case FACE_FRONT:
+                    pos.x++; break;
+
+                case FACE_RIGHT:
+                    pos.y--; break;
+
+                case FACE_LEFT:
+                    pos.y++; break;
+
+                case FACE_UP:
+                    pos.z++; break;
+
+                case FACE_DOWN:
+                    pos.z--; break;
+
+                default:
+                    SDL_Log("[Event] right click: no face"); break;
+                }
+
+                Entity* player = entityManager.getEntityById(0);
+                if (player == nullptr) {            // getEntityById can return null
+                    SDL_Log("[Event] right click: no player entity (id 0)");
+                    return SDL_APP_CONTINUE;
+                }
+
+                Inventory* inventory;
+                Data* found = player->getData(INVENTORY);
+                if (found == nullptr) {
+                    //SDL_Log("no Inventory found");
+                    return SDL_APP_CONTINUE;
+                }
+                else
+                    inventory = static_cast<Inventory*>(found);
+
+                ItemInstance instance = inventory->getItemsFromSlot(selectedSlot);
+                if (instance.isEmpty())
+                    return SDL_APP_CONTINUE;
+
+                Item_Placable* placebleItem;
+                if (instance.item->getCategory() == ITEM_CATEGORY_BLOCK)
+                    placebleItem = static_cast<Item_Placable*>(instance.item);
+                else
+                    return SDL_APP_CONTINUE;
+
+                worldManager.setBlockIdAt(pos, placebleItem->getID(), state);
 
             }
             break;
@@ -124,6 +174,20 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
             break;
         }
         }
+    }
+    if (event->type == SDL_EVENT_MOUSE_WHEEL)
+    {
+        if (event->wheel.y > 0)
+            selectedSlot++;
+        else
+            selectedSlot--;
+
+        if (selectedSlot > 9)
+            selectedSlot = 9;
+        if (selectedSlot < 0)
+            selectedSlot = 0;
+
+        SDL_Log("[Event] mouse: selectedSlot = %d", selectedSlot);
     }
 
     return SDL_APP_CONTINUE;

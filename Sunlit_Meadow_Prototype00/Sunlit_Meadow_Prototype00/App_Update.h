@@ -75,9 +75,9 @@ bool updateCamera(float dt) {
     };
 
     camera.forward = {
-    cosf(pitchRad) * cosf(yawRad),  // x
-    cosf(pitchRad) * sinf(yawRad),  // y
-    sinf(pitchRad)                  // z is up
+        cosf(pitchRad) * cosf(yawRad),  // x
+        cosf(pitchRad) * sinf(yawRad),  // y
+        sinf(pitchRad)                  // z is up
     };
 
     camera.lookTarget = {
@@ -87,6 +87,8 @@ bool updateCamera(float dt) {
     };
 
     camera.forward = vec3Normalize(camera.forward);
+    //camera.lookTarget = vec3Normalize(camera.lookTarget);
+
 
     return true;
 }

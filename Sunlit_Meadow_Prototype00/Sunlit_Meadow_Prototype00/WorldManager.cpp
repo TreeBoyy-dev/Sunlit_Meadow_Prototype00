@@ -315,12 +315,11 @@ void   WorldManager::setBlockIdAt(Vec3 pos, Uint16 id, AppState* state) {
     chunk->uploadMeshes(state, textureArray);
 }
 
-Vec3 WorldManager::getBlockLookingAt(Camera cam, const float MAX_REACH) {
-    
+Vec3 WorldManager::getBlockLookingAt(Camera cam, const float MAX_REACH, int* outFace) {
+
     Vec3 origin = cam.position;
     Vec3 dir = vec3Normalize(vec3Sub(cam.lookTarget, origin));
 
-    // voxel the ray starts in
     int x = (int)std::floor(origin.x);
     int y = (int)std::floor(origin.y);
     int z = (int)std::floor(origin.z);
@@ -331,12 +330,10 @@ Vec3 WorldManager::getBlockLookingAt(Camera cam, const float MAX_REACH) {
     int stepY = (dir.y > 0.0f) ? 1 : -1;
     int stepZ = (dir.z > 0.0f) ? 1 : -1;
 
-    // distance along the ray to cross one full block on each axis
     float tDeltaX = (dir.x != 0.0f) ? fabsf(1.0f / dir.x) : INF;
     float tDeltaY = (dir.y != 0.0f) ? fabsf(1.0f / dir.y) : INF;
     float tDeltaZ = (dir.z != 0.0f) ? fabsf(1.0f / dir.z) : INF;
 
-    // distance along the ray to the first boundary on each axis
     float tMaxX = (dir.x != 0.0f)
         ? ((stepX > 0 ? (float)(x + 1) - origin.x : origin.x - (float)x) * tDeltaX) : INF;
     float tMaxY = (dir.y != 0.0f)
@@ -344,18 +341,33 @@ Vec3 WorldManager::getBlockLookingAt(Camera cam, const float MAX_REACH) {
     float tMaxZ = (dir.z != 0.0f)
         ? ((stepZ > 0 ? (float)(z + 1) - origin.z : origin.z - (float)z) * tDeltaZ) : INF;
 
+    int face = FACE_NONE;   // we start inside the origin voxel, no face crossed yet
+
     float t = 0.0f;
     while (t <= MAX_REACH) {
         // sample the center of the current voxel
-        if (getBlockIdAt({ x + 0.5f, y + 0.5f, z + 0.5f }) != 0)
+        if (getBlockIdAt({ x + 0.5f, y + 0.5f, z + 0.5f }) != 0) {
+            if (outFace) *outFace = face;
             return { (float)x, (float)y, (float)z };
+        }
 
-        // step into the next voxel across the nearest boundary
-        if (tMaxX <= tMaxY && tMaxX <= tMaxZ) { x += stepX; t = tMaxX; tMaxX += tDeltaX; }
-        else if (tMaxY <= tMaxZ) { y += stepY; t = tMaxY; tMaxY += tDeltaY; }
-        else { z += stepZ; t = tMaxZ; tMaxZ += tDeltaZ; }
+        // step into the next voxel across the nearest boundary,
+        // and record which face of the new block we entered through
+        if (tMaxX <= tMaxY && tMaxX <= tMaxZ) {
+            x += stepX; t = tMaxX; tMaxX += tDeltaX;
+            face = (stepX > 0) ? FACE_BACK : FACE_FRONT;   // moving +X enters the -X face
+        }
+        else if (tMaxY <= tMaxZ) {
+            y += stepY; t = tMaxY; tMaxY += tDeltaY;
+            face = (stepY > 0) ? FACE_RIGHT : FACE_LEFT;   // moving +Y enters the -Y face
+        }
+        else {
+            z += stepZ; t = tMaxZ; tMaxZ += tDeltaZ;
+            face = (stepZ > 0) ? FACE_DOWN : FACE_UP;      // moving +Z enters the -Z face
+        }
     }
 
+    if (outFace) *outFace = FACE_NONE;
     return { NAN, NAN, NAN };   // nothing solid within reach
 }
 

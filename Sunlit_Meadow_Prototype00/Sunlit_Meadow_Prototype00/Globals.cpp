@@ -6,6 +6,8 @@ float fovDeg = 70.0f;
 float fovX = 0.0f;
 float aspect = 1.0f;
 
+int selectedSlot = 0; //HotbarSlot
+
 bool renderDebugUI = true;
 float fps = 0;
 
@@ -36,7 +38,7 @@ BlockManager blockManager;
 
 // --- WorldManager ---
 WorldManager worldManager;
-const int RENDER_DISTANCE = 12;
+const int RENDER_DISTANCE = 5;
 
 ChunkCoord prevPlayerChunkCoords = { 0,0,0 };
 
