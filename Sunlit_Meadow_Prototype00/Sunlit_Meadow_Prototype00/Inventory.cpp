@@ -23,14 +23,18 @@ ItemInstance Inventory::setItemsToSlot(ItemInstance newItems, int slot) {
 }
 
 bool Inventory::addItemToInventory(ItemInstance newItems, int slot) {
-    if (newItems.isEmpty())
-        return false;            // nothing to add
+    if (newItems.isEmpty()) {
+        SDL_Log("[Inventory] no Items to add");
+        return false;
+    }
 
     // --- specific slot requested ---
     if (slot != -1) {
         auto it = items.find(slot);
-        if (it != items.end() && !it->second.isEmpty())
-            return false;        // slot already occupied
+        if (it != items.end() && !it->second.isEmpty()) {
+            SDL_Log("[Inventory] Items not added - slot already occupied");
+            return false;
+        }
         items[slot] = newItems;
         return true;
     }
@@ -76,4 +80,21 @@ int Inventory::hasItem(Uint16 id) {
             return slot;
     }
     return -1;
+}
+
+void Inventory::printContents() {
+    if (items.empty()) {
+        SDL_Log("[Inventory] DEBUG: empty");
+        return;
+    }
+
+    for (const auto& [slot, instance] : items) {
+        if (instance.isEmpty())
+            continue;   // skip stray empty entries
+
+        SDL_Log("[Inventory] DEBUG: item: %s | count: %d | slot: %d",
+            instance.item->getName().c_str(),
+            instance.count,
+            slot);
+    }
 }

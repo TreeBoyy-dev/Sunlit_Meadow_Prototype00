@@ -286,7 +286,8 @@ Entity* EntityManager::spawn(const std::string& typeName, Vec3 position, SpawnDa
     return spawnInternal(asset, position, overrideData);
 //*/
 
-Entity* EntityManager::spawn(const std::string& typeName, Vec3 position, std::vector<Data*> data) {
+Entity* EntityManager::spawn(const std::string& typeName, Vec3 position,
+    std::vector<std::unique_ptr<Data>> data) {
     EntityAsset* asset = getAssetByName(typeName);
     if (!asset) {
         SDL_Log("[Entity] spawn: unknown type '%s' (register it first)", typeName.c_str());
@@ -305,7 +306,7 @@ Entity* EntityManager::spawn(const std::string& typeName, Vec3 position, std::ve
     physics.affectedByGravity = entityData->affectedByGravity;
 
     // The entity stores a pointer to the shared asset; it does NOT copy it.
-    auto entity = std::make_unique<Entity>(nextId, asset, data, physics, position);
+    auto entity = std::make_unique<Entity>(nextId, asset, std::move(data), physics, position);
     Entity* raw = entity.get();
     entities.push_back(std::move(entity));
 

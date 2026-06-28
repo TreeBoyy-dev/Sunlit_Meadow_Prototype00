@@ -82,24 +82,28 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
                         pos.x, pos.x, pos.z);
                     break;
                 }
-                    
+                
+                SDL_Log("left_click at %.0f|%.0f|%.0f",
+                    pos.x, pos.x, pos.z);
+
                 worldManager.setBlockIdAt(pos, 0, state);
 
                 Entity* player = entityManager.getEntityById(0);
                 Inventory* inventory;
                 Data* found = player->getData(INVENTORY);
-                if (found == nullptr)
+                if (found == nullptr) {
+                    SDL_Log("no Inventory found");
                     break;
+                }
                 else
                     inventory = static_cast<Inventory*>(found);
 
-                SDL_Log("left_click at %.0f|%.0f|%.0f",
-                    pos.x, pos.x, pos.z);
-                ItemInstance items{
-                    itemManager.getItemByName(b->getName()),
-                    1
-                };
-                inventory->addItemToInventory(items);
+                Item* item = itemManager.getItemByName(b->getName());
+                ItemInstance items{item, 1};
+                SDL_Log("new Items: %s, %dx", item->getName().c_str(), items.count);
+                if (!inventory->addItemToInventory(items))
+                    SDL_Log("[main] Items couldn't be added");
+                //inventory->printContents();
             }
 
             break;
@@ -108,7 +112,10 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
         case 3:
         {
             //right click
+            Vec3 pos = worldManager.getBlockLookingAt(camera, 20.0f);
+            if (!std::isnan(pos.x)) {
 
+            }
             break;
         }
 

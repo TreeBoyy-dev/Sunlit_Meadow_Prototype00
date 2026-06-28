@@ -10,14 +10,15 @@ bool sameBlock(Vec3 a, Vec3 b) {
 Entity::Entity(
     Uint16 id,
     const EntityAsset* asset,
-    std::vector<Data*> data,
+    std::vector<std::unique_ptr<Data>> dataIn,
     PhysicsBody        physics,
     Vec3               position)
     : id(id),
     asset(asset),
     position(position),
-    data(std::move(data)),
-    physics(physics)
+    data(std::move(dataIn)),
+    physics(physics),
+    supportingBlockID(0)
 {
 }
 

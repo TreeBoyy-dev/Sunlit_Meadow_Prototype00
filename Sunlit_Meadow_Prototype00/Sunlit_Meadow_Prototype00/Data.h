@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 enum Datatype {
 	INVENTORY,
@@ -16,13 +17,12 @@ public:
     Datatype getDatatype() { return datatype; };
 };
 
-inline Data* findByType(std::vector<Data*>* list, Datatype type) {
+inline Data* findByType(std::vector<std::unique_ptr<Data>>* list, Datatype type) {
     if (list == nullptr)
         return nullptr;
-
-    for (Data* element : *list) {
+    for (const std::unique_ptr<Data>& element : *list) {
         if (element != nullptr && element->getDatatype() == type)
-            return element;
+            return element.get();   // non-owning raw pointer back to caller
     }
     return nullptr;
 }

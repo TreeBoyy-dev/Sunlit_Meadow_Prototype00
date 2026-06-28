@@ -99,5 +99,45 @@ void Item_Placable::initModel(
         return;
     }
 
-    //TODO - get texture and model from block
+    // A placeable item ignores the texture/model parameters above and derives
+    // everything from its block. Blocks live under "Textures/Blocks".
+    static const char* blockTexturePath = "Textures/Blocks";
+
+    // --- geometry -----------------------------------------------------------
+    // The block hands back a ModelVertex mesh whose UVs are remapped into a
+    // 3-cell [ side | top | bottom ] atlas. obj_parse (inside buildItemModel)
+    // bakes MODEL_ROTATION, so the icon shares the regular items' orientation
+    // space (the offscreen camera looks down -Z; the tilt you described is the
+    // pitch/yaw/roll you pass to drawItem). ItemModel::computeBounds recenters
+    // the mesh afterwards.
+    std::vector<ModelVertex> verts;
+    std::vector<Uint16>      indices;
+    if (!block->buildItemModel(verts, indices)) {
+        SDL_Log("[Item_Placable] '%s': buildItemModel failed", name.c_str());
+        return;
+    }
+    model.setMesh(verts, indices);
+
+    // --- texture ------------------------------------------------------------
+    // Build the matching atlas from the block's three materials. Cell order
+    // here must mirror Block::buildItemModel: side, then top, then bottom.
+    // A null top/bottom file (e.g. MATERIAL_AIR) just reuses the side image.
+    const char* sideFile =   materialTextureFile(block->getSideMaterial());
+    const char* topFile =    materialTextureFile(block->getTopMaterial());
+    const char* bottomFile = materialTextureFile(block->getBottomMaterial());
+
+    if (!sideFile) {
+        // No usable texture at all (e.g. an "air" placeable). Leave the model
+        // textureless; drawModelAt falls back to its magenta placeholder.
+        SDL_Log("[Item_Placable] '%s': block has no side texture, skipping", name.c_str());
+        return;
+    }
+
+    GPUTextureWH atlas;
+    if (!buildBlockIconTexture(&atlas, gpu, blockTexturePath, sideFile, topFile, bottomFile)) {
+        SDL_Log("[Item_Placable] '%s': failed to build block icon atlas", name.c_str());
+        return;
+    }
+
+    model.setTexture(atlas.texture);
 }

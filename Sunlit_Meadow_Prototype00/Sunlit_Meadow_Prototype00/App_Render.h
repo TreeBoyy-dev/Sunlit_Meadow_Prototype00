@@ -2,6 +2,7 @@
 
 #include "Globals.h"
 #include "SurvivalUI.h"
+#include "Inventory.h"
 
 void drawDebugUI(void* appstate) {
     AppState* state = (AppState*)appstate;

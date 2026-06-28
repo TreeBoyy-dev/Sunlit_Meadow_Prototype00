@@ -1,6 +1,8 @@
 #include "SurvivalUI.h"
 #include "LoadTextureFromFile.h"
 #include "BuildAbsolutePath.h"
+#include "Inventory.h"
+#include "Globals.h"
 
 #include <filesystem>
 #include <fstream>
@@ -91,6 +93,61 @@ void drawSurvivalUI(UI_Renderer* ui) {
 	drawHotbar(ui);
 }
 
+void drawInventoryHotbar(
+    UI_Renderer* ui,
+    const int originX,
+    const int originY,
+    float multiplier
+) {
+    Entity* player = entityManager.getEntityById(0);
+    if (player == nullptr) {            // getEntityById can return null
+        SDL_Log("no player entity (id 0)");
+        return;
+    }
+
+    Inventory* inventory;
+    Data* found = player->getData(INVENTORY);
+    if (found == nullptr) {
+        //SDL_Log("no Inventory found");
+        return;
+    }
+    else
+        inventory = static_cast<Inventory*>(found);
+
+    const int offsetX = 17;
+
+    const float itemSize = 16.0f * multiplier;
+    const float stepX = offsetX * multiplier;
+
+    constexpr float kBlockPitch = 0.79f;
+    constexpr float kBlockYaw = 0.91f;
+    constexpr float kBlockRoll = -2.43; //0.68f;
+
+    constexpr float kItemPitch = 1.6f;
+    constexpr float kItemYaw = 1.6f;
+    constexpr float kItemRoll = 0.0f;
+
+    for (int i = 0; i < 10; i++) {
+        ItemInstance instance = inventory->getItemsFromSlot(i);
+        if (instance.isEmpty())
+            continue;
+
+        ItemModel* model = instance.item->getModel();
+        if (model == nullptr || model->isEmpty())
+            continue;
+
+        const bool isBlock = (instance.item->getCategory() == ITEM_CATEGORY_BLOCK);
+        const float pitch = isBlock ? kBlockPitch : kItemPitch;
+        const float yaw = isBlock ? kBlockYaw : kItemYaw;
+        const float roll = isBlock ? kBlockRoll : kItemRoll;
+
+        const float x = static_cast<float>(originX) + stepX * i;
+        const float y = static_cast<float>(originY);
+
+        ui->drawItemModel(model, x, y, itemSize, itemSize, pitch, yaw, roll);
+    }
+}
+
 void drawHotbar(UI_Renderer* ui) {
 
     auto it = UITextureSet.find("hotbar_transperent");
@@ -98,7 +155,7 @@ void drawHotbar(UI_Renderer* ui) {
 
     const UITexture& hb = it->second;
 
-    constexpr float kHotbarScale = 3.0f;
+    constexpr float kHotbarScale = 15.0f;
 
     float w = static_cast<float>(hb.w) * kHotbarScale;
     float h = static_cast<float>(hb.h) * kHotbarScale;
@@ -108,4 +165,5 @@ void drawHotbar(UI_Renderer* ui) {
     float y = ui->getScreenH() - h - bottomMargin;
 
     ui->drawTexture(hb.texture, x, y, w, h);
+    drawInventoryHotbar(ui, x, y, kHotbarScale);
 }

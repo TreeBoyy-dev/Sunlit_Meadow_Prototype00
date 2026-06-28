@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
+#include <memory>
 #include <SDL3/SDL.h>
+
 #include "Vectors.h"
 #include "DataStructures.h"
 #include "EntityTypes.h"
@@ -20,14 +22,14 @@ private:
     Vec3 position = { 0, 0, 0 };
     Vec3 rotation = { 0, 0, 0 };
 
-    std::vector<Data*>  data;
+    std::vector<std::unique_ptr<Data>>  data;
     PhysicsBody         physics;
 
 public:
     Entity(
         Uint16 id,
         const EntityAsset* asset,
-        std::vector<Data*> data,
+        std::vector<std::unique_ptr<Data>> dataIn,
         PhysicsBody        physics,
         Vec3               position = { 0, 0, 0 }
     );

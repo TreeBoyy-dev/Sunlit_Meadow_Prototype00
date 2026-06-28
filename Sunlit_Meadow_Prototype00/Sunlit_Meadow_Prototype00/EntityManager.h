@@ -76,8 +76,8 @@ public:
         EntityData spawnDefaults
     );
 
-    Entity* spawn(const std::string& typeName, Vec3 position, std::vector<Data*> data = {});
-
+    Entity* spawn(const std::string& typeName, Vec3 position,
+        std::vector<std::unique_ptr<Data>> data = {});
     void update(float dt, WorldManager* worldManager);
 
     void draw(

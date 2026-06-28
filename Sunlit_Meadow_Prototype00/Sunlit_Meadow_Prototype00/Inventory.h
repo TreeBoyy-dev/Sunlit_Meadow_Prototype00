@@ -19,4 +19,6 @@ public:
 
 	//returns the slot a type of item is or -1 if none is present
 	int			 hasItem         (Uint16 id);
+
+	void printContents();
 };

@@ -1,10 +1,12 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <array>
+
+#include "ObjParser.h"
 #include "Materials.h"
 #include "BlockModel.h"
 #include "WorldTypes.h"
-#include <array>
 
 class Block {
 private:
@@ -43,6 +45,19 @@ public:
         int x, int y, int z
     );
 
+    // Builds a render-ready inventory-icon mesh for this block.
+    // Re-parses the block's .obj (so MODEL_ROTATION is baked in, exactly like
+    // the regular items) and remaps each face's UVs into a horizontal 3-cell
+    // atlas [ side | top | bottom ], choosing the cell per-face from the normal
+    // (same +Z up / -Z down convention as BlockModel::materialForNormal).
+    // Pair the result with buildBlockIconTexture(), which builds the matching
+    // atlas from getSideMaterial()/getTopMaterial()/getBottomMaterial().
+    // Returns false if the .obj could not be parsed.
+    bool buildItemModel(
+        std::vector<ModelVertex>& outVertices,
+        std::vector<Uint16>& outIndices
+    );
+
     bool isTransparent();
     bool getHasSlab();
     bool getHasStair();
@@ -50,6 +65,7 @@ public:
     float getCollision();
     std::string getName();
     Uint16 getID();
+    const char* getModelFileName() { return modelFileName; }
 
     Material getTopMaterial();
     Material getBottomMaterial();

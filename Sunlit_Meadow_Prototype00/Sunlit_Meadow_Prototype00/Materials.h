@@ -1,6 +1,7 @@
 #pragma once
 
 #include "DataStructures.h"
+#include "BuildAbsolutePath.h"
 #include <string>
 
 typedef enum {
@@ -25,10 +26,7 @@ typedef enum {
     MATERIAL_COUNT //ALWAYS LAST!!
 }Material;
 
-std::string BuildAbsolutePath(
-    const char* filePath,
-    const char* fileName
-);
+const char* materialTextureFile(Material material);
 
 bool UploadTextureArrayLayer(
     SDL_GPUDevice* gpu,

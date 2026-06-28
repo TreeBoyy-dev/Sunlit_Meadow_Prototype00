@@ -105,75 +105,40 @@ bool UploadTextureArrayLayer(
     return true;
 }
 
+const char* materialTextureFile(Material material) {
+    switch (material) {
+    case MATERIAL_COBBLESTONE:       return "cobblestone.png";
+    case MATERIAL_DIORITE:           return "diorite.png";
+    case MATERIAL_MARBLE:            return "marble.png";
+    case MATERIAL_CHALK:             return "chalk.png";
+    case MATERIAL_GNEISS:            return "gneiss.png";
+    case MATERIAL_DIRT:              return "dirt.png";
+    case MATERIAL_GRASS_BLOCK:       return "grass_block.png";
+    case MATERIAL_BIRCH_LOG_SIDE:    return "birch_log_side.png";
+    case MATERIAL_BIRCH_LOG_TOP:     return "birch_log_top.png";
+    case MATERIAL_BIRCH_LEAVES:      return "birch_leaves.png";
+    case MATERIAL_CHESTNUT_LOG_SIDE: return "chestnut_log_side.png";
+    case MATERIAL_CHESTNUT_LOG_TOP:  return "chestnut_log_top.png";
+    case MATERIAL_CHESTNUT_LEAVES:   return "chestnut_leaves.png";
+    case MATERIAL_AIR:
+    default:                         return nullptr;
+    }
+}
+
 bool UploadTextureArrayLayers(
     SDL_GPUDevice* gpu,
     SDL_GPUTexture* textureArray
 ) {
-    if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, "cobblestone.png", MATERIAL_COBBLESTONE))
-    {
-        SDL_Log("Failed to load Texture: cobblestone");
-        return false;
-    }
-    if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, "diorite.png", MATERIAL_DIORITE))
-    {
-        SDL_Log("Failed to load Texture: diorite");
-        return false;
-    }
-    if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, "marble.png", MATERIAL_MARBLE))
-    {
-        SDL_Log("Failed to load Texture: marble");
-        return false;
-    }
-    if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, "chalk.png", MATERIAL_CHALK))
-    {
-        SDL_Log("Failed to load Texture: chalk");
-        return false;
-    }
-    if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, "gneiss.png", MATERIAL_GNEISS))
-    {
-        SDL_Log("Failed to load Texture: gneiss");
-        return false;
-    }
-    if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, "dirt.png", MATERIAL_DIRT))
-    {
-        SDL_Log("Failed to load Texture: dirt");
-        return false;
-    }
-    if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, "grass_block.png", MATERIAL_GRASS_BLOCK))
-    {
-        SDL_Log("Failed to load Texture: grass block");
-        return false;
-    }
-    if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, "birch_log_side.png", MATERIAL_BIRCH_LOG_SIDE))
-    {
-        SDL_Log("Failed to load Texture: BirchLogSide");
-        return false;
-    }
-    if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, "birch_log_top.png", MATERIAL_BIRCH_LOG_TOP))
-    {
-        SDL_Log("Failed to load Texture: BirchLogTop");
-        return false;
-    }
-    if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, "birch_leaves.png", MATERIAL_BIRCH_LEAVES))
-    {
-        SDL_Log("Failed to load Texture: BirchLeaves");
-        return false;
-    }
-    if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, "chestnut_log_side.png", MATERIAL_CHESTNUT_LOG_SIDE))
-    {
-        SDL_Log("Failed to load Texture: ChestnutLogSide");
-        return false;
-    }
-    if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, "chestnut_log_top.png", MATERIAL_CHESTNUT_LOG_TOP))
-    {
-        SDL_Log("Failed to load Texture: ChestnutLogTop");
-        return false;
-    }
-    if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, "chestnut_leaves.png", MATERIAL_CHESTNUT_LEAVES))
-    {
-        SDL_Log("Failed to load Texture: ChestnutLeaves");
-        return false;
-    }
+    // Skip MATERIAL_AIR (no texture); every other material maps to one layer.
+    for (int m = MATERIAL_AIR + 1; m < MATERIAL_COUNT; ++m) {
+        Material material = (Material)m;
+        const char* file = materialTextureFile(material);
+        if (!file) continue;
 
+        if (!UploadTextureArrayLayer(gpu, textureArray, baseTexturePathMaterials, file, material)) {
+            SDL_Log("Failed to load Texture for material %d ('%s')", m, file);
+            return false;
+        }
+    }
     return true;
 }
