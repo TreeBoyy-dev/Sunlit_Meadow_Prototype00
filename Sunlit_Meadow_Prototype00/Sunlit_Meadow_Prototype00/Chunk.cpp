@@ -48,8 +48,8 @@ void Chunk::createMeshes(BlockManager& blockManager) {
 }
 
 void Chunk::optimizeMeshes() {
-	//opaqueMesh.optimizeMesh();
-	//transparentMesh.optimizeMesh();
+	opaqueMesh.optimizeMesh();
+	transparentMesh.optimizeMesh();
 }
 
 bool Chunk::uploadMeshes(AppState* state, SDL_GPUTexture* textureArray) {

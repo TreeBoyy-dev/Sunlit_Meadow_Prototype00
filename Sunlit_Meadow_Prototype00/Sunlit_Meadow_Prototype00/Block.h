@@ -7,6 +7,17 @@
 #include "Materials.h"
 #include "BlockModel.h"
 #include "WorldTypes.h"
+struct AABB {
+    Vec3 min;   // local block space, 0..1 per axis, Z up
+    Vec3 max;
+};
+struct Collision {
+    bool solid = true;       // true  -> blocks movement
+    int  slowdown = 0;       // % of speed removed per tick when !solid.
+                             //0 = no slowing, 100 = frozen.
+    std::vector<AABB> boxes; // local collision boxes. EMPTY = full unit cube [0,0,0]..[1,1,1].
+                             // slab (bottom half) = {{0,0,0},{1,1,0.5}}
+};
 
 class Block {
 private:
@@ -14,14 +25,11 @@ private:
     std::string name;
     const char* modelFileName;
     bool        transparent;
-    //multiplier for downward acceleration: 1 = no colission, 0.0 = full collision
-    float       collision;
     bool        hasSlab, hasStair, hasPillar, hasWall, hasFence; //hasStep, hasCorner??
 
-    std::unique_ptr<BlockModel> model;
+    Collision collision;
 
-    //obstructs visible surface at all sides:
-    //front, back, right, left, up, down
+    std::unique_ptr<BlockModel> model;
     std::array<bool, 6> obstructs;
 
     bool modelInit;
@@ -31,12 +39,12 @@ public:
         std::string name,
         const char* modelFileName,
         std::unique_ptr<BlockModel> model,
+        Collision collision,
         std::array<bool, 6> obstructs,
         bool transparent = false,
         bool hasSlab = false,
         bool hasStair = false,
-        bool hasWall = false,
-        float collision = 0.0f
+        bool hasWall = false
     );
 
     void generateMeshFromModel(
@@ -62,7 +70,7 @@ public:
     bool getHasSlab();
     bool getHasStair();
     bool getHasWall();
-    float getCollision();
+    Collision& getCollision() { return collision; }
     std::string getName();
     Uint16 getID();
     const char* getModelFileName() { return modelFileName; }

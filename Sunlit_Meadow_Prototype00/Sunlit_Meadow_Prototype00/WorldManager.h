@@ -59,14 +59,14 @@ public:
 
     void    calcVisibleChunksList(int renderDistance);
 
-
+    bool    isBlockSolid(int bx, int by, int bz);
     void    setBlockIdAt(Vec3 pos, Uint16 id, AppState* state);
     Uint16  getBlockIdAt(Vec3 pos);
     Vec3    getBlockLookingAt(
         Camera cam,
         const float MAX_REACH,
         int* outFace = nullptr);
-    float   getBlockCollision(Vec3 pos);
+    Collision* getBlockCollision(Vec3 pos);
 
 private:
     void    updatePlayerPosition(Vec3 playerPosition);

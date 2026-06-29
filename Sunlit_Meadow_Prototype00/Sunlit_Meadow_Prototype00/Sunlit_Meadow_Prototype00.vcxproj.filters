@@ -141,14 +141,14 @@
     <ClCompile Include="ChunkMesh.cpp">
       <Filter>Source Files\world</Filter>
     </ClCompile>
-    <ClCompile Include="OptimizeChunkMesh.cpp">
-      <Filter>Source Files\world</Filter>
-    </ClCompile>
     <ClCompile Include="Region.cpp">
       <Filter>Source Files\world\worldData</Filter>
     </ClCompile>
     <ClCompile Include="EntityData.h">
       <Filter>Source Files\Data</Filter>
+    </ClCompile>
+    <ClCompile Include="OptimizeChunkMesh.cpp">
+      <Filter>Source Files\world\WorldGen.h\MeshOptimizations</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -25,6 +25,10 @@ private:
     std::vector<std::unique_ptr<Data>>  data;
     PhysicsBody         physics;
 
+    // Move along ONE axis (0=x,1=y,2=z) by `delta`, stopping flush against solid
+    // blocks. Returns true if movement was blocked. Mutates position & velocity.
+    bool collideAxis(int axis, float delta, WorldManager* worldManager);
+
 public:
     Entity(
         Uint16 id,

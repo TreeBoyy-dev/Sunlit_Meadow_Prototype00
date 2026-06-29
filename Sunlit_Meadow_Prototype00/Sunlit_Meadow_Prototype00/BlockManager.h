@@ -22,12 +22,12 @@ private:
     void registerBlock(
         const std::string& name,
         std::unique_ptr<BlockModel> model,
+        Collision collision,
         std::array<bool, 6> obstructs,
         bool transparent = false,
         bool hasSlab = false,
         bool hasStair = false,
         bool hasWall = false,
-        float collision = 0.0,
         const char* modelFileName = "block.obj"
     );
 
@@ -35,7 +35,7 @@ public:
     void init();
 
     Block* getById(Uint16 id);
-    float getCollissionById(Uint16 id);
+    Collision* getCollissionById(Uint16 id);
     Block* getByName(const std::string& name);
 
     int getNumberOfBlocks();

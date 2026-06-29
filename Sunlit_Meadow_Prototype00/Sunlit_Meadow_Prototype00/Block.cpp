@@ -6,12 +6,12 @@ Block::Block(
     std::string name,
     const char* modelFileName,
     std::unique_ptr<BlockModel> model,
+    Collision collision,
     std::array<bool, 6> obstructs,
     bool transparent,
     bool hasSlab,
     bool hasStair,
-    bool hasWall,
-    float collision)
+    bool hasWall)
     : id(id),
     name(std::move(name)),
     modelFileName(modelFileName),
@@ -48,14 +48,7 @@ bool Block::buildItemModel(
         SDL_Log("[Block] buildItemModel: obj_parse failed for '%s'", file);
         return false;
     }
-
-    // Horizontal 3-cell atlas laid out [ side | top | bottom ]; cell order must
-    // match buildBlockIconTexture().
     constexpr float cellW = 1.0f / 3.0f;
-    // Nudge UVs away from the cell seams so the sampler can't bleed one cell
-    // into the next. ~half a texel for 16px tiles; lower it toward 0 if you use
-    // a NEAREST sampler or larger textures, raise it if seams still leak under
-    // the current LINEAR model sampler.
     constexpr float inset = 1.0f / 32.0f;
 
     for (ModelVertex& v : verts) {
@@ -86,9 +79,6 @@ bool Block::getHasStair() {
 }
 bool Block::getHasWall() {
     return hasWall;
-}
-float Block::getCollision() {
-    return collision;
 }
 std::string Block::getName() {
     return name;

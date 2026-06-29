@@ -87,8 +87,8 @@ void ChunkMesh::optimizeMesh()
         //SDL_Log("[ChunkMesh] optimizeMesh: indices empty");
         return;
     }
-    else
-        SDL_Log("[ChunkMesh] optimizeMesh: indices NOT empty");
+    //else
+    //    SDL_Log("[ChunkMesh] optimizeMesh: indices NOT empty");
 
 
     int initialindizes = indices.size();

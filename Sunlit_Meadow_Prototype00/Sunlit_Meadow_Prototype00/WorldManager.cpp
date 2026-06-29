@@ -285,17 +285,24 @@ void WorldManager::calcVisibleChunksList(int renderDistance) {
 }
 
 //Block Interactions
+bool WorldManager::isBlockSolid(int bx, int by, int bz) {
+    Vec3 center = { bx + 0.5f, by + 0.5f, bz + 0.5f };
+    const Collision* c = getBlockCollision(center);
+    return c && c->solid;        // ungenerated/air -> not solid (entity falls through, as before)
+}
 Uint16 WorldManager::getBlockIdAt(Vec3 pos) {
     Region* region = getRegion(getPlayerRegionCoord(pos));
     Chunk* chunk = region->getChunk(getPlayerChunkCoord(pos));
     if (!chunk || !chunk->getIsGenerated())
         return 0;
-    int x = (int)(pos.x) % CHUNK_SIZE;
-    if (x < 0) x += 16;
-    int y = (int)(pos.y) % CHUNK_SIZE;
-    if (y < 0) y += 16;
-    int z = (int)(pos.z) % CHUNK_SIZE;
-    if (z < 0) z += 16;
+    auto localIdx = [](float w) {
+        int b = (int)std::floor(w);
+        int l = b % CHUNK_SIZE;
+        return l < 0 ? l + CHUNK_SIZE : l;
+        };
+    int x = localIdx(pos.x);
+    int y = localIdx(pos.y);
+    int z = localIdx(pos.z);
     return chunk->getBlockId(x, y, z);
 }
 void   WorldManager::setBlockIdAt(Vec3 pos, Uint16 id, AppState* state) {
@@ -311,7 +318,7 @@ void   WorldManager::setBlockIdAt(Vec3 pos, Uint16 id, AppState* state) {
     if (z < 0) z += 16;
     chunk->setBlockId(x, y, z, id);
     chunk->createMeshes(*blockManager);
-    //region->queueMeshUpdate(chunk->getChunkCoordinates());
+    region->queueMeshUpdate(chunk->getChunkCoordinates());
     chunk->uploadMeshes(state, textureArray);
 }
 
@@ -371,7 +378,7 @@ Vec3 WorldManager::getBlockLookingAt(Camera cam, const float MAX_REACH, int* out
     return { NAN, NAN, NAN };   // nothing solid within reach
 }
 
-float WorldManager::getBlockCollision(Vec3 pos) {
+Collision* WorldManager::getBlockCollision(Vec3 pos) {
     return blockManager->getCollissionById(getBlockIdAt(pos));
 }
 
