@@ -147,7 +147,10 @@
     <ClCompile Include="EntityData.h">
       <Filter>Source Files\Data</Filter>
     </ClCompile>
-    <ClCompile Include="OptimizeChunkMesh.cpp">
+    <ClCompile Include="faceCulling.cpp">
+      <Filter>Source Files\world\WorldGen.h\MeshOptimizations</Filter>
+    </ClCompile>
+    <ClCompile Include="GreedyMeshing.cpp">
       <Filter>Source Files\world\WorldGen.h\MeshOptimizations</Filter>
     </ClCompile>
   </ItemGroup>

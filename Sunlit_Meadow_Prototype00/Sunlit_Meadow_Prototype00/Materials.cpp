@@ -107,19 +107,18 @@ bool UploadTextureArrayLayer(
 
 const char* materialTextureFile(Material material) {
     switch (material) {
-    case MATERIAL_COBBLESTONE:       return "cobblestone.png";
-    case MATERIAL_DIORITE:           return "diorite.png";
-    case MATERIAL_MARBLE:            return "marble.png";
-    case MATERIAL_CHALK:             return "chalk.png";
-    case MATERIAL_GNEISS:            return "gneiss.png";
-    case MATERIAL_DIRT:              return "dirt.png";
-    case MATERIAL_GRASS_BLOCK:       return "grass_block.png";
-    case MATERIAL_BIRCH_LOG_SIDE:    return "birch_log_side.png";
-    case MATERIAL_BIRCH_LOG_TOP:     return "birch_log_top.png";
-    case MATERIAL_BIRCH_LEAVES:      return "birch_leaves.png";
-    case MATERIAL_CHESTNUT_LOG_SIDE: return "chestnut_log_side.png";
-    case MATERIAL_CHESTNUT_LOG_TOP:  return "chestnut_log_top.png";
-    case MATERIAL_CHESTNUT_LEAVES:   return "chestnut_leaves.png";
+    case MATERIAL_COBBLESTONE:         return "cobblestone.png";
+    case MATERIAL_DIORITE:             return "diorite.png";
+    case MATERIAL_DIRT:                return "dirt.png";
+    case MATERIAL_GRASS_BLOCK_TOP:     return "grass_block_top.png";
+    case MATERIAL_GRASS_BLOCK_SIDE:    return "grass_block_side.png";
+    case MATERIAL_GRASS_BLOCK_SIDE_OV: return "grass_block_side_overlay.png";
+    case MATERIAL_BIRCH_LOG_SIDE:      return "birch_log_side.png";
+    case MATERIAL_BIRCH_LOG_TOP:       return "birch_log_top.png";
+    case MATERIAL_BIRCH_LEAVES:        return "birch_leaves.png";
+    case MATERIAL_CHESTNUT_LOG_SIDE:   return "chestnut_log_side.png";
+    case MATERIAL_CHESTNUT_LOG_TOP:    return "chestnut_log_top.png";
+    case MATERIAL_CHESTNUT_LEAVES:     return "chestnut_leaves.png";
     case MATERIAL_AIR:
     default:                         return nullptr;
     }

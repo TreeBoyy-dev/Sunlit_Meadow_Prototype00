@@ -20,8 +20,8 @@ private:
 
 	ChunkMesh opaqueMesh;
 	ChunkMesh transparentMesh;
-    bool drawOpaqueMesh;
-    bool drawTransparentMesh;
+    bool drawOpaque;
+    bool drawTransparent;
 public:
     Chunk();
     Chunk(ChunkCoord chunkCoordinates);
@@ -42,7 +42,13 @@ public:
         AppState* state,
         SDL_GPUTexture* textureArray
     );
-    bool drawMeshes(
+    bool drawOpaqueMesh(
+        AppState* state,
+        SDL_GPUCommandBuffer* cmd,
+        SDL_GPURenderPass* pass,
+        const UBO& ubo
+    );
+    bool drawTransparentMesh(
         AppState* state,
         SDL_GPUCommandBuffer* cmd,
         SDL_GPURenderPass* pass,

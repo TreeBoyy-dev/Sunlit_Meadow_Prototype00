@@ -146,6 +146,7 @@
     <ClCompile Include="GenerateChunk.h" />
     <ClCompile Include="GenerateColumn.cpp" />
     <ClCompile Include="Globals.cpp" />
+    <ClCompile Include="GreedyMeshing.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemManager.cpp" />
@@ -157,7 +158,7 @@
     <ClCompile Include="Mat4.cpp" />
     <ClCompile Include="Materials.cpp" />
     <ClCompile Include="ObjParser.cpp" />
-    <ClCompile Include="OptimizeChunkMesh.cpp" />
+    <ClCompile Include="faceCulling.cpp" />
     <ClCompile Include="Region.cpp" />
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="SurvivalUI.cpp" />

@@ -49,7 +49,7 @@ bool Block::buildItemModel(
         return false;
     }
     constexpr float cellW = 1.0f / 3.0f;
-    constexpr float inset = 1.0f / 32.0f;
+    constexpr float inset = 1.0f / 16.0f;
 
     for (ModelVertex& v : verts) {
         int cell;                              // 0 side, 1 top, 2 bottom

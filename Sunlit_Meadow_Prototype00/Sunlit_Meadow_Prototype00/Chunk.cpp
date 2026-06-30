@@ -5,45 +5,45 @@
 Chunk::Chunk() :
 	chunkCoordinates({0,0,0}),
 	isGenerated(false),
-	drawOpaqueMesh(false),
-	drawTransparentMesh(false)
+	drawOpaque(false),
+	drawTransparent(false)
 {}
 
 Chunk::Chunk(ChunkCoord chunkCoordinates) :
 	chunkCoordinates(chunkCoordinates),
 	isGenerated(false),
-	drawOpaqueMesh(false),
-	drawTransparentMesh(false)
+	drawOpaque(false),
+	drawTransparent(false)
 {}
 
 Chunk::Chunk(Chunk* other) :
 	chunkCoordinates(other->getChunkCoordinates()),
 	isGenerated(other->getIsGenerated()),
 	storage(other->storage),
-	drawOpaqueMesh(false),
-	drawTransparentMesh(false)
+	drawOpaque(false),
+	drawTransparent(false)
 {}
 
 Chunk::Chunk(ChunkCoord chunkCoordinates, PalettedContainer storage) :
 	chunkCoordinates(chunkCoordinates),
 	isGenerated(true),
 	storage(std::move(storage)),
-	drawOpaqueMesh(false),
-	drawTransparentMesh(false)
+	drawOpaque(false),
+	drawTransparent(false)
 {}
 
 void Chunk::transferMeshesFrom(Chunk& src) {
 	opaqueMesh = std::move(src.opaqueMesh);
-	drawOpaqueMesh = src.drawOpaqueMesh;
+	drawOpaque = src.drawOpaque;
 	transparentMesh = std::move(src.transparentMesh);
-	drawTransparentMesh = src.drawTransparentMesh;
+	drawTransparent = src.drawTransparent;
 }
 
 void Chunk::createMeshes(BlockManager& blockManager) {
-	drawOpaqueMesh = true;
+	drawOpaque = true;
 	opaqueMesh.buildMesh(&storage, chunkCoordinates, blockManager, false);
 
-	drawTransparentMesh = true;
+	drawTransparent = true;
 	transparentMesh.buildMesh(&storage, chunkCoordinates, blockManager, true);
 }
 
@@ -53,13 +53,13 @@ void Chunk::optimizeMeshes() {
 }
 
 bool Chunk::uploadMeshes(AppState* state, SDL_GPUTexture* textureArray) {
-	if (drawOpaqueMesh) {
+	if (drawOpaque) {
 		if (!opaqueMesh.uploadToGPU(state, textureArray)) {
 			//SDL_Log("failed to upload opaqueMesh at %d|%d|%d",
 			//	chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
 		}
 	}
-	if (drawTransparentMesh) {
+	if (drawTransparent) {
 		if (!transparentMesh.uploadToGPU(state, textureArray)) {
 			//SDL_Log("failed to upload transparentMesh at %d|%d|%d",
 			//	chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
@@ -70,17 +70,25 @@ bool Chunk::uploadMeshes(AppState* state, SDL_GPUTexture* textureArray) {
 	return true;
 }
 
-bool Chunk::drawMeshes(
+bool Chunk::drawOpaqueMesh(
 	AppState* state,
 	SDL_GPUCommandBuffer* cmd,
 	SDL_GPURenderPass* pass,
 	const UBO& ubo
 ) {
-	if (drawOpaqueMesh)	
+	if (drawOpaque)
 	{
 		opaqueMesh.draw(state, cmd, pass, ubo);
 	}
-	if (drawTransparentMesh)
+	return true;
+}
+bool Chunk::drawTransparentMesh(
+	AppState* state,
+	SDL_GPUCommandBuffer* cmd,
+	SDL_GPURenderPass* pass,
+	const UBO& ubo
+) {
+	if (drawTransparent)
 	{
 		transparentMesh.draw(state, cmd, pass, ubo);
 	}
@@ -89,9 +97,9 @@ bool Chunk::drawMeshes(
 
 void Chunk::destroyMeshes(AppState* state) {
 	opaqueMesh.destroy(state);
-	drawOpaqueMesh = false;
+	drawOpaque = false;
 	transparentMesh.destroy(state);
-	drawTransparentMesh = false;
+	drawTransparent = false;
 }
 
 bool Chunk::getIsGenerated() {

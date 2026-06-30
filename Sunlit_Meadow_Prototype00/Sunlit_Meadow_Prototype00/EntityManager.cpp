@@ -72,8 +72,8 @@ bool EntityManager::init(AppState* state) {
             .has_depth_stencil_target = true,
         },
     };
-
     pipeline = SDL_CreateGPUGraphicsPipeline(state->gpu, &pipeInfo);
+
     SDL_ReleaseGPUShader(state->gpu, vert);
     SDL_ReleaseGPUShader(state->gpu, frag);
     if (!pipeline) {

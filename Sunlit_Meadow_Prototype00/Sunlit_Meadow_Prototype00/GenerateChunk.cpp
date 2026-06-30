@@ -192,7 +192,7 @@ void generateFeatures_Boulders(
 	if (rand() % 5 != 0)
 		return;
 
-	Block* stoneBlock = blockManager.getByName("chalk");
+	Block* stoneBlock = blockManager.getByName("diorite");
 	if (stoneBlock == nullptr)
 		return;
 	Block* flowerBlock = blockManager.getByName("flower_alpine_quill");

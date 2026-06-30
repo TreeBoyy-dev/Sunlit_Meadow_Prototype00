@@ -50,6 +50,7 @@ bool WorldManager::init(
     },
     };
 
+    // opaque pipeline
     SDL_GPUColorTargetDescription color_target_desc = {
         .format = swapchainFormat,
     };
@@ -81,13 +82,61 @@ bool WorldManager::init(
             .has_depth_stencil_target = true,
         },
     };
+    pipeline_op = SDL_CreateGPUGraphicsPipeline(gpu, &pipeline_info);
 
-    pipeline = SDL_CreateGPUGraphicsPipeline(gpu, &pipeline_info);
+    // transparent pipeline
+    SDL_GPUColorTargetBlendState blend = {
+        .src_color_blendfactor = SDL_GPU_BLENDFACTOR_SRC_ALPHA,
+        .dst_color_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA,
+        .color_blend_op = SDL_GPU_BLENDOP_ADD,
+        .src_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE,
+        .dst_alpha_blendfactor = SDL_GPU_BLENDFACTOR_ONE_MINUS_SRC_ALPHA,
+        .alpha_blend_op = SDL_GPU_BLENDOP_ADD,
+        .enable_blend = true,
+    };
+    color_target_desc = {
+        .format = swapchainFormat,
+        .blend_state = blend,
+    };
+    SDL_GPURasterizerState raster = {
+        .fill_mode = SDL_GPU_FILLMODE_FILL,
+        .cull_mode = SDL_GPU_CULLMODE_FRONT,
+        .front_face = SDL_GPU_FRONTFACE_COUNTER_CLOCKWISE,
+    };
+    vertex_buffer_descriptions = {
+        .slot = 0,
+        .pitch = sizeof(WorldVertex),
+    };
+    depth_stencil_state = {
+        .compare_op = SDL_GPU_COMPAREOP_LESS,
+        .enable_depth_test = true,
+        .enable_depth_write = false,
+    };
+
+    pipeline_info = {
+        .vertex_shader = vert,
+        .fragment_shader = frag,
+        .vertex_input_state = {
+            .vertex_buffer_descriptions = &vertex_buffer_descriptions,
+            .num_vertex_buffers = 1,
+            .vertex_attributes = vertex_attrs,
+            .num_vertex_attributes = SDL_arraysize(vertex_attrs),
+        },
+        .primitive_type = SDL_GPU_PRIMITIVETYPE_TRIANGLELIST,
+        .depth_stencil_state = depth_stencil_state,
+        .target_info = {
+            .color_target_descriptions = &color_target_desc,
+            .num_color_targets = 1,
+            .depth_stencil_format = depth_texture_format,
+            .has_depth_stencil_target = true,
+        },
+    };
+    pipeline_tr = SDL_CreateGPUGraphicsPipeline(gpu, &pipeline_info);
 
     SDL_ReleaseGPUShader(gpu, vert);
     SDL_ReleaseGPUShader(gpu, frag);
 
-    if (!pipeline) {
+    if (!pipeline_op || !pipeline_tr) {
         SDL_Log("SDL_CreateGPUGraphicsPipeline failed: %s", SDL_GetError());
         return false;
     }
@@ -97,8 +146,8 @@ bool WorldManager::init(
     .type = SDL_GPU_TEXTURETYPE_2D_ARRAY,
     .format = SDL_GPU_TEXTUREFORMAT_R8G8B8A8_UNORM,
     .usage = SDL_GPU_TEXTUREUSAGE_SAMPLER,
-    .width = 32,
-    .height = 32,
+    .width = 16,
+    .height = 16,
     .layer_count_or_depth = layerCount,
     .num_levels = 1,
     .sample_count = SDL_GPU_SAMPLECOUNT_1,
@@ -124,12 +173,15 @@ void WorldManager::destroy(AppState* state) {
     regions.clear();
     renderList.clear();
 
-    if (pipeline) {
-        SDL_ReleaseGPUGraphicsPipeline(state->gpu, pipeline);
-        pipeline = nullptr;
+    if (pipeline_tr) {
+        SDL_ReleaseGPUGraphicsPipeline(state->gpu, pipeline_tr);
+        pipeline_tr = nullptr;
+    }
+    if (pipeline_op) {
+        SDL_ReleaseGPUGraphicsPipeline(state->gpu, pipeline_op);
+        pipeline_op = nullptr;
     }
 }
-
 
 // Updating the world ----------------------------------------------------
 void WorldManager::update(AppState* state, Vec3 playerPosition) {
@@ -245,13 +297,19 @@ void WorldManager::drawChunks(AppState* state,
 
     Frustum frustum = buildFrustum(camera, fovX, aspect, NEAR_PLANE, FAR_PLANE);
 
-    SDL_BindGPUGraphicsPipeline(pass, pipeline);
-
+    SDL_BindGPUGraphicsPipeline(pass, pipeline_op);
     for (auto& [cc, chunk] : renderList) {
         Vec3 cMin = { cc.x * CHUNK_SIZE,  cc.y * CHUNK_SIZE,  cc.z * CHUNK_SIZE };
         Vec3 cMax = { cMin.x + CHUNK_SIZE, cMin.y + CHUNK_SIZE, cMin.z + CHUNK_SIZE };
         if (aabbInsideFrustum(frustum, cMin, cMax))
-            chunk->drawMeshes(state, cmd, pass, ubo);
+            chunk->drawOpaqueMesh(state, cmd, pass, ubo);
+    }
+    SDL_BindGPUGraphicsPipeline(pass, pipeline_tr);
+    for (auto& [cc, chunk] : renderList) {
+        Vec3 cMin = { cc.x * CHUNK_SIZE,  cc.y * CHUNK_SIZE,  cc.z * CHUNK_SIZE };
+        Vec3 cMax = { cMin.x + CHUNK_SIZE, cMin.y + CHUNK_SIZE, cMin.z + CHUNK_SIZE };
+        if (aabbInsideFrustum(frustum, cMin, cMax))
+            chunk->drawTransparentMesh(state, cmd, pass, ubo);
     }
 }
 

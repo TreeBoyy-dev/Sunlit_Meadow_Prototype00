@@ -55,21 +55,6 @@ void BlockManager::init() {
         { true, true, true, true, true, true },
         false, true, true, false
     );
-    registerBlock("gneiss",         std::make_unique<BlockModel>(MATERIAL_GNEISS),
-        fullBlockcollision,
-        { true, true, true, true, true, true },
-        false, true, true, false
-    );
-    registerBlock("chalk",          std::make_unique<BlockModel>(MATERIAL_CHALK),
-        fullBlockcollision,
-        { true, true, true, true, true, true },
-        false, true, true, false
-    );
-    registerBlock("marble",         std::make_unique<BlockModel>(MATERIAL_MARBLE),
-        fullBlockcollision,
-        { true, true, true, true, true, true },
-        false, true, true, false
-    );
     registerBlock("diorite",        std::make_unique<BlockModel>(MATERIAL_DIORITE),
         fullBlockcollision,
         { true, true, true, true, true, true },
@@ -81,7 +66,7 @@ void BlockManager::init() {
         { true, true, true, true, true, true },
         false, true, true
     );
-    registerBlock("grass_block",    std::make_unique<BlockModel>(MATERIAL_GRASS_BLOCK, MATERIAL_DIRT, MATERIAL_DIRT),
+    registerBlock("grass_block",    std::make_unique<BlockModel>(MATERIAL_GRASS_BLOCK_TOP, MATERIAL_GRASS_BLOCK_SIDE, MATERIAL_DIRT),
         fullBlockcollision,
         { true, true, true, true, true, true },
         false, true, true
@@ -94,8 +79,7 @@ void BlockManager::init() {
     );
     registerBlock("birch_leaves",   std::make_unique<BlockModel>(MATERIAL_BIRCH_LEAVES),
         fullBlockcollision,
-        { false, false, false, false, false, false },
-        false, true, true
+        { false, false, false, false, false, false }
     );
 
     registerBlock("chestnut_log",   std::make_unique<BlockModel>(MATERIAL_CHESTNUT_LOG_TOP, MATERIAL_CHESTNUT_LOG_SIDE),
@@ -105,8 +89,7 @@ void BlockManager::init() {
     );
     registerBlock("chestnut_leaves",std::make_unique<BlockModel>(MATERIAL_CHESTNUT_LEAVES),
         fullBlockcollision,
-        { false, false, false, false, false, false },
-        false, true, true
+        { false, false, false, false, false, false }
     );
 
 

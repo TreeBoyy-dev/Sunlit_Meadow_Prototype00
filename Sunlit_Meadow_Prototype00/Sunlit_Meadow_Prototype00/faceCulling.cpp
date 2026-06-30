@@ -81,7 +81,7 @@ inline bool contains(const Quad& a, const Quad& b) {
         a.vMin <= b.vMin + kEps && a.vMax >= b.vMax - kEps;
 }
 
-void ChunkMesh::optimizeMesh()
+void ChunkMesh::faceCulling()
 {
     if (indices.empty()) {
         //SDL_Log("[ChunkMesh] optimizeMesh: indices empty");

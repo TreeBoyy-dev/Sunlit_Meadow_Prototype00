@@ -37,6 +37,9 @@ public:
     uint32_t getNumIndices() const { return numIndices; }
 
 private:
+    void faceCulling();
+    void greedyMeshing();
+
     Uint16 getNeighborId(int x, int y, int z) const;
     bool neighborObstructs(Uint16 id, int faceIndex, BlockManager& blockManager);
 

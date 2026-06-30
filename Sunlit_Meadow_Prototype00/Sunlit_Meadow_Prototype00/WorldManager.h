@@ -27,7 +27,8 @@ RegionCoord getRegionCoordForChunk(ChunkCoord c);
 
 class WorldManager {
 private:
-    SDL_GPUGraphicsPipeline* pipeline = nullptr;
+    SDL_GPUGraphicsPipeline* pipeline_op = nullptr;
+    SDL_GPUGraphicsPipeline* pipeline_tr = nullptr;
 
     SDL_GPUTexture* textureArray = nullptr;
 
