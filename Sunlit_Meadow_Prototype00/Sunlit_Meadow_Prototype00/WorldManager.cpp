@@ -380,6 +380,46 @@ void   WorldManager::setBlockIdAt(Vec3 pos, Uint16 id, AppState* state) {
     chunk->uploadMeshes(state, textureArray);
 }
 
+static bool rayIntersectsAABB(
+    const Vec3& origin, const Vec3& dir,
+    const Vec3& boxMin, const Vec3& boxMax,
+    float tMin, float tMax,
+    float& outT, int& outFace)
+{
+    // Ray vs. a single world-space AABB (slab method).
+    // Tests the ray [origin + dir*t] for t in [tMin, tMax] against [boxMin, boxMax].
+    // On hit, outT is the entry parameter and outFace is the face that was crossed
+    // to get in (FACE_NONE if the ray origin already started inside the box).
+
+    int enterAxis = -1; // 0 = x, 1 = y, 2 = z -> axis that produced the final tMin
+
+    auto testAxis = [&](float o, float d, float mn, float mx, int axis) -> bool {
+        if (d != 0.0f) {
+            float t1 = (mn - o) / d;
+            float t2 = (mx - o) / d;
+            if (t1 > t2) std::swap(t1, t2);
+            if (t1 > tMin) { tMin = t1; enterAxis = axis; }
+            if (t2 < tMax) tMax = t2;
+            return tMin <= tMax;
+        }
+        else {
+            return (o >= mn && o <= mx); // parallel to this axis: origin must already be inside
+        }
+        };
+
+    if (!testAxis(origin.x, dir.x, boxMin.x, boxMax.x, 0)) return false;
+    if (!testAxis(origin.y, dir.y, boxMin.y, boxMax.y, 1)) return false;
+    if (!testAxis(origin.z, dir.z, boxMin.z, boxMax.z, 2)) return false;
+
+    outT = tMin;
+    switch (enterAxis) {
+    case 0:  outFace = (dir.x > 0.0f) ? FACE_BACK : FACE_FRONT; break;
+    case 1:  outFace = (dir.y > 0.0f) ? FACE_RIGHT : FACE_LEFT;  break;
+    case 2:  outFace = (dir.z > 0.0f) ? FACE_DOWN : FACE_UP;    break;
+    default: outFace = FACE_NONE; break; // started inside the box already
+    }
+    return true;
+}
 Vec3 WorldManager::getBlockLookingAt(Camera cam, const float MAX_REACH, int* outFace) {
 
     Vec3 origin = cam.position;
@@ -406,34 +446,56 @@ Vec3 WorldManager::getBlockLookingAt(Camera cam, const float MAX_REACH, int* out
     float tMaxZ = (dir.z != 0.0f)
         ? ((stepZ > 0 ? (float)(z + 1) - origin.z : origin.z - (float)z) * tDeltaZ) : INF;
 
-    int face = FACE_NONE;   // we start inside the origin voxel, no face crossed yet
+    static const AABB fullCube{ {0,0,0}, {1,1,1} };
 
     float t = 0.0f;
     while (t <= MAX_REACH) {
-        // sample the center of the current voxel
-        if (getBlockIdAt({ x + 0.5f, y + 0.5f, z + 0.5f }) != 0) {
-            if (outFace) *outFace = face;
-            return { (float)x, (float)y, (float)z };
+        Uint16 id = getBlockIdAt({ x + 0.5f, y + 0.5f, z + 0.5f });
+        if (id != 0) {
+            Collision* col = blockManager->getCollissionById(id);
+            if (col) {
+                // "boxes empty" means "use the full unit cube" (per Block.h),
+                // so slabs/stairs with real boxes get tested against their
+                // actual shape instead of the whole voxel cell.
+                const std::vector<AABB>& boxes = col->boxes.empty()
+                    ? std::vector<AABB>{ fullCube }
+                : col->boxes;
+
+                float bestT = INF;
+                int   bestFace = FACE_NONE;
+                bool  hit = false;
+
+                for (const AABB& box : boxes) {
+                    Vec3 boxMin{ x + box.min.x, y + box.min.y, z + box.min.z };
+                    Vec3 boxMax{ x + box.max.x, y + box.max.y, z + box.max.z };
+
+                    float hitT; int hitFace;
+                    if (rayIntersectsAABB(origin, dir, boxMin, boxMax, t, MAX_REACH, hitT, hitFace)) {
+                        if (hitT < bestT) { bestT = hitT; bestFace = hitFace; hit = true; }
+                    }
+                }
+
+                if (hit) {
+                    if (outFace) *outFace = bestFace;
+                    return { (float)x, (float)y, (float)z };
+                }
+            }
         }
 
-        // step into the next voxel across the nearest boundary,
-        // and record which face of the new block we entered through
+        // step into the next voxel across the nearest grid boundary
         if (tMaxX <= tMaxY && tMaxX <= tMaxZ) {
             x += stepX; t = tMaxX; tMaxX += tDeltaX;
-            face = (stepX > 0) ? FACE_BACK : FACE_FRONT;   // moving +X enters the -X face
         }
         else if (tMaxY <= tMaxZ) {
             y += stepY; t = tMaxY; tMaxY += tDeltaY;
-            face = (stepY > 0) ? FACE_RIGHT : FACE_LEFT;   // moving +Y enters the -Y face
         }
         else {
             z += stepZ; t = tMaxZ; tMaxZ += tDeltaZ;
-            face = (stepZ > 0) ? FACE_DOWN : FACE_UP;      // moving +Z enters the -Z face
         }
     }
 
     if (outFace) *outFace = FACE_NONE;
-    return { NAN, NAN, NAN };   // nothing solid within reach
+    return { NAN, NAN, NAN };
 }
 
 Collision* WorldManager::getBlockCollision(Vec3 pos) {
