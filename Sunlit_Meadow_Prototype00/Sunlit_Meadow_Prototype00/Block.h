@@ -75,9 +75,9 @@ public:
     Uint16 getID();
     const char* getModelFileName() { return modelFileName; }
 
-    Material getTopMaterial();
-    Material getBottomMaterial();
-    Material getSideMaterial();
+    ModelFace getTopMaterial();
+    ModelFace getBottomMaterial();
+    ModelFace getSideMaterial();
     bool getObstructs(int faceIndex);
 
     SDL_GPUTexture* getIcon();

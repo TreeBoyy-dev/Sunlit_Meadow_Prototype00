@@ -122,9 +122,9 @@ void Item_Placable::initModel(
     // Build the matching atlas from the block's three materials. Cell order
     // here must mirror Block::buildItemModel: side, then top, then bottom.
     // A null top/bottom file (e.g. MATERIAL_AIR) just reuses the side image.
-    const char* sideFile =   materialTextureFile(block->getSideMaterial());
-    const char* topFile =    materialTextureFile(block->getTopMaterial());
-    const char* bottomFile = materialTextureFile(block->getBottomMaterial());
+    const char* sideFile =   materialTextureFile(block->getSideMaterial().material);
+    const char* topFile =    materialTextureFile(block->getTopMaterial().material);
+    const char* bottomFile = materialTextureFile(block->getBottomMaterial().material);
 
     if (!sideFile) {
         // No usable texture at all (e.g. an "air" placeable). Leave the model

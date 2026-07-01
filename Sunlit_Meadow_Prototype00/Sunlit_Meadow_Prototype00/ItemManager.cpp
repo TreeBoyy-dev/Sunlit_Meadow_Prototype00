@@ -53,7 +53,7 @@ void ItemManager::initAssets(SDL_GPUDevice* gpuDevice, BlockManager* blockManage
 void ItemManager::registerPlacableItems(SDL_GPUDevice* gpuDevice, BlockManager* blockManager) {
 
     int numberOfBlocks = blockManager->getNumberOfBlocks();
-    for (int i = 0; i < numberOfBlocks; i++)
+    for (int i = 1; i < numberOfBlocks; i++)
     {
         Block* b = blockManager ? blockManager->getById(i) : nullptr;
         if (!b) {

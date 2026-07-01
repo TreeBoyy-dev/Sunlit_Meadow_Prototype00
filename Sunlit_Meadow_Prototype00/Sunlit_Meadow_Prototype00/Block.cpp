@@ -87,9 +87,9 @@ Uint16 Block::getID() {
     return id;
 }
 
-Material Block::getTopMaterial() { return model->getTopMaterial(); }
-Material Block::getBottomMaterial() { return model->getBottomMaterial(); }
-Material Block::getSideMaterial() { return model->getSideMaterial(); }
+ModelFace Block::getTopMaterial() { return model->getTopMaterial(); }
+ModelFace Block::getBottomMaterial() { return model->getBottomMaterial(); }
+ModelFace Block::getSideMaterial() { return model->getSideMaterial(); }
 bool Block::getObstructs(int faceIndex) { return obstructs[faceIndex]; }
 
 SDL_GPUTexture* Block::getIcon() {

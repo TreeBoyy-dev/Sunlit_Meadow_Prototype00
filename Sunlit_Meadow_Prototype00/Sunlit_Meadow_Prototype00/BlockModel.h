@@ -9,9 +9,9 @@
 
 class BlockModel {
 protected:
-    Material topMaterial;
-    Material bottomMaterial;
-    Material sideMaterial;
+    ModelFace topMaterial;
+    ModelFace bottomMaterial;
+    ModelFace sideMaterial;
 
     // Mesh loaded from the .obj, already converted to WorldVertex.
     // Positions are in local block space (origin at 0,0,0).
@@ -20,20 +20,20 @@ protected:
 
     // Picks a material for a vertex from its normal direction.
     // Z is up: +Z -> top, -Z -> bottom, everything else -> side.
-    Material materialForNormal(const Vec3& normal) const;
+    ModelFace materialForNormal(const Vec3& normal) const;
 
 public:
     BlockModel(
-        Material topMaterial,
-        Material bottomMaterial,
-        Material sideMaterial
+        ModelFace topMaterial,
+        ModelFace bottomMaterial,
+        ModelFace sideMaterial
     );
     BlockModel(
-        Material topBottomMaterial,
-        Material sideMaterial
+        ModelFace topBottomMaterial,
+        ModelFace sideMaterial
     );
     BlockModel(
-        Material sideMaterial
+        ModelFace sideMaterial
     );
 
     // Loads the mesh from a .obj file and converts ModelVertex -> WorldVertex.
@@ -50,7 +50,7 @@ public:
         int x, int y, int z
     );
 
-    Material getTopMaterial();
-    Material getBottomMaterial();
-    Material getSideMaterial();
+    ModelFace getTopMaterial();
+    ModelFace getBottomMaterial();
+    ModelFace getSideMaterial();
 };

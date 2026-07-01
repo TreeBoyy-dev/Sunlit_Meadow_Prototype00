@@ -45,49 +45,80 @@ Collision fullBlockcollision = {
 
 void BlockManager::init() {
     // --- base blocks ---
-    registerBlock("air",            std::make_unique<BlockModel>(MATERIAL_AIR),
+    registerBlock("air",
+        std::make_unique<BlockModel>(
+            ModelFace(MATERIAL_AIR)
+        ),
         { false, 0 },
         { false, false, false, false, false, false },
         true, false, false, false
     );
-    registerBlock("cobble_stone",   std::make_unique<BlockModel>(MATERIAL_COBBLESTONE),
+    registerBlock("cobble_stone",   
+        std::make_unique<BlockModel>(
+            ModelFace(MATERIAL_COBBLESTONE)
+        ),
         fullBlockcollision,
         { true, true, true, true, true, true },
         false, true, true, false
     );
-    registerBlock("diorite",        std::make_unique<BlockModel>(MATERIAL_DIORITE),
+    registerBlock("diorite",        
+        std::make_unique<BlockModel>(
+            ModelFace(MATERIAL_DIORITE)
+        ),
         fullBlockcollision,
         { true, true, true, true, true, true },
         false, true, true, true
     );
     // --- dirt/grass related ---
-    registerBlock("dirt",           std::make_unique<BlockModel>(MATERIAL_DIRT),
+    registerBlock("dirt",           
+        std::make_unique<BlockModel>(
+            ModelFace(MATERIAL_DIRT)
+        ),
         fullBlockcollision,
         { true, true, true, true, true, true },
         false, true, true
     );
-    registerBlock("grass_block",    std::make_unique<BlockModel>(MATERIAL_GRASS_BLOCK_TOP, MATERIAL_GRASS_BLOCK_SIDE, MATERIAL_DIRT),
+    registerBlock("grass_block",    
+        std::make_unique<BlockModel>(
+            ModelFace(MATERIAL_GRASS_BLOCK_TOP),                          // top
+            ModelFace(MATERIAL_DIRT),                                     // bottom
+            ModelFace(MATERIAL_GRASS_BLOCK_SIDE, MATERIAL_GRASS_BLOCK_SIDE_OV)   // side + overlay
+        ),
         fullBlockcollision,
         { true, true, true, true, true, true },
         false, true, true
     );
     // --- wood related ---
-    registerBlock("birch_log",      std::make_unique<BlockModel>(MATERIAL_BIRCH_LOG_TOP, MATERIAL_BIRCH_LOG_SIDE),
+    registerBlock("birch_log",      
+        std::make_unique<BlockModel>(
+            ModelFace(MATERIAL_BIRCH_LOG_TOP),
+            ModelFace(MATERIAL_BIRCH_LOG_SIDE)
+        ),
         fullBlockcollision,
         { true, true, true, true, true, true },
         false, true, true
     );
-    registerBlock("birch_leaves",   std::make_unique<BlockModel>(MATERIAL_BIRCH_LEAVES),
+    registerBlock("birch_leaves",   
+        std::make_unique<BlockModel>(
+            ModelFace(MATERIAL_BIRCH_LEAVES)
+            ),
         fullBlockcollision,
         { false, false, false, false, false, false }
     );
 
-    registerBlock("chestnut_log",   std::make_unique<BlockModel>(MATERIAL_CHESTNUT_LOG_TOP, MATERIAL_CHESTNUT_LOG_SIDE),
+    registerBlock("chestnut_log",   
+        std::make_unique<BlockModel>(
+            ModelFace(MATERIAL_CHESTNUT_LOG_TOP),
+            ModelFace(MATERIAL_CHESTNUT_LOG_SIDE)
+        ),
         fullBlockcollision,
         { true, true, true, true, true, true },
         false, true, true
     );
-    registerBlock("chestnut_leaves",std::make_unique<BlockModel>(MATERIAL_CHESTNUT_LEAVES),
+    registerBlock("chestnut_leaves",
+        std::make_unique<BlockModel>(
+            ModelFace(MATERIAL_CHESTNUT_LEAVES)
+        ),
         fullBlockcollision,
         { false, false, false, false, false, false }
     );
@@ -101,7 +132,11 @@ void BlockManager::init() {
             Collision slabCol = b->getCollision();
             slabCol.boxes = { AABB{ {0,0,0}, {1,1,0.5f} } };
             registerBlock(b->getName() + "_slab",
-                std::make_unique<BlockModel>(b->getTopMaterial(), b->getBottomMaterial(), b->getSideMaterial()),
+                std::make_unique<BlockModel>(
+                    b->getTopMaterial(), 
+                    b->getBottomMaterial(), 
+                    b->getSideMaterial()
+                ),
                 slabCol,
                 { false, false, false, false, false, true },
                 false, false, false, false,
@@ -113,7 +148,10 @@ void BlockManager::init() {
         //if (b.getHasWall())  registerBlock(b.getName() + "_Wall",  wallModelFrom(b.model));
     }
 
-    registerBlock("flower_alpine_quill", std::make_unique<BlockModel>(MATERIAL_BIRCH_LEAVES),
+    registerBlock("flower_alpine_quill", 
+        std::make_unique<BlockModel>(
+            ModelFace(MATERIAL_BIRCH_LEAVES)
+        ),
         { false , 0 },
         { false, false, false, false, false, false },
         false, false, false, false,

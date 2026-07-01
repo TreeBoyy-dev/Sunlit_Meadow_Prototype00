@@ -25,6 +25,11 @@ typedef enum {
     MATERIAL_COUNT //ALWAYS LAST!!
 }Material;
 
+struct ModelFace {
+    Material material;
+    int overlayMaterial = -1;   // -1 = no overlay
+};
+
 const char* materialTextureFile(Material material);
 
 bool UploadTextureArrayLayer(
