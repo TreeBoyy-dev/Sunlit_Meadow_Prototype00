@@ -176,5 +176,5 @@ void ChunkMesh::faceCulling()
     indices.swap(newIndices);
     numIndices = (uint32_t)indices.size();
 
-    SDL_Log("[ChunkMesh] optimizeMesh: reduced indices from %d to %d", initialindizes, numIndices);
+    //SDL_Log("[ChunkMesh] optimizeMesh: reduced indices from %d to %d", initialindizes, numIndices);
 }

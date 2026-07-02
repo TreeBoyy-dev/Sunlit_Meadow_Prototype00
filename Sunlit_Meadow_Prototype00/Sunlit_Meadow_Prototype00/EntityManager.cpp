@@ -5,6 +5,8 @@
 #include "LoadShader.h"
 #include "BuildAbsolutePath.h"
 
+#include "Globals.h"
+
 EntityManager::EntityManager() : nextId(0){}
 
 // Pipeline: its own vertex/fragment shaders, but reuses the engine WorldVertex
@@ -330,6 +332,7 @@ void EntityManager::draw(
     SDL_BindGPUGraphicsPipeline(pass, pipeline);
 
     for (auto& entity : entities) {
+        if (entity->getId() == 0 && !renderDebugUI) continue;
         const EntityAsset* asset = entity->getAsset();
         if (!asset || !asset->vertexBuffer || !asset->indexBuffer ||
             !asset->texture || asset->numIndices == 0)

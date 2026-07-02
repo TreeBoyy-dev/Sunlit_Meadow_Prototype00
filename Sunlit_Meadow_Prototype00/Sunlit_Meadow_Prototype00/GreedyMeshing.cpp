@@ -392,6 +392,6 @@ void ChunkMesh::greedyMeshing()
     indices.swap(newIndices);
     numIndices = (uint32_t)indices.size();
 
-    SDL_Log("[ChunkMesh] greedyMeshing: indices %d -> %u (%zu merged quads, %zu passthrough indices)",
-        initialIndices, numIndices, merged.size(), passthrough.size());
+    //SDL_Log("[ChunkMesh] greedyMeshing: indices %d -> %u (%zu merged quads, %zu passthrough indices)",
+    //    initialIndices, numIndices, merged.size(), passthrough.size());
 }

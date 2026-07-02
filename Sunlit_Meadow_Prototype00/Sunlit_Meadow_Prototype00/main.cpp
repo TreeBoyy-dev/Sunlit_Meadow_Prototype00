@@ -53,8 +53,10 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
             break;
 
         case SDL_SCANCODE_F3:
-            if (renderDebugUI)
+            if (renderDebugUI) {
                 renderDebugUI = false;
+                playerEntity->setPosition(camera.position);
+            }
             else
                 renderDebugUI = true;
             break;

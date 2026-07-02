@@ -51,8 +51,8 @@ void Chunk::createMeshes(BlockManager& blockManager) {
 }
 
 void Chunk::optimizeMeshes() {
-	SDL_Log("[Chunk]: optimize mesh at: %d|%d|%d",
-		chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
+	//SDL_Log("[Chunk]: optimize mesh at: %d|%d|%d",
+	//	chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
 	opaqueMesh.optimizeMesh();
 	transparentMesh.optimizeMesh();
 }

@@ -29,6 +29,19 @@ extern Vec2 mouseMovement;
 extern const float MAX_CAMERA_SPEED_MOVE;
 extern const float MAX_CAMERA_SPEED_LOOK;
 
+// --- Player ---
+extern Entity* playerEntity;
+extern const float EYE_HEIGHT;   // feet -> eyes (player is 1.8 tall)
+extern const float PLAYER_WALK_SPEED;    // blocks per second
+extern const float SPRINT_MULTIPLIER;    // LCTRL
+extern const float JUMP_SPEED;   // sqrt(2 * 9.81 * 1.25) -> ~1.25 block jump
+
+// --- Calc FPS ---
+const int ARR_SIZE = 120;
+extern float lst_dt[ARR_SIZE];
+extern int frame_count;
+extern float sum;
+
 // --- Calc FPS ---
 extern const int ARR_SIZE;
 extern float lst_dt[];

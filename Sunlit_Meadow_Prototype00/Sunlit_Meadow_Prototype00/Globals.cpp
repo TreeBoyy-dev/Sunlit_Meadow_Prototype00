@@ -24,8 +24,14 @@ Vec2 mouseMovement = {
 const float MAX_CAMERA_SPEED_MOVE = 24.0f;
 const float MAX_CAMERA_SPEED_LOOK = 0.03f;
 
+// --- Player ---
+Entity* playerEntity = nullptr;
+const float EYE_HEIGHT = 1.62f;   // feet -> eyes (player is 1.8 tall)
+const float PLAYER_WALK_SPEED = 4.3f;    // blocks per second
+const float SPRINT_MULTIPLIER = 1.5f;    // LCTRL
+const float JUMP_SPEED = 4.95f;   // sqrt(2 * 9.81 * 1.25) -> ~1.25 block jump
+
 // --- Calc FPS ---
-const int ARR_SIZE = 120;
 float lst_dt[ARR_SIZE] = { 0 };
 int frame_count = 0;
 float sum = 0.0;

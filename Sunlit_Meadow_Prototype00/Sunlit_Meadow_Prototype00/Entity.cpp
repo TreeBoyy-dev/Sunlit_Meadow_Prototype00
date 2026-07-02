@@ -148,10 +148,12 @@ bool Entity::collideAxis(int axis, float delta, WorldManager* worldManager) {
 
                     if (delta > 0.0f) {
                         float gap = comp(wbMin, axis) - comp(mx, axis);
+                        if (gap < -EPS) continue;   // box is behind the leading (top) face - not in our path
                         if (gap < allowed) { allowed = (gap > 0.0f ? gap : 0.0f); blocked = true; }
                     }
                     else {
                         float gap = comp(wbMax, axis) - comp(mn, axis);
+                        if (gap > EPS) continue;    // box is ahead of the leading (bottom) face - not a floor we're landing on
                         if (gap > allowed) { allowed = (gap < 0.0f ? gap : 0.0f); blocked = true; }
                     }
                 }
