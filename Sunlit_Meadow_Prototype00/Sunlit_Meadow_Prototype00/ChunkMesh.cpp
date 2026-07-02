@@ -79,7 +79,7 @@ void ChunkMesh::buildMesh(
 
 void ChunkMesh::optimizeMesh() {
     faceCulling();
-    //greedyMeshing();
+    greedyMeshing();
 }
 
 bool ChunkMesh::uploadToGPU(AppState* state, SDL_GPUTexture* textureArrayIn)

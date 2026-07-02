@@ -14,7 +14,7 @@ struct AABB {
 struct Collision {
     bool solid = true;       // true  -> blocks movement
     int  slowdown = 0;       // % of speed removed per tick when !solid.
-                             //0 = no slowing, 100 = frozen.
+                             // 0 = no slowing, 100 = frozen.
     std::vector<AABB> boxes; // local collision boxes. EMPTY = full unit cube [0,0,0]..[1,1,1].
                              // slab (bottom half) = {{0,0,0},{1,1,0.5}}
 };
