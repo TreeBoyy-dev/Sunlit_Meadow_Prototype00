@@ -27,7 +27,7 @@ public:
     Chunk(ChunkCoord chunkCoordinates);
     Chunk(Chunk* other);
     Chunk(ChunkCoord chunkCoordinates, PalettedContainer storage);
-    void transferMeshesFrom(Chunk& src);
+    void transferMeshesFrom(AppState* state, Chunk& src);
 
     //void getChunkGenerated(BlockManager& blockManager, FastNoiseLite& standartNoise);
 

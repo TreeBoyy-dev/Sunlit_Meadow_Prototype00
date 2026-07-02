@@ -32,7 +32,10 @@ Chunk::Chunk(ChunkCoord chunkCoordinates, PalettedContainer storage) :
 	drawTransparent(false)
 {}
 
-void Chunk::transferMeshesFrom(Chunk& src) {
+void Chunk::transferMeshesFrom(AppState* state, Chunk& src) {
+	opaqueMesh.destroy(state);        // releases old GPU buffers, clears vectors
+	transparentMesh.destroy(state);
+
 	opaqueMesh = std::move(src.opaqueMesh);
 	drawOpaque = src.drawOpaque;
 	transparentMesh = std::move(src.transparentMesh);

@@ -129,7 +129,7 @@ bool Region::collectMeshResults(AppState* state,
         auto it = chunks.find(coord);
         if (it == chunks.end()) continue; // unloaded while meshing
 
-        it->second->transferMeshesFrom(*result);
+        it->second->transferMeshesFrom(state, *result);
         it->second->uploadMeshes(state, textureArray);
         meshedChunks.insert(coord);
         outNewlyReady.push_back(coord);   // <-- report drawable
