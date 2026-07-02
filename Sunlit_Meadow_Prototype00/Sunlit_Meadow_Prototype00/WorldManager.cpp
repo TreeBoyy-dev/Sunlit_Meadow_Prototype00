@@ -386,37 +386,37 @@ static bool rayIntersectsAABB(
     float tMin, float tMax,
     float& outT, int& outFace)
 {
-    // Ray vs. a single world-space AABB (slab method).
-    // Tests the ray [origin + dir*t] for t in [tMin, tMax] against [boxMin, boxMax].
-    // On hit, outT is the entry parameter and outFace is the face that was crossed
-    // to get in (FACE_NONE if the ray origin already started inside the box).
-
-    int enterAxis = -1; // 0 = x, 1 = y, 2 = z -> axis that produced the final tMin
+    const float INF = std::numeric_limits<float>::infinity();
+    float tEnter = -INF;   // largest per-axis entry -> this is the crossed face
+    float tExit = INF;
+    int   enterAxis = -1;
 
     auto testAxis = [&](float o, float d, float mn, float mx, int axis) -> bool {
         if (d != 0.0f) {
             float t1 = (mn - o) / d;
             float t2 = (mx - o) / d;
             if (t1 > t2) std::swap(t1, t2);
-            if (t1 > tMin) { tMin = t1; enterAxis = axis; }
-            if (t2 < tMax) tMax = t2;
-            return tMin <= tMax;
+            if (t1 > tEnter) { tEnter = t1; enterAxis = axis; }
+            if (t2 < tExit)  tExit = t2;
+            return true;
         }
-        else {
-            return (o >= mn && o <= mx); // parallel to this axis: origin must already be inside
-        }
+        return (o >= mn && o <= mx); // parallel: origin must be inside this slab
         };
 
     if (!testAxis(origin.x, dir.x, boxMin.x, boxMax.x, 0)) return false;
     if (!testAxis(origin.y, dir.y, boxMin.y, boxMax.y, 1)) return false;
     if (!testAxis(origin.z, dir.z, boxMin.z, boxMax.z, 2)) return false;
 
-    outT = tMin;
+    if (tEnter > tExit) return false; // ray misses the box
+    if (tEnter > tMax)  return false; // hit is beyond reach
+    if (tExit < tMin)  return false; // box is entirely behind the segment start
+
+    outT = tEnter;
     switch (enterAxis) {
     case 0:  outFace = (dir.x > 0.0f) ? FACE_BACK : FACE_FRONT; break;
     case 1:  outFace = (dir.y > 0.0f) ? FACE_RIGHT : FACE_LEFT;  break;
     case 2:  outFace = (dir.z > 0.0f) ? FACE_DOWN : FACE_UP;    break;
-    default: outFace = FACE_NONE; break; // started inside the box already
+    default: outFace = FACE_NONE; break;
     }
     return true;
 }

@@ -127,8 +127,11 @@ void Chunk::setBlockId(int x, int y, int z, Uint16 id) {
 		z < 0 || z > 15)
 		SDL_Log("[Chunk] couldn't get BlockID at: %d:%d:%d in chunk %d:%d:%d",
 			x, y, z, chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
-	else
+	else {
 		storage.set(x, y, z, id);
+		SDL_Log("[Chunk] setting block (id: %d) at: %d:%d:%d in chunk %d:%d:%d",
+			id, x, y, z, chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
+	}
 }
 
 ChunkCoord Chunk::getChunkCoordinates() {

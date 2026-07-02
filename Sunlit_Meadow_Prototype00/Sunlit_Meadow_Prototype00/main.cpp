@@ -105,7 +105,7 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
                 SDL_Log("new Items: %s, %dx", item->getName().c_str(), items.count);
                 if (!inventory->addItemToInventory(items))
                     SDL_Log("[main] Items couldn't be added");
-                //inventory->printContents();
+                inventory->printContents();
             }
 
             break;
@@ -156,16 +156,22 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
                     inventory = static_cast<Inventory*>(found);
 
                 ItemInstance instance = inventory->getItemsFromSlot(selectedSlot);
+                //if(!renderDebugUI) inventory->takeItems(selectedSlot);
                 if (instance.isEmpty())
                     return SDL_APP_CONTINUE;
 
                 Item_Placable* placebleItem;
-                if (instance.item->getCategory() == ITEM_CATEGORY_BLOCK)
+                if (instance.item->getCategory() == ITEM_CATEGORY_BLOCK) {
                     placebleItem = static_cast<Item_Placable*>(instance.item);
-                else
+                    SDL_Log("[Event] right click: Item: %s(%d)",
+                        placebleItem->getName().c_str(), placebleItem->getID());
+                }
+                else {
+                    SDL_Log("[Event] right click: Item not Placable");
                     return SDL_APP_CONTINUE;
+                }
 
-                worldManager.setBlockIdAt(pos, placebleItem->getID(), state);
+                worldManager.setBlockIdAt(pos, placebleItem->getBlockId(), state);
 
             }
             break;

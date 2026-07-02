@@ -92,8 +92,9 @@ void Inventory::printContents() {
         if (instance.isEmpty())
             continue;   // skip stray empty entries
 
-        SDL_Log("[Inventory] DEBUG: item: %s | count: %d | slot: %d",
+        SDL_Log("[Inventory] DEBUG: item: %s(%d) | count: %d | slot: %d",
             instance.item->getName().c_str(),
+            instance.item->getID(),
             instance.count,
             slot);
     }
