@@ -1,5 +1,6 @@
 #include "Region.h"
 #include "Chunk.h"
+#include "Globals.h"
 
 #include <utility>
 
@@ -69,8 +70,9 @@ bool Region::update(AppState* state,
         changed = true;
     }
 
-    for (const auto& coord : newlyAdded)
-        queueMeshUpdate(coord);
+    if(doRemeshingSeperately)
+        for (const auto& coord : newlyAdded)
+            queueMeshUpdate(coord);
 
     // --- drain m_worker: re-meshed chunks (these are the "drawable" events) ---
     if (collectMeshResults(state, textureArray, outNewlyReady))

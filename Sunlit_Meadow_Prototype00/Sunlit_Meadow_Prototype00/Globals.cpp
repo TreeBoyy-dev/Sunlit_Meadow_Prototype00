@@ -36,20 +36,18 @@ float lst_dt[ARR_SIZE] = { 0 };
 int frame_count = 0;
 float sum = 0.0;
 
-// --- EntityManager ---
+// --- Managers ---
 EntityManager entityManager;
 
-// --- BlockManager ---
 BlockManager blockManager;
 
-// --- WorldManager ---
 WorldManager worldManager;
-const int RENDER_DISTANCE = 5;
+const int RENDER_DISTANCE = 16;
+bool doRemeshingSeperately = false;
 
 ChunkCoord prevPlayerChunkCoords = { 0,0,0 };
 
-// --- UI ---
 UI_Renderer ui;
+MenuManager menuManager;
 
-// --- Items ---
 ItemManager itemManager;

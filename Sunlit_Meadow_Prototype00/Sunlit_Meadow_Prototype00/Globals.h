@@ -9,6 +9,7 @@
 #include "Skybox.h"
 #include "EntityManager.h"
 #include "ItemManager.h"
+#include "MenuManager.h"
 
 extern const float NEAR_PLANE;
 extern const float FAR_PLANE;
@@ -48,20 +49,18 @@ extern float lst_dt[];
 extern int frame_count;
 extern float sum;
 
-// --- EntityManager ---
+// --- Managers ---
 extern EntityManager entityManager;
 
-// --- BlockManager ---
 extern BlockManager blockManager;
 
-// --- WorldManager ---
 extern WorldManager worldManager;
 extern const int RENDER_DISTANCE;
+extern bool doRemeshingSeperately;
 
 extern ChunkCoord prevPlayerChunkCoords;
 
-// --- UI ---
 extern UI_Renderer ui;
+extern MenuManager menuManager;
 
-// --- Items ---
 extern ItemManager itemManager;

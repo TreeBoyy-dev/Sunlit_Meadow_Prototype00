@@ -24,6 +24,12 @@ public:
 
 private:
     void workerLoop();
+    
+    int totalChunkGenerated;
+    Uint64 lastTicks;
+    Uint64 times[100] = { 0 };
+    int frame;
+    float s;
 
     std::atomic<bool>  m_running;
     std::thread        m_thread;

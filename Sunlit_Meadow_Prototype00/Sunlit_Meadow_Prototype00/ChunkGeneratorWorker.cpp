@@ -1,7 +1,8 @@
 #include "ChunkGeneratorWorker.h"
 #include "GenerateColumn.h"
+#include "Globals.h"
 
-ChunkGeneratorWorker::ChunkGeneratorWorker() : m_running(false) {}
+ChunkGeneratorWorker::ChunkGeneratorWorker() : m_running(false), totalChunkGenerated(0){}
 ChunkGeneratorWorker::~ChunkGeneratorWorker() { stop(); }
 
 void ChunkGeneratorWorker::start(BlockManager* blockManager, FastNoiseLite* standartNoise, int regionChunkZStart) {
@@ -42,10 +43,29 @@ void ChunkGeneratorWorker::workerLoop() {
                     std::move(chunkData.storage)
                 );
                 chunk->createMeshes(*m_blockManager);
-                //SDL_Log("[GeneratorWorker] creating mesh at: %d|%d|%d",
-                //    chunkData.coordinates.x, chunkData.coordinates.y, chunkData.coordinates.z);
+                if(!doRemeshingSeperately)
+                    chunk->optimizeMeshes();
+                totalChunkGenerated++;
 
                 m_outputQueue.push(std::move(chunk));
+
+                //calc avr time per chunk
+                Uint64 now = SDL_GetTicks();
+                float  dt = (float)(now - lastTicks) / 1000.0f;
+                lastTicks = now;
+
+                s += dt - times[frame];
+                times[frame] = dt;
+
+                float avrg = s / 100.0f;
+                float cps = 1 / avrg;
+
+                frame++; frame = frame % 100;
+
+                SDL_Log("[GeneratorWorker] chunk %6d generated: %3d|%3d|%3d (avr time/chunk: %4.2fms)",
+                    totalChunkGenerated,
+                    chunkData.coordinates.x, chunkData.coordinates.y, chunkData.coordinates.z,
+                    cps);
             }
         }
         else {
