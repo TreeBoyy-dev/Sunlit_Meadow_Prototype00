@@ -1,15 +1,23 @@
 #include "UI_Renderer.h"
 #include <cmath>
 #include <cstring>
+#include <filesystem>
+#include <fstream>
+#include <cstdint>
+#include <cctype>
 
 #include "LoadShader.h"
 #include "Mat4.h"
-#include "EntityTypes.h"   // ModelVertex layout (matches the entity shaders)
+#include "EntityTypes.h"
 #include "ItemModel.h"
+#include "BuildAbsolutePath.h"
+#include "LoadTextureFromFile.h"
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
+
+static const char* kUITextureFolder = "Textures/UI/";
 
 UI_Renderer::UI_Renderer()
     : maxVertices(MAX_UI_VERTECIES),
@@ -164,6 +172,9 @@ bool UI_Renderer::init(SDL_GPUDevice* gpu, SDL_GPUTextureFormat swapchainFormat)
         return false;
     }
 
+    if (!initUITexturtes(gpu))
+        return false;
+
     return vertexBuffer != nullptr && texVertexBuffer != nullptr && textSampler != nullptr;
 }
 
@@ -270,6 +281,61 @@ bool UI_Renderer::initModelPipeline(SDL_GPUDevice* gpu)
     modelSampler = SDL_CreateGPUSampler(gpu, &modelSamplerInfo);
 
     return modelSampler != nullptr;
+}
+
+bool UI_Renderer::initUITexturtes(SDL_GPUDevice* gpu) {
+    std::string folder = BuildAbsolutePath(kUITextureFolder, "");
+    if (folder.empty()) {
+        SDL_Log("[SurvivalUI] could not resolve UI texture folder");
+        return false;
+    }
+
+    std::error_code ec;
+    std::filesystem::directory_iterator dirIt(folder, ec);
+    if (ec) {
+        SDL_Log("[SurvivalUI] cannot open '%s': %s", folder.c_str(), ec.message().c_str());
+        return false;
+    }
+
+    bool allOk = true;
+
+    for (const auto& entry : dirIt) {
+        if (!entry.is_regular_file()) continue;
+
+        const std::filesystem::path& p = entry.path();
+
+        // Only .png (case-insensitive).
+        std::string ext = p.extension().string();
+        for (char& c : ext) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+        if (ext != ".png") continue;
+
+        std::string name = p.stem().string();     // "heart"     from "heart.png"
+        std::string fileName = p.filename().string();  // "heart.png"
+
+        GPUTextureWH gpuTextureWH;
+        if (!loadTextureFromFile(&gpuTextureWH, gpu, kUITextureFolder, fileName.c_str()))
+        {
+            SDL_Log("[SurvivalUI] failed to load UI texture '%s'", fileName.c_str());
+            allOk = false;
+            continue;
+        }
+        SDL_GPUTexture* tex = gpuTextureWH.texture;
+
+        UITexture uiTex;
+        uiTex.texture = tex;
+        uiTex.w = (int)gpuTextureWH.width;
+        uiTex.h = (int)gpuTextureWH.height;
+
+        auto [it, inserted] = UITextureSet.emplace(std::move(name), std::move(uiTex));
+        if (!inserted) {
+            SDL_Log("[SurvivalUI] duplicate UI texture name '%s' (kept first)",
+                it->first.c_str());
+        }
+    }
+
+    SDL_Log("[SurvivalUI] loaded %zu UI texture(s) from '%s'",
+        UITextureSet.size(), kUITextureFolder);
+    return allOk;
 }
 
 void UI_Renderer::destroy(SDL_GPUDevice* gpu)
@@ -387,6 +453,13 @@ void UI_Renderer::drawTexture(SDL_GPUTexture* texture,
 {
     pushTexturedQuad(texture, textSampler, x, y, w, h, tint);
 }
+
+UITexture* UI_Renderer::FindUITexture(const std::string& name) {
+    if (name.empty()) return nullptr;
+    auto it = UITextureSet.find(name);
+    return (it == UITextureSet.end()) ? nullptr : &it->second;
+}
+
 
 // ---------- 3D model drawing ----------
 void UI_Renderer::drawItemModel(ItemModel* itemModel,
@@ -627,7 +700,7 @@ void UI_Renderer::upload(SDL_GPUDevice* gpu, SDL_GPUCommandBuffer* cmd)
 
         // queue a textured quad using the cached texture
         const CachedText& cached = it->second;
-        drawTexture(cached.texture,
+        pushTexturedQuad(cached.texture, textSampler,
             pending.x, pending.y, cached.w, cached.h,
             pending.color);
     }

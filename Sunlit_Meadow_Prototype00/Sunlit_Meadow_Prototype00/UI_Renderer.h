@@ -11,10 +11,14 @@
 
 class ItemModel; // forward declaration; full definition in ItemModel.h
 
-class UI_Renderer {
-public:
-    UI_Renderer();
+struct UITexture {
+    SDL_GPUTexture* texture = nullptr;
+    int             w = 0;
+    int             h = 0;
+};
 
+class UI_Renderer {
+private:
     SDL_GPUGraphicsPipeline* pipeline;
     SDL_GPUBuffer* vertexBuffer;
     Uint32                   maxVertices;
@@ -23,6 +27,8 @@ public:
     SDL_GPUGraphicsPipeline* texPipeline;
     SDL_GPUBuffer* texVertexBuffer;
     std::vector<UITexBatch>  texBatches;
+
+    std::unordered_map<std::string, UITexture> UITextureSet;
 
     // ---- 3D model rendering (rendered offscreen, composited as a UI quad) ----
     SDL_GPUGraphicsPipeline* modelPipeline = nullptr; // back-face culling on
@@ -40,6 +46,8 @@ public:
     std::unordered_map<std::string, CachedText> textCache;
     std::vector<PendingTextDraw>                pendingText;
 
+public:
+    UI_Renderer();
 
     float screenW = 1280.0f;
     float screenH = 780.0f;
@@ -69,6 +77,7 @@ public:
     void drawTexture(SDL_GPUTexture* texture,
         float x, float y, float w, float h,
         SDL_FColor tint = { 1.0f, 1.0f, 1.0f, 1.0f });
+    UITexture* FindUITexture(const std::string& name);
 
     // 3D model drawing (queued; resolved in upload())
     void drawItemModel(ItemModel* itemModel,
@@ -97,6 +106,7 @@ private:
 
     // Builds the two model pipelines + sampler. Called from init().
     bool initModelPipeline(SDL_GPUDevice* gpu);
+    bool initUITexturtes(SDL_GPUDevice* gpu);
 
     // Renders one queued model to a fresh offscreen target and queues the
     // composite quad. Called from upload().

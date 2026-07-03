@@ -9,7 +9,6 @@
 #include <cstdint>
 #include <cctype>
 
-static const char* kUITextureFolder = "Textures/UI/";
 
 /*static bool readPngSize(const std::filesystem::path& file, int& outW, int& outH) {
     std::ifstream in(file, std::ios::binary);
@@ -33,61 +32,6 @@ static const char* kUITextureFolder = "Textures/UI/";
     outH = static_cast<int>(be32(&header[20]));
     return true;
 }*/
-
-bool InitSurvivalUI(SDL_GPUDevice* gpu) {
-    std::string folder = BuildAbsolutePath(kUITextureFolder, "");
-    if (folder.empty()) {
-        SDL_Log("[SurvivalUI] could not resolve UI texture folder");
-        return false;
-    }
-
-    std::error_code ec;
-    std::filesystem::directory_iterator dirIt(folder, ec);
-    if (ec) {
-        SDL_Log("[SurvivalUI] cannot open '%s': %s", folder.c_str(), ec.message().c_str());
-        return false;
-    }
-
-    bool allOk = true;
-
-    for (const auto& entry : dirIt) {
-        if (!entry.is_regular_file()) continue;
-
-        const std::filesystem::path& p = entry.path();
-
-        // Only .png (case-insensitive).
-        std::string ext = p.extension().string();
-        for (char& c : ext) c = static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
-        if (ext != ".png") continue;
-
-        std::string name = p.stem().string();     // "heart"     from "heart.png"
-        std::string fileName = p.filename().string();  // "heart.png"
-
-        GPUTextureWH gpuTextureWH;
-        if (!loadTextureFromFile(&gpuTextureWH, gpu, kUITextureFolder, fileName.c_str()))
-        {
-            SDL_Log("[SurvivalUI] failed to load UI texture '%s'", fileName.c_str());
-            allOk = false;
-            continue;
-        }
-        SDL_GPUTexture* tex = gpuTextureWH.texture;
-
-        UITexture uiTex;
-        uiTex.texture = tex;
-        uiTex.w = (int)gpuTextureWH.width;
-        uiTex.h = (int)gpuTextureWH.height;
-
-        auto [it, inserted] = UITextureSet.emplace(std::move(name), std::move(uiTex));
-        if (!inserted) {
-            SDL_Log("[SurvivalUI] duplicate UI texture name '%s' (kept first)",
-                it->first.c_str());
-        }
-    }
-
-    SDL_Log("[SurvivalUI] loaded %zu UI texture(s) from '%s'",
-        UITextureSet.size(), kUITextureFolder);
-    return allOk;
-}
 
 void drawSurvivalUI(UI_Renderer* ui) {
 	drawHotbar(ui);
@@ -144,26 +88,29 @@ void drawInventoryHotbar(
         const float x = static_cast<float>(originX) + stepX * i;
         const float y = static_cast<float>(originY);
 
+        char buffer[256];
+        const SDL_FColor white = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+        snprintf(buffer, sizeof(buffer), "%d", instance.count);
+        ui->drawText(buffer, x+8, y+12, white);
+
         ui->drawItemModel(model, x, y, itemSize, itemSize, pitch, yaw, roll);
     }
 }
 
 void drawHotbar(UI_Renderer* ui) {
 
-    auto it = UITextureSet.find("hotbar_transperent");
-    if (it == UITextureSet.end()) return;
-
-    const UITexture& hb = it->second;
+    UITexture* hb = ui->FindUITexture("hotbar_transperent");
 
     constexpr float kHotbarScale = 5.0f;
 
-    float w = static_cast<float>(hb.w) * kHotbarScale;
-    float h = static_cast<float>(hb.h) * kHotbarScale;
+    float w = static_cast<float>(hb->w) * kHotbarScale;
+    float h = static_cast<float>(hb->h) * kHotbarScale;
 
     const float bottomMargin = 16.0f;
     float x = (ui->getScreenW() - w) * 0.5f;
     float y = ui->getScreenH() - h - bottomMargin;
 
-    ui->drawTexture(hb.texture, x, y, w, h);
+    ui->drawTexture(hb->texture, x, y, w, h);
     drawInventoryHotbar(ui, x, y, kHotbarScale);
 }

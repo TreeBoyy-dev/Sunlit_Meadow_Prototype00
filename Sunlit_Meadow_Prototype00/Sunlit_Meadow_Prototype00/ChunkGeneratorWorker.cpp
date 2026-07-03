@@ -2,7 +2,7 @@
 #include "GenerateColumn.h"
 #include "Globals.h"
 
-ChunkGeneratorWorker::ChunkGeneratorWorker() : m_running(false), totalChunkGenerated(0){}
+ChunkGeneratorWorker::ChunkGeneratorWorker() : m_running(false), totalChunksGenerated(0){}
 ChunkGeneratorWorker::~ChunkGeneratorWorker() { stop(); }
 
 void ChunkGeneratorWorker::start(BlockManager* blockManager, FastNoiseLite* standartNoise, int regionChunkZStart) {
@@ -38,6 +38,8 @@ void ChunkGeneratorWorker::workerLoop() {
 
             // Turn each returned PalettedContainer into a Chunk and queue it.
             for (auto& chunkData : column) {
+                Uint64 lastTicks = SDL_GetTicks();
+
                 auto chunk = std::make_unique<Chunk>(
                     chunkData.coordinates,
                     std::move(chunkData.storage)
@@ -45,27 +47,23 @@ void ChunkGeneratorWorker::workerLoop() {
                 chunk->createMeshes(*m_blockManager);
                 if(!doRemeshingSeperately)
                     chunk->optimizeMeshes();
-                totalChunkGenerated++;
+                totalChunksGenerated++;
 
                 m_outputQueue.push(std::move(chunk));
 
                 //calc avr time per chunk
                 Uint64 now = SDL_GetTicks();
                 float  dt = (float)(now - lastTicks) / 1000.0f;
-                lastTicks = now;
 
-                s += dt - times[frame];
-                times[frame] = dt;
+                s += dt - times[totalChunksGenerated % 100];
+                times[totalChunksGenerated % 100] = dt;
 
-                float avrg = s / 100.0f;
-                float cps = 1 / avrg;
+                float mspc = s / 100.0f;
 
-                frame++; frame = frame % 100;
-
-                SDL_Log("[GeneratorWorker] chunk %6d generated: %3d|%3d|%3d (avr time/chunk: %4.2fms)",
-                    totalChunkGenerated,
+                SDL_Log("[GeneratorWorker] chunk %6d generated: %3d|%3d|%3d (avr time/chunk: %2.4fms)",
+                    totalChunksGenerated,
                     chunkData.coordinates.x, chunkData.coordinates.y, chunkData.coordinates.z,
-                    cps);
+                    mspc);
             }
         }
         else {

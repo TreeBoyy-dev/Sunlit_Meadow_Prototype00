@@ -135,6 +135,7 @@ SDL_AppResult App_Update(void* appstate)
     // 4) chunk streaming around the player (camera.position IS the player's
     //    head now, so this explicitly tracks the entity)
     worldManager.update(state, camera.position);
+    menuManager.update(dt);
 
     return SDL_APP_CONTINUE;
 }

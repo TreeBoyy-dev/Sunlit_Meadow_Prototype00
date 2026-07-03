@@ -11,6 +11,17 @@
 #include "App_Init.h"
 #include "Globals.h"
 #include "Vectors.h"
+#include "MenuManager.h"
+#include "MenuFactory.h"
+
+// NEW: map SDL button index to the menu system's enum
+static MouseButton toMouseButton(Uint8 b) {
+    switch (b) {
+    case 1:  return MouseButton::Left;
+    case 3:  return MouseButton::Right;
+    default: return MouseButton::Middle;
+    }
+}
 
 SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
 {
@@ -33,8 +44,9 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
     state->lastTicks = SDL_GetTicks();
 
     SDL_SetWindowRelativeMouseMode(state->window, true);
+    menuManager.setWindow(state->window);
 
-    return SDL_APP_CONTINUE; /* all good, proceed to the game loop */
+    return SDL_APP_CONTINUE;
 }
 
 SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
@@ -49,7 +61,14 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
         switch (event->key.scancode)
         {
         case SDL_SCANCODE_ESCAPE:
+            if (menuManager.anyOpen()) {
+                menuManager.closeTop();
+                break;
+            }
             return SDL_APP_SUCCESS;
+
+        case SDL_SCANCODE_E:
+            MenuFactory::togglePlayerInventory(menuManager);
             break;
 
         case SDL_SCANCODE_F3:
@@ -66,11 +85,29 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
         }
     }
     if (event->type == SDL_EVENT_MOUSE_MOTION) {
-        mouseMovement.x += event->motion.xrel;
-        mouseMovement.y += event->motion.yrel;
+        if (menuManager.anyOpen()) {
+            menuManager.handleMouseMotion(event->motion.x, event->motion.y);
+        }
+        else {
+            mouseMovement.x += event->motion.xrel;
+            mouseMovement.y += event->motion.yrel;
+        }
+    }
+    if (event->type == SDL_EVENT_MOUSE_BUTTON_UP) {
+        if (menuManager.anyOpen())
+            menuManager.handleMouseUp(toMouseButton(event->button.button),
+                event->button.x, event->button.y);
     }
     if (event->type == SDL_EVENT_MOUSE_BUTTON_DOWN)
     {
+        SDL_Log("mouse button down");
+        if (menuManager.anyOpen() &&
+            menuManager.handleMouseDown(toMouseButton(event->button.button),
+                event->button.x, event->button.y)) {
+            SDL_Log("continue after mouse down casue menu");
+            return SDL_APP_CONTINUE;
+        }
+
         switch (event->button.button)
         {
         case 1:
@@ -84,7 +121,7 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
                         pos.x, pos.x, pos.z);
                     break;
                 }
-                
+
                 SDL_Log("left_click at %.0f|%.0f|%.0f",
                     pos.x, pos.x, pos.z);
 
@@ -101,7 +138,7 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
                     inventory = static_cast<Inventory*>(found);
 
                 Item* item = itemManager.getItemByName(b->getName());
-                ItemInstance items{item, 1};
+                ItemInstance items{ item, 1 };
                 SDL_Log("new Items: %s, %dx", item->getName().c_str(), items.count);
                 if (!inventory->addItemToInventory(items))
                     SDL_Log("[main] Items couldn't be added");
@@ -156,7 +193,7 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
                     inventory = static_cast<Inventory*>(found);
 
                 ItemInstance instance = inventory->getItemsFromSlot(selectedSlot);
-                //if(!renderDebugUI) inventory->takeItems(selectedSlot);
+                if(!renderDebugUI) inventory->takeItems(selectedSlot, 1);
                 if (instance.isEmpty())
                     return SDL_APP_CONTINUE;
 
@@ -178,9 +215,7 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
         }
 
         default:
-        {
             break;
-        }
         }
     }
     if (event->type == SDL_EVENT_MOUSE_WHEEL)

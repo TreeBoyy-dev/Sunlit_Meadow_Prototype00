@@ -9,16 +9,6 @@
 #include <string_view>
 #include <unordered_set>
 
-struct UITexture {
-    SDL_GPUTexture* texture = nullptr;
-    int             w = 0;
-    int             h = 0;
-};
-
-inline std::unordered_map<std::string, UITexture> UITextureSet;
-
-bool InitSurvivalUI(SDL_GPUDevice* gpu);
-
 void drawSurvivalUI(UI_Renderer* ui);
 
 void drawHotbar(UI_Renderer* ui);

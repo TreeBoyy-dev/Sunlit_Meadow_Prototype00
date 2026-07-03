@@ -157,6 +157,9 @@
     </ClCompile>
     <ClCompile Include="Mat4.cpp" />
     <ClCompile Include="Materials.cpp" />
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="MenuFactory.cpp" />
+    <ClCompile Include="MenuManager.cpp" />
     <ClCompile Include="ObjParser.cpp" />
     <ClCompile Include="faceCulling.cpp" />
     <ClCompile Include="Region.cpp" />
@@ -164,6 +167,7 @@
     <ClCompile Include="SurvivalUI.cpp" />
     <ClCompile Include="UI_Renderer.cpp" />
     <ClCompile Include="Vectors.cpp" />
+    <ClCompile Include="Widget.cpp" />
     <ClCompile Include="WorldManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -185,10 +189,15 @@
     <ClInclude Include="ItemManager.h" />
     <ClInclude Include="ItemModel.h" />
     <ClInclude Include="LoadTextureFromFile.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="MenuFactory.h" />
+    <ClInclude Include="MenuManager.h" />
     <ClInclude Include="ObjParser.h" />
     <ClInclude Include="PalettedContainer.h" />
     <ClInclude Include="SurvivalUI.h" />
+    <ClInclude Include="UIAction.h" />
     <ClInclude Include="UITypes.h" />
+    <ClInclude Include="Widget.h" />
     <ClInclude Include="WorldTypes.h" />
     <ClInclude Include="ChunkGeneratorWorker.h" />
     <ClInclude Include="Entity.h" />

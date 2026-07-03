@@ -49,7 +49,7 @@ bool Region::update(AppState* state,
     bool changed = false;
 
     // --- drain g_worker: newly generated chunks ---
-    const int MAX_UPLOADS_PER_FRAME = 2;
+    const int MAX_UPLOADS_PER_FRAME = 5;
     int uploads = 0;
     std::vector<ChunkCoord> newlyAdded;
 
@@ -117,7 +117,7 @@ bool Region::collectMeshResults(AppState* state,
 {
     if (pendingMeshChunks.empty()) return false;
 
-    const int MAX_UPLOADS_PER_FRAME = 2;
+    const int MAX_UPLOADS_PER_FRAME = 5;
     int uploads = 0;
     bool any = false;
 

@@ -19,12 +19,6 @@
     <Filter Include="Resource Files\fonts">
       <UniqueIdentifier>{81685d3b-2047-4ff6-a05a-49047742c194}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\entity">
-      <UniqueIdentifier>{fe8b0fb6-238a-432c-adc2-438b91a79879}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\items">
-      <UniqueIdentifier>{3edc4fbc-fc2a-482e-9355-2612d91bc03d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Data">
       <UniqueIdentifier>{289eb81f-ee02-438d-a9f3-f6ae68ba741d}</UniqueIdentifier>
     </Filter>
@@ -34,79 +28,88 @@
     <Filter Include="Source Files\UIRendering">
       <UniqueIdentifier>{dd5d0b79-ea29-41b1-ba4c-2fc156432e0f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\world">
+    <Filter Include="Source Files\Items">
+      <UniqueIdentifier>{3edc4fbc-fc2a-482e-9355-2612d91bc03d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World">
       <UniqueIdentifier>{8fe32d31-1c47-4d21-b9fd-4a64dad71261}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\world\Blocks">
+    <Filter Include="Source Files\World\Blocks">
       <UniqueIdentifier>{fe7a9d34-7285-40ec-ab0f-fc9559960001}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\world\worldData">
+    <Filter Include="Source Files\World\worldData">
       <UniqueIdentifier>{d4549a15-9474-4c40-b216-01dfa9818058}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\world\WorldGen.h">
+    <Filter Include="Source Files\World\WorldGen.h">
       <UniqueIdentifier>{4955a047-8b6a-47e0-ae66-693d6eb70681}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\world\WorldGen.h\Noise">
+    <Filter Include="Source Files\World\WorldGen.h\Noise">
       <UniqueIdentifier>{68bd1e19-e6b3-4013-81f2-37f6ca3cccbd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\world\WorldGen.h\MeshOptimizations">
+    <Filter Include="Source Files\World\WorldGen.h\MeshOptimizations">
       <UniqueIdentifier>{5a2feda6-889f-4b6e-834c-1ea73bf3eb2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Entity">
+      <UniqueIdentifier>{fe8b0fb6-238a-432c-adc2-438b91a79879}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\UIRendering\Menus">
+      <UniqueIdentifier>{0fb1c83d-c05d-4c5b-a23d-14d8591e8d6c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GenerateChunk.h">
-      <Filter>Source Files\world\WorldGen.h</Filter>
+      <Filter>Source Files\World\WorldGen.h</Filter>
     </ClCompile>
     <ClCompile Include="Block.cpp">
-      <Filter>Source Files\world\Blocks</Filter>
+      <Filter>Source Files\World\Blocks</Filter>
     </ClCompile>
     <ClCompile Include="BlockManager.cpp">
-      <Filter>Source Files\world\Blocks</Filter>
+      <Filter>Source Files\World\Blocks</Filter>
     </ClCompile>
     <ClCompile Include="BlockModel.cpp">
-      <Filter>Source Files\world\Blocks</Filter>
+      <Filter>Source Files\World\Blocks</Filter>
     </ClCompile>
     <ClCompile Include="Chunk.cpp">
-      <Filter>Source Files\world\worldData</Filter>
+      <Filter>Source Files\World\worldData</Filter>
     </ClCompile>
     <ClCompile Include="WorldManager.cpp">
-      <Filter>Source Files\world\worldData</Filter>
+      <Filter>Source Files\World\worldData</Filter>
     </ClCompile>
     <ClCompile Include="GenerateChunk.cpp">
-      <Filter>Source Files\world\WorldGen.h</Filter>
+      <Filter>Source Files\World\WorldGen.h</Filter>
     </ClCompile>
     <ClCompile Include="GenerateColumn.cpp">
-      <Filter>Source Files\world\WorldGen.h</Filter>
+      <Filter>Source Files\World\WorldGen.h</Filter>
     </ClCompile>
     <ClCompile Include="ChunkGeneratorWorker.cpp">
-      <Filter>Source Files\world\WorldGen.h</Filter>
+      <Filter>Source Files\World\WorldGen.h</Filter>
     </ClCompile>
     <ClCompile Include="ChunkMeshWorker.cpp">
-      <Filter>Source Files\world\WorldGen.h</Filter>
+      <Filter>Source Files\World\WorldGen.h</Filter>
     </ClCompile>
     <ClCompile Include="Entity.cpp">
-      <Filter>Source Files\entity</Filter>
+      <Filter>Source Files\Entity</Filter>
     </ClCompile>
     <ClCompile Include="EntityManager.cpp">
-      <Filter>Source Files\entity</Filter>
+      <Filter>Source Files\Entity</Filter>
     </ClCompile>
     <ClCompile Include="EntityTypes.cpp">
-      <Filter>Source Files\entity</Filter>
+      <Filter>Source Files\Entity</Filter>
     </ClCompile>
     <ClCompile Include="Item.cpp">
-      <Filter>Source Files\items</Filter>
+      <Filter>Source Files\Items</Filter>
     </ClCompile>
     <ClCompile Include="ItemManager.cpp">
-      <Filter>Source Files\items</Filter>
+      <Filter>Source Files\Items</Filter>
     </ClCompile>
     <ClCompile Include="ItemModel.cpp">
-      <Filter>Source Files\items</Filter>
+      <Filter>Source Files\Items</Filter>
     </ClCompile>
     <ClCompile Include="Inventory.cpp">
       <Filter>Source Files\Data</Filter>
     </ClCompile>
     <ClCompile Include="Materials.cpp">
-      <Filter>Source Files\world\Blocks</Filter>
+      <Filter>Source Files\World\Blocks</Filter>
     </ClCompile>
     <ClCompile Include="BuildAbsolutePath.cpp">
       <Filter>Source Files\Helpers</Filter>
@@ -123,9 +126,6 @@
     <ClCompile Include="Mat4.cpp">
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
-    <ClCompile Include="SkyBox.cpp">
-      <Filter>Source Files\UIRendering</Filter>
-    </ClCompile>
     <ClCompile Include="SurvivalUI.cpp">
       <Filter>Source Files\UIRendering</Filter>
     </ClCompile>
@@ -139,19 +139,34 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ChunkMesh.cpp">
-      <Filter>Source Files\world</Filter>
+      <Filter>Source Files\World</Filter>
     </ClCompile>
     <ClCompile Include="Region.cpp">
-      <Filter>Source Files\world\worldData</Filter>
+      <Filter>Source Files\World\worldData</Filter>
     </ClCompile>
     <ClCompile Include="EntityData.h">
       <Filter>Source Files\Data</Filter>
     </ClCompile>
     <ClCompile Include="faceCulling.cpp">
-      <Filter>Source Files\world\WorldGen.h\MeshOptimizations</Filter>
+      <Filter>Source Files\World\WorldGen.h\MeshOptimizations</Filter>
     </ClCompile>
     <ClCompile Include="GreedyMeshing.cpp">
-      <Filter>Source Files\world\WorldGen.h\MeshOptimizations</Filter>
+      <Filter>Source Files\World\WorldGen.h\MeshOptimizations</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
+      <Filter>Source Files\UIRendering\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuFactory.cpp">
+      <Filter>Source Files\UIRendering\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuManager.cpp">
+      <Filter>Source Files\UIRendering\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="Widget.cpp">
+      <Filter>Source Files\UIRendering\Menus</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -162,25 +177,25 @@
       <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="Block.h">
-      <Filter>Source Files\world\Blocks</Filter>
+      <Filter>Source Files\World\Blocks</Filter>
     </ClInclude>
     <ClInclude Include="Materials.h">
-      <Filter>Source Files\world\Blocks</Filter>
+      <Filter>Source Files\World\Blocks</Filter>
     </ClInclude>
     <ClInclude Include="App_Init.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="Chunk.h">
-      <Filter>Source Files\world\worldData</Filter>
+      <Filter>Source Files\World\worldData</Filter>
     </ClInclude>
     <ClInclude Include="Region.h">
-      <Filter>Source Files\world\worldData</Filter>
+      <Filter>Source Files\World\worldData</Filter>
     </ClInclude>
     <ClInclude Include="WorldManager.h">
-      <Filter>Source Files\world\worldData</Filter>
+      <Filter>Source Files\World\worldData</Filter>
     </ClInclude>
     <ClInclude Include="BlockManager.h">
-      <Filter>Source Files\world\Blocks</Filter>
+      <Filter>Source Files\World\Blocks</Filter>
     </ClInclude>
     <ClInclude Include="Frustum.h">
       <Filter>Resource Files</Filter>
@@ -192,25 +207,25 @@
       <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="Entity.h">
-      <Filter>Source Files\entity</Filter>
+      <Filter>Source Files\Entity</Filter>
     </ClInclude>
     <ClInclude Include="EntityManager.h">
-      <Filter>Source Files\entity</Filter>
+      <Filter>Source Files\Entity</Filter>
     </ClInclude>
     <ClInclude Include="ChunkGeneratorWorker.h">
-      <Filter>Source Files\world\WorldGen.h</Filter>
+      <Filter>Source Files\World\WorldGen.h</Filter>
     </ClInclude>
     <ClInclude Include="ChunkMeshWorker.h">
-      <Filter>Source Files\world\WorldGen.h</Filter>
+      <Filter>Source Files\World\WorldGen.h</Filter>
     </ClInclude>
     <ClInclude Include="EntityAssets.h">
-      <Filter>Source Files\entity</Filter>
+      <Filter>Source Files\Entity</Filter>
     </ClInclude>
     <ClInclude Include="PalettedContainer.h">
-      <Filter>Source Files\world\worldData</Filter>
+      <Filter>Source Files\World\worldData</Filter>
     </ClInclude>
     <ClInclude Include="GenerateColumn.h">
-      <Filter>Source Files\world\WorldGen.h</Filter>
+      <Filter>Source Files\World\WorldGen.h</Filter>
     </ClInclude>
     <ClInclude Include="UITypes.h">
       <Filter>Source Files\UIRendering</Filter>
@@ -219,16 +234,16 @@
       <Filter>Source Files\UIRendering</Filter>
     </ClInclude>
     <ClInclude Include="Item.h">
-      <Filter>Source Files\items</Filter>
+      <Filter>Source Files\Items</Filter>
     </ClInclude>
     <ClInclude Include="ItemManager.h">
-      <Filter>Source Files\items</Filter>
+      <Filter>Source Files\Items</Filter>
     </ClInclude>
     <ClInclude Include="ItemModel.h">
-      <Filter>Source Files\items</Filter>
+      <Filter>Source Files\Items</Filter>
     </ClInclude>
     <ClInclude Include="BlockModel.h">
-      <Filter>Source Files\world\Blocks</Filter>
+      <Filter>Source Files\World\Blocks</Filter>
     </ClInclude>
     <ClInclude Include="Inventory.h">
       <Filter>Source Files\Data</Filter>
@@ -254,26 +269,41 @@
     <ClInclude Include="ThreadSafeQueue.h">
       <Filter>Resource Files</Filter>
     </ClInclude>
-    <ClInclude Include="SkyBox.h">
-      <Filter>Source Files\UIRendering</Filter>
-    </ClInclude>
     <ClInclude Include="Globals.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="ChunkMesh.h">
-      <Filter>Source Files\world</Filter>
+      <Filter>Source Files\World</Filter>
     </ClInclude>
     <ClInclude Include="WorldTypes.h">
-      <Filter>Source Files\world</Filter>
+      <Filter>Source Files\World</Filter>
     </ClInclude>
     <ClInclude Include="InitNoise.h">
-      <Filter>Source Files\world\WorldGen.h\Noise</Filter>
+      <Filter>Source Files\World\WorldGen.h\Noise</Filter>
     </ClInclude>
     <ClInclude Include="FastNoiseLite.h">
-      <Filter>Source Files\world\WorldGen.h\Noise</Filter>
+      <Filter>Source Files\World\WorldGen.h\Noise</Filter>
     </ClInclude>
     <ClInclude Include="Data.h">
       <Filter>Source Files\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>Source Files\UIRendering\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuFactory.h">
+      <Filter>Source Files\UIRendering\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuManager.h">
+      <Filter>Source Files\UIRendering\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="UIAction.h">
+      <Filter>Source Files\UIRendering\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="Widget.h">
+      <Filter>Source Files\UIRendering\Menus</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -287,7 +317,7 @@
       <Filter>Resource Files\shaders</Filter>
     </None>
     <None Include="EntityTypes.h">
-      <Filter>Source Files\entity</Filter>
+      <Filter>Source Files\Entity</Filter>
     </None>
     <None Include="..\..\.gitignore" />
   </ItemGroup>
