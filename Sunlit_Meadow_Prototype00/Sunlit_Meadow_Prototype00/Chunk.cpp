@@ -121,14 +121,14 @@ Uint16 Chunk::getBlockId(int x, int y, int z) {
 		return storage.getId(x, y, z);
 }
 
-void Chunk::setBlockId(int x, int y, int z, Uint16 id) {
+void Chunk::setBlockId(int x, int y, int z, Uint16 id, Uint16 blockState) {
 	if (x < 0 || x > 15 ||
 		y < 0 || y > 15 ||
 		z < 0 || z > 15)
 		SDL_Log("[Chunk] couldn't get BlockID at: %d:%d:%d in chunk %d:%d:%d",
 			x, y, z, chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
 	else {
-		storage.set(x, y, z, id);
+		storage.set(x, y, z, id, blockState);
 		SDL_Log("[Chunk] setting block (id: %d) at: %d:%d:%d in chunk %d:%d:%d",
 			id, x, y, z, chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
 	}

@@ -25,6 +25,7 @@ private:
         Collision collision,
         std::array<bool, 6> obstructs,
         bool transparent = false,
+        bool rotateable = false,
         bool hasSlab = false,
         bool hasStair = false,
         bool hasWall = false,

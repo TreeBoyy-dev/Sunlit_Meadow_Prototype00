@@ -24,7 +24,7 @@ private:
     Uint16    id;
     std::string name;
     const char* modelFileName;
-    bool        transparent;
+    bool        transparent, rotateable;
     bool        hasSlab, hasStair, hasPillar, hasWall, hasFence; //hasStep, hasCorner??
 
     Collision collision;
@@ -42,6 +42,7 @@ public:
         Collision collision,
         std::array<bool, 6> obstructs,
         bool transparent = false,
+        bool rotateable = false,
         bool hasSlab = false,
         bool hasStair = false,
         bool hasWall = false
@@ -50,7 +51,7 @@ public:
     void generateMeshFromModel(
         std::vector<WorldVertex>& vertices,
         std::vector<Uint32>&   indices,
-        int x, int y, int z
+        int x, int y, int z, Uint16 state
     );
 
     // Builds a render-ready inventory-icon mesh for this block.

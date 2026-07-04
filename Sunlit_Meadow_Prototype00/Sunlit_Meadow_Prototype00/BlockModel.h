@@ -47,7 +47,7 @@ public:
     virtual void getMesh(
         std::vector<WorldVertex>& outVertices,
         std::vector<Uint32>& outIndices,
-        int x, int y, int z
+        int x, int y, int z, Uint16 state
     );
 
     ModelFace getTopMaterial();

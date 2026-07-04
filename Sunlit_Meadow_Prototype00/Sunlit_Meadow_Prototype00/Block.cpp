@@ -9,6 +9,7 @@ Block::Block(
     Collision collision,
     std::array<bool, 6> obstructs,
     bool transparent,
+    bool rotateable,
     bool hasSlab,
     bool hasStair,
     bool hasWall)
@@ -18,6 +19,7 @@ Block::Block(
     model(std::move(model)),
     obstructs(obstructs),
     transparent(transparent),
+    rotateable(rotateable),
     hasSlab(hasSlab), hasStair(hasStair), hasWall(hasWall),
     collision(collision),
     modelInit(false)
@@ -27,13 +29,13 @@ Block::Block(
 void Block::generateMeshFromModel(
     std::vector<WorldVertex>& vertices,
     std::vector<Uint32>& indices,
-    int x, int y, int z
+    int x, int y, int z, Uint16 state
 ) {
     if (!modelInit) {
         model->init(modelFileName);
         modelInit = true;
     }
-    model->getMesh(vertices, indices, x, y, z);
+    model->getMesh(vertices, indices, x, y, z, state);
 }
 
 bool Block::buildItemModel(

@@ -138,9 +138,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ChunkMesh.cpp">
-      <Filter>Source Files\World</Filter>
-    </ClCompile>
     <ClCompile Include="Region.cpp">
       <Filter>Source Files\World\worldData</Filter>
     </ClCompile>
@@ -167,6 +164,9 @@
     </ClCompile>
     <ClCompile Include="SkyBox.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ChunkMesh.cpp">
+      <Filter>Source Files\World\worldData</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -272,9 +272,6 @@
     <ClInclude Include="Globals.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ChunkMesh.h">
-      <Filter>Source Files\World</Filter>
-    </ClInclude>
     <ClInclude Include="WorldTypes.h">
       <Filter>Source Files\World</Filter>
     </ClInclude>
@@ -304,6 +301,9 @@
     </ClInclude>
     <ClInclude Include="SkyBox.h">
       <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkMesh.h">
+      <Filter>Source Files\World\worldData</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -49,6 +49,7 @@ void ChunkMesh::buildMesh(
             for (int z = 0; z < CHUNK_SIZE; z++) {
 
                 Uint16 id = storage->getId(x, y, z);
+                Uint16 state = storage->getState(x, y, z);
                 Block* b = blockManager.getById(id);
                 if (!b) {
                     SDL_Log("[ChunkMesh] buildMesh: unknown block id %u at %d,%d,%d", id, x, y, z);
@@ -61,7 +62,8 @@ void ChunkMesh::buildMesh(
                     vertices, indices,
                     x + chunkCoords.x * CHUNK_SIZE,
                     y + chunkCoords.y * CHUNK_SIZE,
-                    z + chunkCoords.z * CHUNK_SIZE
+                    z + chunkCoords.z * CHUNK_SIZE,
+                    state
                 );
             }
         }

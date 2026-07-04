@@ -363,7 +363,7 @@ Uint16 WorldManager::getBlockIdAt(Vec3 pos) {
     int z = localIdx(pos.z);
     return chunk->getBlockId(x, y, z);
 }
-void   WorldManager::setBlockIdAt(Vec3 pos, Uint16 id, AppState* state) {
+void   WorldManager::setBlockIdAt(AppState* state, Vec3 pos, Uint16 id, Uint16 blockState) {
     Region* region = getRegion(getPlayerRegionCoord(pos));
     Chunk* chunk = region->getChunk(getPlayerChunkCoord(pos));
     if (!chunk || !chunk->getIsGenerated())
@@ -374,7 +374,7 @@ void   WorldManager::setBlockIdAt(Vec3 pos, Uint16 id, AppState* state) {
     if (y < 0) y += 16;
     int z = (int)(pos.z) % CHUNK_SIZE;
     if (z < 0) z += 16;
-    chunk->setBlockId(x, y, z, id);
+    chunk->setBlockId(x, y, z, id, blockState);
     chunk->createMeshes(*blockManager);
     region->queueMeshUpdate(chunk->getChunkCoordinates());
     chunk->uploadMeshes(state, textureArray);

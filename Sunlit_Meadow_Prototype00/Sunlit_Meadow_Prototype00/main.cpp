@@ -125,7 +125,7 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
                 SDL_Log("left_click at %.0f|%.0f|%.0f",
                     pos.x, pos.x, pos.z);
 
-                worldManager.setBlockIdAt(pos, 0, state);
+                worldManager.setBlockIdAt(state, pos, 0);
 
                 Entity* player = entityManager.getEntityById(0);
                 Inventory* inventory;
@@ -208,7 +208,7 @@ SDL_AppResult SDL_AppEvent(void* appstate, SDL_Event* event)
                     return SDL_APP_CONTINUE;
                 }
 
-                worldManager.setBlockIdAt(pos, placebleItem->getBlockId(), state);
+                worldManager.setBlockIdAt(state, pos, placebleItem->getBlockId());
 
             }
             break;

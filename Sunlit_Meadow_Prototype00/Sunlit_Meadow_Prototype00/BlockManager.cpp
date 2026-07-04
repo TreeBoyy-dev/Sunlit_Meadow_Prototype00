@@ -10,6 +10,7 @@ void BlockManager::registerBlock(
     Collision collision,
     std::array<bool, 6> obstructs,
     bool transparent,
+    bool rotateable,
     bool hasSlab,
     bool hasStair,
     bool hasWall,
@@ -25,6 +26,7 @@ void BlockManager::registerBlock(
         collision,
         obstructs,
         transparent,
+        rotateable,
         hasSlab,
         hasStair,
         hasWall
@@ -51,7 +53,7 @@ void BlockManager::init() {
         ),
         { false, 0 },
         { false, false, false, false, false, false },
-        true, false, false, false
+        true, false, false, false, false
     );
     registerBlock("cobble_stone",   
         std::make_unique<BlockModel>(
@@ -59,7 +61,7 @@ void BlockManager::init() {
         ),
         fullBlockcollision,
         { true, true, true, true, true, true },
-        false, true, true, false
+        false, false, true, true, false
     );
     registerBlock("diorite",        
         std::make_unique<BlockModel>(
@@ -67,7 +69,7 @@ void BlockManager::init() {
         ),
         fullBlockcollision,
         { true, true, true, true, true, true },
-        false, true, true, true
+        false, false, true, true, true
     );
     // --- dirt/grass related ---
     registerBlock("dirt",           
@@ -76,7 +78,7 @@ void BlockManager::init() {
         ),
         fullBlockcollision,
         { true, true, true, true, true, true },
-        false, true, true
+        false, false, true, true
     );
     registerBlock("grass_block",    
         std::make_unique<BlockModel>(
@@ -86,7 +88,7 @@ void BlockManager::init() {
         ),
         fullBlockcollision,
         { true, true, true, true, true, true },
-        false, true, true
+        false, false, true, false
     );
     // --- wood related ---
     registerBlock("birch_log",      
@@ -96,7 +98,7 @@ void BlockManager::init() {
         ),
         fullBlockcollision,
         { true, true, true, true, true, true },
-        false, true, true
+        false, false, true, false
     );
     registerBlock("birch_leaves",   
         std::make_unique<BlockModel>(
@@ -113,7 +115,7 @@ void BlockManager::init() {
         ),
         fullBlockcollision,
         { true, true, true, true, true, true },
-        false, true, true
+        false, false, true, false
     );
     registerBlock("chestnut_leaves",
         std::make_unique<BlockModel>(
@@ -133,18 +135,33 @@ void BlockManager::init() {
             slabCol.boxes = { AABB{ {0,0,0}, {1,1,0.5f} } };
             registerBlock(b->getName() + "_slab",
                 std::make_unique<BlockModel>(
-                    b->getTopMaterial(), 
-                    b->getBottomMaterial(), 
+                    b->getTopMaterial(),
+                    b->getBottomMaterial(),
                     b->getSideMaterial()
                 ),
                 slabCol,
                 { false, false, false, false, false, true },
-                false, false, false, false,
+                false, false, false, false, false,
                 "slab.obj"
             );
         }
+        if (b->getHasStair()) {
+            Collision slabCol = b->getCollision();
+            slabCol.boxes = { AABB{ {0,0,0   }, {1,1   ,0.5f} },
+                              AABB{ {0,0,0.5f}, {1,0.5f,1   } } };
+            registerBlock(b->getName() + "_stair",
+                std::make_unique<BlockModel>(
+                    b->getTopMaterial(),
+                    b->getBottomMaterial(),
+                    b->getSideMaterial()
+                ),
+                slabCol,
+                { false, false, false, false, false, true },
+                false, false, false, false, false,
+                "stair.obj"
+            );
+        }
 
-        //if (b.getHasStair()) registerBlock(b.getName() + "_stair", stairModelFrom(b.model));
         //if (b.getHasWall())  registerBlock(b.getName() + "_Wall",  wallModelFrom(b.model));
     }
 

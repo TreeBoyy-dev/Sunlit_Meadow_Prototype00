@@ -61,7 +61,7 @@ public:
     void    calcVisibleChunksList(int renderDistance);
 
     bool    isBlockSolid(int bx, int by, int bz);
-    void    setBlockIdAt(Vec3 pos, Uint16 id, AppState* state);
+    void    setBlockIdAt(AppState* state, Vec3 pos, Uint16 id, Uint16 blockState = 0);
     Uint16  getBlockIdAt(Vec3 pos);
     Vec3    getBlockLookingAt(
         Camera cam,

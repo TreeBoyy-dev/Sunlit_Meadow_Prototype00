@@ -96,7 +96,7 @@ void generateFeatures_GrassAndDirt(
 				if (rand() % 200 != 0)
 					block = blockManager.getByName("grass_block_slab");
 				else
-					block = blockManager.getByName("cobble_stone_slab");
+					block = blockManager.getByName("cobble_stone_stair");
 
 			if (block != nullptr)
 			{

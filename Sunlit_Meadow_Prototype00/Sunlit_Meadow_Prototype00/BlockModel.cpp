@@ -108,7 +108,7 @@ bool BlockModel::init(const char* fileName) {
 void BlockModel::getMesh(
     std::vector<WorldVertex>& outVertices,
     std::vector<Uint32>& outIndices,
-    int x, int y, int z)
+    int x, int y, int z, Uint16 state)
 {
     // Indices are relative to where this model's vertices land in the buffer.
     const Uint32 base = static_cast<Uint32>(outVertices.size());
