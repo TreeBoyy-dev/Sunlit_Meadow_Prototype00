@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL3/SDL.h>
 #include <functional>
+#include <vector>
 #include "Vectors.h"
 
 #define CHUNK_SIZE 16
@@ -16,6 +17,20 @@ typedef struct {
     SDL_FColor color;
     float materialIndex;
 }WorldVertex;
+
+// Moved here from Block.h so the JSON block-definition loader can use them
+// without pulling in the whole Block class (avoids a circular include).
+struct AABB {
+    Vec3 min;   // local block space, 0..1 per axis, Z up
+    Vec3 max;
+};
+struct Collision {
+    bool solid = true;       // true  -> blocks movement
+    int  slowdown = 0;       // % of speed removed per tick when !solid.
+                             // 0 = no slowing, 100 = frozen.
+    std::vector<AABB> boxes; // local collision boxes. EMPTY = full unit cube [0,0,0]..[1,1,1].
+                             // slab (bottom half) = {{0,0,0},{1,1,0.5}}
+};
 
 struct RegionCoord {
     int x, y, z;

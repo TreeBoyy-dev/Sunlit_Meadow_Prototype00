@@ -5,7 +5,7 @@
 #include <string>
 #include "Block.h"
 #include "BlockModel.h"
-#include <array>
+#include "BlockDefLoader.h"
 
 class BlockManager {
 private:
@@ -16,23 +16,14 @@ private:
     std::unordered_map<Uint16,      Block*> blocksById;
     std::unordered_map<std::string, Block*> blocksByName;
 
-    Uint16 nextId = 0;
-
-    // Internal: register a block and auto-assign ID
-    void registerBlock(
-        const std::string& name,
-        std::unique_ptr<BlockModel> model,
-        Collision collision,
-        std::array<bool, 6> obstructs,
-        bool transparent = false,
-        bool rotateable = false,
-        bool hasSlab = false,
-        bool hasStair = false,
-        bool hasWall = false,
-        const char* modelFileName = "block.obj"
-    );
+    // Internal: turn one resolved JSON definition into a live Block
+    // (build StateLayout -> construct BlockModel -> bake -> index).
+    bool registerBlock(const BlockDef& def);
 
 public:
+    // Loads Assets/BlockTemplates/*.json + Assets/Blocks/*.json and bakes
+    // every block's model variants. Blocks are no longer hardcoded here —
+    // adding a block means adding a JSON file, not touching this class.
     void init();
 
     Block* getById(Uint16 id);

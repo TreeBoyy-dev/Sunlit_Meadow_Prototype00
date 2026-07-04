@@ -32,6 +32,11 @@ struct ModelFace {
 
 const char* materialTextureFile(Material material);
 
+// "COBBLESTONE" -> MATERIAL_COBBLESTONE etc. (enum name minus the MATERIAL_
+// prefix). Returns MATERIAL_COUNT for unknown names — callers must check.
+// Used by the JSON block-definition loader.
+Material materialFromName(const std::string& name);
+
 bool UploadTextureArrayLayer(
     SDL_GPUDevice* gpu,
     SDL_GPUTexture* textureArray,

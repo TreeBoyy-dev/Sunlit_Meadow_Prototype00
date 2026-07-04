@@ -6,48 +6,45 @@
 #include "ObjParser.h"
 #include "Materials.h"
 #include "BlockModel.h"
-#include "WorldTypes.h"
-struct AABB {
-    Vec3 min;   // local block space, 0..1 per axis, Z up
-    Vec3 max;
-};
-struct Collision {
-    bool solid = true;       // true  -> blocks movement
-    int  slowdown = 0;       // % of speed removed per tick when !solid.
-                             // 0 = no slowing, 100 = frozen.
-    std::vector<AABB> boxes; // local collision boxes. EMPTY = full unit cube [0,0,0]..[1,1,1].
-                             // slab (bottom half) = {{0,0,0},{1,1,0.5}}
-};
+#include "StateLayout.h"
+#include "WorldTypes.h"   // AABB / Collision live here now
+
+// NOTE (blockstate refactor):
+//  - `rotateable` is gone. Whether a block rotates is simply "does its
+//    template declare a rot4/axis3/rot6 property".
+//  - `hasSlab` / `hasStair` / `hasPillar` / `hasWall` / `hasFence` are gone.
+//    They were never read outside registration; slab/stair/... blocks are
+//    now ordinary blocks defined by their own JSON in Assets/Blocks/.
+//  - Blocks are no longer hardcoded — BlockManager::init() builds them from
+//    Assets/Blocks/*.json resolved against Assets/BlockTemplates/*.json.
 
 class Block {
 private:
-    Uint16    id;
+    Uint16      id;
     std::string name;
-    const char* modelFileName;
-    bool        transparent, rotateable;
-    bool        hasSlab, hasStair, hasPillar, hasWall, hasFence; //hasStep, hasCorner??
+    std::string modelFileName;   // variant-0 geometry; used for the item icon
+    bool        transparent;
 
-    Collision collision;
+    StateLayout layout;          // this block's Uint16 state bit layout
+    Collision   collision;
 
-    std::unique_ptr<BlockModel> model;
+    std::unique_ptr<BlockModel> model;   // fully baked at init
     std::array<bool, 6> obstructs;
 
-    bool modelInit;
 public:
     Block(
         Uint16 id,
         std::string name,
-        const char* modelFileName,
+        std::string modelFileName,
         std::unique_ptr<BlockModel> model,
+        StateLayout layout,
         Collision collision,
         std::array<bool, 6> obstructs,
-        bool transparent = false,
-        bool rotateable = false,
-        bool hasSlab = false,
-        bool hasStair = false,
-        bool hasWall = false
+        bool transparent = false
     );
 
+    // Appends the baked mesh variant for `state` (fluid bit is masked off
+    // inside BlockModel) at (x, y, z).
     void generateMeshFromModel(
         std::vector<WorldVertex>& vertices,
         std::vector<Uint32>&   indices,
@@ -58,7 +55,8 @@ public:
     // Re-parses the block's .obj (so MODEL_ROTATION is baked in, exactly like
     // the regular items) and remaps each face's UVs into a horizontal 3-cell
     // atlas [ side | top | bottom ], choosing the cell per-face from the normal
-    // (same +Z up / -Z down convention as BlockModel::materialForNormal).
+    // (same +Z up / -Z down convention as the world meshes).
+    // Uses the default-state (variant 0) geometry so icons stay correct.
     // Pair the result with buildBlockIconTexture(), which builds the matching
     // atlas from getSideMaterial()/getTopMaterial()/getBottomMaterial().
     // Returns false if the .obj could not be parsed.
@@ -68,13 +66,11 @@ public:
     );
 
     bool isTransparent();
-    bool getHasSlab();
-    bool getHasStair();
-    bool getHasWall();
     Collision& getCollision() { return collision; }
+    const StateLayout& getStateLayout() const { return layout; }
     std::string getName();
     Uint16 getID();
-    const char* getModelFileName() { return modelFileName; }
+    const char* getModelFileName() { return modelFileName.c_str(); }
 
     ModelFace getTopMaterial();
     ModelFace getBottomMaterial();

@@ -4,25 +4,20 @@
 Block::Block(
     Uint16 id,
     std::string name,
-    const char* modelFileName,
+    std::string modelFileName,
     std::unique_ptr<BlockModel> model,
+    StateLayout layout,
     Collision collision,
     std::array<bool, 6> obstructs,
-    bool transparent,
-    bool rotateable,
-    bool hasSlab,
-    bool hasStair,
-    bool hasWall)
+    bool transparent)
     : id(id),
     name(std::move(name)),
-    modelFileName(modelFileName),
+    modelFileName(std::move(modelFileName)),
     model(std::move(model)),
+    layout(std::move(layout)),
     obstructs(obstructs),
     transparent(transparent),
-    rotateable(rotateable),
-    hasSlab(hasSlab), hasStair(hasStair), hasWall(hasWall),
-    collision(collision),
-    modelInit(false)
+    collision(collision)
 {
 }
 
@@ -31,10 +26,9 @@ void Block::generateMeshFromModel(
     std::vector<Uint32>& indices,
     int x, int y, int z, Uint16 state
 ) {
-    if (!modelInit) {
-        model->init(modelFileName);
-        modelInit = true;
-    }
+    // All variants were baked at BlockManager::init() (on the main thread,
+    // before the mesh workers spin up) — this is a pure read-only lookup and
+    // safe to call from any thread.
     model->getMesh(vertices, indices, x, y, z, state);
 }
 
@@ -42,7 +36,7 @@ bool Block::buildItemModel(
     std::vector<ModelVertex>& outVertices,
     std::vector<Uint16>& outIndices
 ) {
-    const char* file = modelFileName;
+    const char* file = modelFileName.c_str();
 
     std::vector<ModelVertex> verts;
     std::vector<Uint16>      idx;
@@ -72,15 +66,6 @@ bool Block::buildItemModel(
 
 bool Block::isTransparent() {
     return transparent;
-}
-bool Block::getHasSlab() {
-    return hasSlab;
-}
-bool Block::getHasStair() {
-    return hasStair;
-}
-bool Block::getHasWall() {
-    return hasWall;
 }
 std::string Block::getName() {
     return name;

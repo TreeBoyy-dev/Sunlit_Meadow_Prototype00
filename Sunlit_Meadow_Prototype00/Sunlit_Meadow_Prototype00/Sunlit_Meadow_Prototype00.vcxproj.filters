@@ -63,6 +63,12 @@
     <ClCompile Include="Block.cpp">
       <Filter>Source Files\World\Blocks</Filter>
     </ClCompile>
+    <ClCompile Include="StateLayout.cpp">
+      <Filter>Source Files\World\Blocks</Filter>
+    </ClCompile>
+    <ClCompile Include="BlockDefLoader.cpp">
+      <Filter>Source Files\World\Blocks</Filter>
+    </ClCompile>
     <ClCompile Include="BlockManager.cpp">
       <Filter>Source Files\World\Blocks</Filter>
     </ClCompile>
@@ -177,6 +183,18 @@
       <Filter>Resource Files</Filter>
     </ClInclude>
     <ClInclude Include="Block.h">
+      <Filter>Source Files\World\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="StateLayout.h">
+      <Filter>Source Files\World\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="BlockDefLoader.h">
+      <Filter>Source Files\World\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="BakedMesh.h">
+      <Filter>Source Files\World\Blocks</Filter>
+    </ClInclude>
+    <ClInclude Include="json.hpp">
       <Filter>Source Files\World\Blocks</Filter>
     </ClInclude>
     <ClInclude Include="Materials.h">

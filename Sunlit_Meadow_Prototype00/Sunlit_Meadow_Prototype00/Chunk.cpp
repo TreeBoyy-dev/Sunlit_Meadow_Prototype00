@@ -20,6 +20,7 @@ Chunk::Chunk(Chunk* other) :
 	chunkCoordinates(other->getChunkCoordinates()),
 	isGenerated(other->getIsGenerated()),
 	storage(other->storage),
+	fluidStorage(other->fluidStorage),
 	drawOpaque(false),
 	drawTransparent(false)
 {}
@@ -136,6 +137,75 @@ void Chunk::setBlockId(int x, int y, int z, Uint16 id, Uint16 blockState) {
 
 ChunkCoord Chunk::getChunkCoordinates() {
 	return chunkCoordinates;
+}
+
+// ---------------------------------------------------------------------
+//  Fluids.
+//
+//  Bit 15 of the BLOCK state only says "a fluid is in this cell". Which
+//  fluid and what level live in fluidStorage, reusing PaletteEntry as
+//  { id = fluidId, state = level }. A chunk with no fluids keeps a 1-entry
+//  palette (all zero) and costs 0 bytes of cell data — same trick as blocks.
+//
+//  setFluid() is deliberately the ONLY function that writes either side of
+//  this pairing, so the block-state flag and the fluid container can never
+//  drift apart.
+// ---------------------------------------------------------------------
+void Chunk::setFluid(int x, int y, int z, Uint16 fluidId, Uint16 level) {
+	if (x < 0 || x > 15 ||
+		y < 0 || y > 15 ||
+		z < 0 || z > 15) {
+		SDL_Log("[Chunk] couldn't set fluid at: %d:%d:%d in chunk %d:%d:%d",
+			x, y, z, chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
+		return;
+	}
+
+	// 1) the fluid itself (id 0 = no fluid, level ignored in that case)
+	fluidStorage.set(x, y, z, fluidId, fluidId != 0 ? level : 0);
+
+	// 2) mirror it into bit 15 of the block state, preserving the template
+	//    bits (rotation, connections, ...) below it.
+	Uint16 id = storage.getId(x, y, z);
+	Uint16 state = storage.getState(x, y, z);
+	if (fluidId != 0) state = (Uint16)(state | STATE_FLUID_MASK);
+	else              state = (Uint16)(state & ~STATE_FLUID_MASK);
+	storage.set(x, y, z, id, state);
+}
+
+FluidCell Chunk::getFluid(int x, int y, int z) {
+	FluidCell cell;
+	if (x < 0 || x > 15 ||
+		y < 0 || y > 15 ||
+		z < 0 || z > 15) {
+		SDL_Log("[Chunk] couldn't get fluid at: %d:%d:%d in chunk %d:%d:%d",
+			x, y, z, chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
+		return cell;
+	}
+	// The fluid bit is an optimization: skip the second container lookup for
+	// the (usual) case that there is no fluid here.
+	if ((storage.getState(x, y, z) & STATE_FLUID_MASK) == 0)
+		return cell;
+
+	cell.fluidId = fluidStorage.getId(x, y, z);
+	cell.level   = fluidStorage.getState(x, y, z);
+	return cell;
+}
+
+bool Chunk::hasFluid(int x, int y, int z) {
+	if (x < 0 || x > 15 ||
+		y < 0 || y > 15 ||
+		z < 0 || z > 15)
+		return false;
+	return (storage.getState(x, y, z) & STATE_FLUID_MASK) != 0;
+}
+
+// Future home of the connection-bit write path: when a neighbor changes,
+// fences recompute their connect4 bits and walls their wallSide4 bits, then
+// the chunk gets remeshed. Intentionally empty this pass (plan §6) — the
+// READ path (multipart meshing) is done, so testing is possible by writing
+// connection bits manually via setBlockId.
+void Chunk::onNeighborChanged(int x, int y, int z) {
+	(void)x; (void)y; (void)z;
 }
 
 /*

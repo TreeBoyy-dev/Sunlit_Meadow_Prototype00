@@ -1,179 +1,88 @@
 #include "BlockManager.h"
 #include "BlockModel.h"
-#include <stdexcept>
-#include <vector>
-#include <memory>
+#include "BuildAbsolutePath.h"
 
-void BlockManager::registerBlock(
-    const std::string& name,
-    std::unique_ptr<BlockModel> model,
-    Collision collision,
-    std::array<bool, 6> obstructs,
-    bool transparent,
-    bool rotateable,
-    bool hasSlab,
-    bool hasStair,
-    bool hasWall,
-    const char* modelFileName
-){
-    Uint16 id = nextId++;
+#include <memory>
+#include <vector>
+
+bool BlockManager::registerBlock(const BlockDef& def) {
+    // 1) State layout — bits allocate upward from bit 0 in declaration
+    //    order; bit 15 stays reserved for the fluid flag.
+    StateLayout layout;
+    for (const StatePropDef& p : def.states) {
+        if (!layout.addProperty(p.name, p.type)) {
+            SDL_Log("[BlockManager] block '%s' skipped (bad state layout)",
+                    def.name.c_str());
+            return false;
+        }
+    }
+
+    // 2) Model — bake every variant / multipart part now, on the main
+    //    thread. The chunk-mesh workers only ever read the baked data.
+    auto model = std::make_unique<BlockModel>(def.top, def.bottom, def.side);
+    // "air" is never meshed (ChunkMesh skips id 0), so don't waste time
+    // parsing an .obj for it.
+    if (def.id != 0) {
+        if (!model->bake(def, layout)) {
+            SDL_Log("[BlockManager] block '%s' skipped (bake failed)",
+                    def.name.c_str());
+            return false;
+        }
+    }
+
+    // Icon geometry: variant-0 .obj (multipart blocks use their first part).
+    std::string iconObj = def.multipart && !def.parts.empty()
+        ? def.parts[0].part
+        : def.geometry;
 
     auto newBlock = std::make_unique<Block>(
-        id,
-        name,
-        modelFileName,
+        def.id,
+        def.name,
+        std::move(iconObj),
         std::move(model),
-        collision,
-        obstructs,
-        transparent,
-        rotateable,
-        hasSlab,
-        hasStair,
-        hasWall
+        std::move(layout),
+        def.collision,
+        def.obstructs,
+        def.transparent
     );
     Block* ptr = newBlock.get();
 
-    blocksById[id] = ptr;
-    blocksByName[name] = ptr;
-
+    blocksById[def.id] = ptr;
+    blocksByName[def.name] = ptr;
     blocks.push_back(std::move(newBlock));
+    return true;
 }
 
-Collision fullBlockcollision = {
-    true,
-    0,
-    { AABB{ {0,0,0}, {1,1,1} } }
-};
-
 void BlockManager::init() {
-    // --- base blocks ---
-    registerBlock("air",
-        std::make_unique<BlockModel>(
-            ModelFace(MATERIAL_AIR)
-        ),
-        { false, 0 },
-        { false, false, false, false, false, false },
-        true, false, false, false, false
-    );
-    registerBlock("cobble_stone",   
-        std::make_unique<BlockModel>(
-            ModelFace(MATERIAL_COBBLESTONE)
-        ),
-        fullBlockcollision,
-        { true, true, true, true, true, true },
-        false, false, true, true, false
-    );
-    registerBlock("diorite",        
-        std::make_unique<BlockModel>(
-            ModelFace(MATERIAL_DIORITE)
-        ),
-        fullBlockcollision,
-        { true, true, true, true, true, true },
-        false, false, true, true, true
-    );
-    // --- dirt/grass related ---
-    registerBlock("dirt",           
-        std::make_unique<BlockModel>(
-            ModelFace(MATERIAL_DIRT)
-        ),
-        fullBlockcollision,
-        { true, true, true, true, true, true },
-        false, false, true, true
-    );
-    registerBlock("grass_block",    
-        std::make_unique<BlockModel>(
-            ModelFace(MATERIAL_GRASS_BLOCK_TOP),                          // top
-            ModelFace(MATERIAL_DIRT),                                     // bottom
-            ModelFace(MATERIAL_GRASS_BLOCK_SIDE, MATERIAL_GRASS_BLOCK_SIDE_OV)   // side + overlay
-        ),
-        fullBlockcollision,
-        { true, true, true, true, true, true },
-        false, false, true, false
-    );
-    // --- wood related ---
-    registerBlock("birch_log",      
-        std::make_unique<BlockModel>(
-            ModelFace(MATERIAL_BIRCH_LOG_TOP),
-            ModelFace(MATERIAL_BIRCH_LOG_SIDE)
-        ),
-        fullBlockcollision,
-        { true, true, true, true, true, true },
-        false, false, true, false
-    );
-    registerBlock("birch_leaves",   
-        std::make_unique<BlockModel>(
-            ModelFace(MATERIAL_BIRCH_LEAVES)
-            ),
-        fullBlockcollision,
-        { false, false, false, false, false, false }
-    );
-
-    registerBlock("chestnut_log",   
-        std::make_unique<BlockModel>(
-            ModelFace(MATERIAL_CHESTNUT_LOG_TOP),
-            ModelFace(MATERIAL_CHESTNUT_LOG_SIDE)
-        ),
-        fullBlockcollision,
-        { true, true, true, true, true, true },
-        false, false, true, false
-    );
-    registerBlock("chestnut_leaves",
-        std::make_unique<BlockModel>(
-            ModelFace(MATERIAL_CHESTNUT_LEAVES)
-        ),
-        fullBlockcollision,
-        { false, false, false, false, false, false }
-    );
-
-
-    size_t baseCount = blocks.size();
-    for (size_t i = 0; i < baseCount; i++) {
-        Block* b = blocks[i].get();
-        
-        if (b->getHasSlab()) {
-            Collision slabCol = b->getCollision();
-            slabCol.boxes = { AABB{ {0,0,0}, {1,1,0.5f} } };
-            registerBlock(b->getName() + "_slab",
-                std::make_unique<BlockModel>(
-                    b->getTopMaterial(),
-                    b->getBottomMaterial(),
-                    b->getSideMaterial()
-                ),
-                slabCol,
-                { false, false, false, false, false, true },
-                false, false, false, false, false,
-                "slab.obj"
-            );
-        }
-        if (b->getHasStair()) {
-            Collision slabCol = b->getCollision();
-            slabCol.boxes = { AABB{ {0,0,0   }, {1,1   ,0.5f} },
-                              AABB{ {0,0,0.5f}, {1,0.5f,1   } } };
-            registerBlock(b->getName() + "_stair",
-                std::make_unique<BlockModel>(
-                    b->getTopMaterial(),
-                    b->getBottomMaterial(),
-                    b->getSideMaterial()
-                ),
-                slabCol,
-                { false, false, false, false, false, true },
-                false, false, false, false, false,
-                "stair.obj"
-            );
-        }
-
-        //if (b.getHasWall())  registerBlock(b.getName() + "_Wall",  wallModelFrom(b.model));
+    // Templates are resolved against the block files at load time, in
+    // memory — no generated files that can go stale.
+    BlockDefLoader loader;
+    std::vector<BlockDef> defs;
+    if (!loader.loadAll(
+            BuildAbsolutePath("Assets", "BlockTemplates"),
+            BuildAbsolutePath("Assets", "Blocks"),
+            defs)) {
+        SDL_Log("[BlockManager] FATAL: could not load block definitions — "
+                "is the Assets/ folder next to the executable?");
+        return;
     }
 
-    registerBlock("flower_alpine_quill", 
-        std::make_unique<BlockModel>(
-            ModelFace(MATERIAL_BIRCH_LEAVES)
-        ),
-        { false , 0 },
-        { false, false, false, false, false, false },
-        false, false, false, false,
-        "flower_alpine_quill.obj"
-    );
+    // defs arrive sorted by explicit id. Warn about gaps: ItemManager builds
+    // placeable items by walking ids 1..N-1 and bails on the first hole.
+    Uint16 expected = 0;
+    for (const BlockDef& def : defs) {
+        if (def.id != expected) {
+            SDL_Log("[BlockManager] WARNING: block id gap — expected %u, got %u "
+                    "('%s'). ItemManager expects contiguous ids!",
+                    expected, def.id, def.name.c_str());
+        }
+        expected = def.id + 1;
+    }
+
+    for (const BlockDef& def : defs)
+        registerBlock(def);
+
+    SDL_Log("[BlockManager] registered %zu blocks from JSON", blocks.size());
 }
 
 Block* BlockManager::getById(Uint16 id) {

@@ -4,6 +4,8 @@
 
 #include "Materials.h"
 
+#include <unordered_map>
+
 const char* baseTexturePathMaterials = "Textures/Blocks/";
 
 bool UploadTextureArrayLayer(
@@ -122,6 +124,27 @@ const char* materialTextureFile(Material material) {
     case MATERIAL_AIR:
     default:                         return nullptr;
     }
+}
+
+Material materialFromName(const std::string& name) {
+    // One map, built once. Keys are the enum names minus the MATERIAL_ prefix.
+    static const std::unordered_map<std::string, Material> table = {
+        { "AIR",                 MATERIAL_AIR },
+        { "COBBLESTONE",         MATERIAL_COBBLESTONE },
+        { "DIORITE",             MATERIAL_DIORITE },
+        { "DIRT",                MATERIAL_DIRT },
+        { "GRASS_BLOCK_TOP",     MATERIAL_GRASS_BLOCK_TOP },
+        { "GRASS_BLOCK_SIDE",    MATERIAL_GRASS_BLOCK_SIDE },
+        { "GRASS_BLOCK_SIDE_OV", MATERIAL_GRASS_BLOCK_SIDE_OV },
+        { "BIRCH_LOG_SIDE",      MATERIAL_BIRCH_LOG_SIDE },
+        { "BIRCH_LOG_TOP",       MATERIAL_BIRCH_LOG_TOP },
+        { "BIRCH_LEAVES",        MATERIAL_BIRCH_LEAVES },
+        { "CHESTNUT_LOG_SIDE",   MATERIAL_CHESTNUT_LOG_SIDE },
+        { "CHESTNUT_LOG_TOP",    MATERIAL_CHESTNUT_LOG_TOP },
+        { "CHESTNUT_LEAVES",     MATERIAL_CHESTNUT_LEAVES },
+    };
+    auto it = table.find(name);
+    return it != table.end() ? it->second : MATERIAL_COUNT;
 }
 
 bool UploadTextureArrayLayers(

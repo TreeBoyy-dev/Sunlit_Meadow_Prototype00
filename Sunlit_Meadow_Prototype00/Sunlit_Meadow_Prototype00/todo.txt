@@ -1,14 +1,1 @@
-move rendering to seperate Render Thread
-
-greedy meshing & face culling
-
-block colission -> only works for hte full block for now
-
-UI and menues
-	- add class to load/handle all textures
-	- settings
-	- textures/design/layout in generall
-
-add more blocks
-add stairs, slabs (check), walls etc (block varients in generall)
-
+im not updating it lol
