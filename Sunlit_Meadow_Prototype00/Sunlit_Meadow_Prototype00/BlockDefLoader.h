@@ -15,8 +15,7 @@
 //  BlockDefLoader
 //
 //  Reads Assets/BlockTemplates/*.json, then Assets/Blocks/*.json (one file
-//  per block), resolves each block against its template IN MEMORY (templates
-//  are referenced at load time, never copied / never generate files), and
+//  per block), resolves each block against its template in memory, and
 //  produces plain BlockDef structs the BlockManager consumes.
 //
 //  Validation (log + skip the block, never crash):

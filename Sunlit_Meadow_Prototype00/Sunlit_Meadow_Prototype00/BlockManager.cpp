@@ -54,16 +54,14 @@ bool BlockManager::registerBlock(const BlockDef& def) {
 }
 
 void BlockManager::init() {
-    // Templates are resolved against the block files at load time, in
-    // memory — no generated files that can go stale.
+    // Templates are resolved against the block files at load time, in memory
     BlockDefLoader loader;
     std::vector<BlockDef> defs;
     if (!loader.loadAll(
             BuildAbsolutePath("Assets", "BlockTemplates"),
             BuildAbsolutePath("Assets", "Blocks"),
             defs)) {
-        SDL_Log("[BlockManager] FATAL: could not load block definitions — "
-                "is the Assets/ folder next to the executable?");
+        SDL_Log("[BlockManager] FATAL: could not load block definitions");
         return;
     }
 

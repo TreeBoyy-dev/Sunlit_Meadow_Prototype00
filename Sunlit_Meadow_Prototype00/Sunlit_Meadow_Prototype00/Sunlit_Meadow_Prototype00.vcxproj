@@ -131,6 +131,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="PlacementState.cpp" />
     <ClCompile Include="StateLayout.cpp" />
     <ClCompile Include="BlockDefLoader.cpp" />
     <ClCompile Include="BlockManager.cpp" />
@@ -173,10 +174,12 @@
     <ClCompile Include="WorldManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="App_Event.h" />
     <ClInclude Include="App_Init.h" />
     <ClInclude Include="App_Render.h" />
     <ClInclude Include="App_Update.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="PlacementState.h" />
     <ClInclude Include="StateLayout.h" />
     <ClInclude Include="BlockDefLoader.h" />
     <ClInclude Include="BakedMesh.h" />

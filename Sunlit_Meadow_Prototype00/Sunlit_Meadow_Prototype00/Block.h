@@ -7,16 +7,7 @@
 #include "Materials.h"
 #include "BlockModel.h"
 #include "StateLayout.h"
-#include "WorldTypes.h"   // AABB / Collision live here now
-
-// NOTE (blockstate refactor):
-//  - `rotateable` is gone. Whether a block rotates is simply "does its
-//    template declare a rot4/axis3/rot6 property".
-//  - `hasSlab` / `hasStair` / `hasPillar` / `hasWall` / `hasFence` are gone.
-//    They were never read outside registration; slab/stair/... blocks are
-//    now ordinary blocks defined by their own JSON in Assets/Blocks/.
-//  - Blocks are no longer hardcoded — BlockManager::init() builds them from
-//    Assets/Blocks/*.json resolved against Assets/BlockTemplates/*.json.
+#include "WorldTypes.h"
 
 class Block {
 private:

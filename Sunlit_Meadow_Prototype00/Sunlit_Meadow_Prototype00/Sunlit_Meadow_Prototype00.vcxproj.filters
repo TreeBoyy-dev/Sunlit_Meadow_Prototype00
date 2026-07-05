@@ -174,6 +174,9 @@
     <ClCompile Include="ChunkMesh.cpp">
       <Filter>Source Files\World\worldData</Filter>
     </ClCompile>
+    <ClCompile Include="PlacementState.cpp">
+      <Filter>Source Files\Helpers</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App_Render.h">
@@ -322,6 +325,12 @@
     </ClInclude>
     <ClInclude Include="ChunkMesh.h">
       <Filter>Source Files\World\worldData</Filter>
+    </ClInclude>
+    <ClInclude Include="App_Event.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlacementState.h">
+      <Filter>Source Files\Helpers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

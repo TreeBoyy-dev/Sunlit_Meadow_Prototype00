@@ -30,14 +30,14 @@ constexpr Uint16 STATE_FLUID_MASK = 0x8000;
 
 // Property types a template may declare. Bit widths are fixed per type.
 enum class StatePropType : Uint8 {
-    Rot4,       // 2 bits: N/E/S/W horizontal facing        (stairs, furnaces)
-    Axis3,      // 2 bits: Z(up)/X/Y axis                    (logs / pillars)
-    Rot6,       // 3 bits: N/E/S/W/Up/Down                   (piston-like)
-    Half,       // 1 bit : bottom/top                        (stairs, slabs)
-    Shape5,     // 3 bits: straight, inner_l, inner_r, outer_l, outer_r (stair corners)
-    Connect4,   // 4 bits: 1 bit per horizontal side N/E/S/W (fences)
-    WallSide4,  // 8 bits: 2 bits per side: none/low/tall    (walls)
-    Flag,       // 1 bit : generic on/off                    (wall center post, misc)
+    Rot4,       // 2 bits: N/E/S/W horizontal facing         
+    Axis3,      // 2 bits: Z(up)/X/Y axis                    
+    Rot6,       // 3 bits: N/E/S/W/Up/Down                   
+    Half,       // 1 bit : bottom/top                        
+    Shape5,     // 3 bits: straight, inner_l, inner_r, outer_l, outer_r 
+    Connect4,   // 4 bits: 1 bit per horizontal side N/E/S/W 
+    WallSide4,  // 8 bits: 2 bits per side: none/low/tall    
+    Flag,       // 1 bit : generic on/off                    
 
     Invalid
 };
