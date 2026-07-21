@@ -58,9 +58,9 @@ inline void registerEntityAssets(AppState* state, EntityManager& em) {
 inline void spawnStartingEntities(EntityManager& em) {
     std::vector<std::unique_ptr<Data>> data;
     data.push_back(std::make_unique<Inventory>());
-    playerEntity = em.spawn("player", { 264.0f, 264.0f, 70.0f }, std::move(data));
+    playerEntity = em.spawn("player", { 0.0f, 0.0f, 80.0f }, std::move(data));
     if (playerEntity == nullptr)
         SDL_Log("[Entity] failed to spawn player entity - movement will be disabled");
 
-    em.spawn("rubber_duck", { 262.0f, 263.0f, 110.0f });
+    em.spawn("rubber_duck", { 5.0f, 5.0f, 110.0f });
 }

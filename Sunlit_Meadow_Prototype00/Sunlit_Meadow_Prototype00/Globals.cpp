@@ -15,8 +15,8 @@ Skybox skybox;
 
 // --- Camera ---
 Camera camera = {
-	{264.0f, 264.0f, 70.0f},
-	{0.0f,   0.0f,  -5.0f}
+	{0.0f, 0.0f, 80.0f},
+	{0.0f, 0.0f,-5.0f}
 };
 Vec2 mouseMovement = {
 	0.0f, 0.0f

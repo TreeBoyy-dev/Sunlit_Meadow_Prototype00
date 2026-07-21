@@ -1,6 +1,7 @@
 #include "Globals.h"
 #include "BlockManager.h"
 #include "GenerateChunk.h"
+#include "Materials.h"
 
 #include <cmath>
 
@@ -64,6 +65,13 @@ void generateFeatures(
 		blockManager
 	);
 	generateFeatures_Boulders(
+		blockIDs,
+		columnCoordinates,
+		regionChunkZStart,
+		heightmap,
+		blockManager
+	);
+	generateFeatures_BlockPallette(
 		blockIDs,
 		columnCoordinates,
 		regionChunkZStart,
@@ -234,4 +242,28 @@ void generateFeatures_Boulders(
 		}
 	}
 	blockIDs[bx][by][zGround+3] = flowerBlock->getID();
+}
+
+void generateFeatures_BlockPallette(
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
+	ColumnCoord columnCoordinates,
+	int regionChunkZStart,
+	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
+	BlockManager& blockManager
+) {
+	if (columnCoordinates.y != 0)
+		return;
+
+	int blocks = columnCoordinates.x * 256 + 1;
+
+	for (int x = 0; x < CHUNK_SIZE; x++) {
+		int xAbs = columnCoordinates.x * CHUNK_SIZE + x;
+		for (int y = 0; y < CHUNK_SIZE; y++) {
+			int yAbs = columnCoordinates.x * CHUNK_SIZE + y;
+			if (blocks >= blockManager.getNumberOfBlocks())
+				return;
+			blocks++;
+			blockIDs[x][y][80] = blocks;
+		}
+	}
 }
