@@ -5,9 +5,17 @@
 std::vector<GeneratedChunkData> generateColumn(
 	ColumnCoord columnCoordinates,
 	int regionChunkZStart,
+	const LayerDef&       layer,
+	const PalettedGrid2D& zoneMap,
+	const PalettedGrid2D& biomeMap,
 	BlockManager& blockManager,
 	FastNoiseLite& noise
 ) {
+	// TODO worldgen: layer selects the terrain generator, zoneMap/biomeMap
+	// drive per-cell surface blocks & features. Received but unused this
+	// pass so generated chunks stay byte-for-byte identical.
+	(void)layer; (void)zoneMap; (void)biomeMap;
+
 	std::vector<GeneratedChunkData> column;
 	column.reserve(REGION_SIZE_Z);
 

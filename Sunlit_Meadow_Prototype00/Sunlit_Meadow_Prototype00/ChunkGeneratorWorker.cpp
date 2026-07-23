@@ -5,10 +5,14 @@
 ChunkGeneratorWorker::ChunkGeneratorWorker() : m_running(false), totalChunksGenerated(0){}
 ChunkGeneratorWorker::~ChunkGeneratorWorker() { stop(); }
 
-void ChunkGeneratorWorker::start(BlockManager* blockManager, FastNoiseLite* standartNoise, int regionChunkZStart) {
+void ChunkGeneratorWorker::start(BlockManager* blockManager, FastNoiseLite* standartNoise, int regionChunkZStart,
+    const LayerDef* layer, const PalettedGrid2D* zoneMap, const PalettedGrid2D* biomeMap) {
     m_blockManager = blockManager;
     m_standartNoise = standartNoise;
     m_regionChunkZStart = regionChunkZStart;
+    m_layer = layer;
+    m_zoneMap = zoneMap;
+    m_biomeMap = biomeMap;
     m_running = true;
     m_thread = std::thread(&ChunkGeneratorWorker::workerLoop, this);
 }
@@ -34,7 +38,9 @@ void ChunkGeneratorWorker::workerLoop() {
             ColumnCoord columnCoord = coord.value();
 
             std::vector<GeneratedChunkData> column =
-                generateColumn(columnCoord, m_regionChunkZStart, *m_blockManager, *m_standartNoise);
+                generateColumn(columnCoord, m_regionChunkZStart,
+                    *m_layer, *m_zoneMap, *m_biomeMap,   // lock-free: immutable, region outlives worker
+                    *m_blockManager, *m_standartNoise);
 
             // Turn each returned PalettedContainer into a Chunk and queue it.
             for (auto& chunkData : column) {
@@ -60,7 +66,7 @@ void ChunkGeneratorWorker::workerLoop() {
 
                 float mspc = s / 100.0f;
 
-                SDL_Log("[GeneratorWorker] chunk %6d generated: %3d|%3d|%3d (avr time/chunk: %2.4fms)",
+                SDL_Log("[ChunkGeneratorWorker] chunk %6d generated: %3d|%3d|%3d (avr time/chunk: %2.4fms)",
                     totalChunksGenerated,
                     chunkData.coordinates.x, chunkData.coordinates.y, chunkData.coordinates.z,
                     mspc);

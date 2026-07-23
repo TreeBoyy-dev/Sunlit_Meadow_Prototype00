@@ -163,6 +163,40 @@ bool WorldManager::init(
 
     initNoise(&standartNoise);
 
+    // Worldgen: hardcoded seed for now (matches the noise seed by
+    // coincidence, not by wiring — FastNoiseLite still seeds itself in
+    // initNoise; hooking m_worldSeed into it is a later worldgen pass).
+    m_worldSeed = 69420;
+    worldGenRegistry.init();
+
+    regionWorker.start(m_worldSeed, &standartNoise, &worldGenRegistry);
+
+    /*
+    #if 0
+        // Temporary PalettedGrid2D round-trip test (acceptance check 5):
+        // fill via fromDense with 3 distinct ids in a pattern, read back every
+        // cell, verify the round-trip and that paletteSize() == 3.
+        {
+            const int W = MAP_GRID_SIZE;
+            std::vector<Uint16> dense(W * W);
+            for (int cx = 0; cx < W; cx++)
+                for (int cy = 0; cy < W; cy++)
+                    dense[cx * W + cy] = (Uint16)((cx + 2 * cy) % 3);   // ids 0,1,2
+
+            PalettedGrid2D grid(W);
+            grid.fromDense(dense.data());
+
+            bool ok = (grid.paletteSize() == 3);
+            for (int cx = 0; cx < W && ok; cx++)
+                for (int cy = 0; cy < W && ok; cy++)
+                    ok = (grid.get(cx, cy) == dense[cx * W + cy]);
+
+            SDL_Log("[WorldManager] PalettedGrid2D self-test: %s (palette=%zu bytes=%zu)",
+                ok ? "PASS" : "FAIL", grid.paletteSize(), grid.memoryBytes());
+        }
+    #endif
+    //*/
+
     return true;
 }
 
@@ -186,6 +220,22 @@ void WorldManager::destroy(AppState* state) {
 // Updating the world ----------------------------------------------------
 void WorldManager::update(AppState* state, Vec3 playerPosition) {
     updatePlayerPosition(playerPosition);
+
+    // --- drain regionWorker: newly generated chunks ---
+    const int MAX_UPLOADS_PER_FRAME = 5;
+    int uploads = 0;
+    std::vector<ChunkCoord> newlyAdded;
+
+    while (uploads < MAX_UPLOADS_PER_FRAME) {
+        auto result = regionWorker.tryGetRegionShape();
+        if (!result) break;
+
+        Region* region = getRegion(result->coord);
+        region->setShape(result->shape.get());
+
+        uploads++;
+    }
+
 
     std::vector<ChunkCoord> newlyReady;
     newlyReady.reserve(8);
@@ -322,8 +372,10 @@ Region* WorldManager::getRegion(RegionCoord regionCoordinates) {
 
     auto [newIt, inserted] = regions.emplace(
         regionCoordinates,
-        std::make_unique<Region>(regionCoordinates, blockManager, &standartNoise)
+        std::make_unique<Region>(regionCoordinates, blockManager, &standartNoise,
+            &worldGenRegistry, m_worldSeed)
     );
+    regionWorker.requestRegion(regionCoordinates);
     return newIt->second.get();
 }
 
@@ -500,6 +552,34 @@ Vec3 WorldManager::getBlockLookingAt(Camera cam, const float MAX_REACH, int* out
 
 Collision* WorldManager::getBlockCollision(Vec3 pos) {
     return blockManager->getCollissionById(getBlockIdAt(pos));
+}
+
+// ---------------------------------------------------------------------
+//  Layer / zone / biome queries, mirroring getBlockIdAt.
+//
+//  World -> region-local block coords: lbx = floor(pos.x) - regionX * 512.
+//  std::floor (not an int cast) so negative world coords land in the
+//  right region-local cell — getPlayerRegionCoord floors the same way,
+//  so the result is always in the region's interior [0, 512).
+// ---------------------------------------------------------------------
+Uint16 WorldManager::getZoneIdAt(Vec3 pos) {
+    RegionCoord rc = getPlayerRegionCoord(pos);
+    Region* region = getRegion(rc);
+    int lbx = (int)std::floor(pos.x) - rc.x * CHUNK_SIZE * REGION_SIZE_YX;
+    int lby = (int)std::floor(pos.y) - rc.y * CHUNK_SIZE * REGION_SIZE_YX;
+    return region->getZoneIdLocal(lbx, lby);
+}
+
+Uint16 WorldManager::getBiomeIdAt(Vec3 pos) {
+    RegionCoord rc = getPlayerRegionCoord(pos);
+    Region* region = getRegion(rc);
+    int lbx = (int)std::floor(pos.x) - rc.x * CHUNK_SIZE * REGION_SIZE_YX;
+    int lby = (int)std::floor(pos.y) - rc.y * CHUNK_SIZE * REGION_SIZE_YX;
+    return region->getBiomeIdLocal(lbx, lby);
+}
+
+const LayerDef* WorldManager::getLayerAt(Vec3 pos) {
+    return getRegion(getPlayerRegionCoord(pos))->getLayer();
 }
 
 //global helpers -----------------------------------------------------------------

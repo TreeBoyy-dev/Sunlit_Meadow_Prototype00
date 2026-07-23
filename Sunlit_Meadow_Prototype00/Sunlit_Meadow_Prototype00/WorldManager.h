@@ -9,6 +9,8 @@
 #include "FastNoiseLite.h"
 #include "BlockManager.h"
 #include "WorldTypes.h"
+#include "WorldGenRegistry.h"
+#include "RegionGeneratorWorker.h"
 
 enum BlockFace : int {
     FACE_FRONT = 0,  // +X
@@ -32,8 +34,9 @@ private:
 
     SDL_GPUTexture* textureArray = nullptr;
 
-
     std::unordered_map<RegionCoord, std::unique_ptr<Region>, RegionCoordHash> regions;
+    RegionGeneratorWorker regionWorker;
+
     std::vector<ChunkCoord> visibleChunkCoordsRelative;
     std::unordered_set<ChunkCoord, ChunkCoordHash> visibleRelativeSet;
 
@@ -45,6 +48,12 @@ private:
 
     BlockManager* blockManager;
     FastNoiseLite standartNoise;
+
+    // Worldgen definitions (layers/zones/biomes). Populated once in init(),
+    // read-only afterwards — regions hold raw pointers into it, so it must
+    // outlive them (it does: same owner, destroyed after regions.clear()).
+    WorldGenRegistry worldGenRegistry;
+    Uint64 m_worldSeed = 0;   // hardcoded in init() for now; not wired into FastNoiseLite yet
 
 public:
     WorldManager();
@@ -68,6 +77,14 @@ public:
         const float MAX_REACH,
         int* outFace = nullptr);
     Collision* getBlockCollision(Vec3 pos);
+
+    // ---- layer / zone / biome ----
+    // World-space queries, mirroring getBlockIdAt: resolve the region,
+    // convert to region-local block coords, delegate. Interior only — any
+    // world position converts into the region's own [0, 512) range.
+    Uint16 getZoneIdAt (Vec3 pos);
+    Uint16 getBiomeIdAt(Vec3 pos);
+    const LayerDef* getLayerAt(Vec3 pos);
 
 private:
     void    updatePlayerPosition(Vec3 playerPosition);

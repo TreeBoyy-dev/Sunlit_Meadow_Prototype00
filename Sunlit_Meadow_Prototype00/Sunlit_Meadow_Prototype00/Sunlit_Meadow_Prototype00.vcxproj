@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
     <ClCompile Include="PlacementState.cpp" />
+    <ClCompile Include="RegionGeneratorWorker.cpp" />
     <ClCompile Include="StateLayout.cpp" />
     <ClCompile Include="BlockDefLoader.cpp" />
     <ClCompile Include="BlockManager.cpp" />
@@ -171,6 +172,8 @@
     <ClCompile Include="UI_Renderer.cpp" />
     <ClCompile Include="Vectors.cpp" />
     <ClCompile Include="Widget.cpp" />
+    <ClCompile Include="WorldGenRegistry.cpp" />
+    <ClCompile Include="WorldGenSampler.cpp" />
     <ClCompile Include="WorldManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -179,7 +182,9 @@
     <ClInclude Include="App_Render.h" />
     <ClInclude Include="App_Update.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="GenerateRegion.h" />
     <ClInclude Include="PlacementState.h" />
+    <ClInclude Include="RegionGeneratorWorker.h" />
     <ClInclude Include="StateLayout.h" />
     <ClInclude Include="BlockDefLoader.h" />
     <ClInclude Include="BakedMesh.h" />
@@ -207,6 +212,9 @@
     <ClInclude Include="UIAction.h" />
     <ClInclude Include="UITypes.h" />
     <ClInclude Include="Widget.h" />
+    <ClInclude Include="WorldGenRegistry.h" />
+    <ClInclude Include="WorldGenSampler.h" />
+    <ClInclude Include="WorldGenTypes.h" />
     <ClInclude Include="WorldTypes.h" />
     <ClInclude Include="ChunkGeneratorWorker.h" />
     <ClInclude Include="Entity.h" />

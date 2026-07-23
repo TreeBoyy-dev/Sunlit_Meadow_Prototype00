@@ -177,6 +177,15 @@
     <ClCompile Include="PlacementState.cpp">
       <Filter>Source Files\Helpers</Filter>
     </ClCompile>
+    <ClCompile Include="WorldGenRegistry.cpp">
+      <Filter>Source Files\World\WorldGen.h</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldGenSampler.cpp">
+      <Filter>Source Files\World\WorldGen.h</Filter>
+    </ClCompile>
+    <ClCompile Include="RegionGeneratorWorker.cpp">
+      <Filter>Source Files\World\WorldGen.h</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App_Render.h">
@@ -331,6 +340,21 @@
     </ClInclude>
     <ClInclude Include="PlacementState.h">
       <Filter>Source Files\Helpers</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldGenRegistry.h">
+      <Filter>Source Files\World\WorldGen.h</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldGenSampler.h">
+      <Filter>Source Files\World\WorldGen.h</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldGenTypes.h">
+      <Filter>Source Files\World\WorldGen.h</Filter>
+    </ClInclude>
+    <ClInclude Include="RegionGeneratorWorker.h">
+      <Filter>Source Files\World\WorldGen.h</Filter>
+    </ClInclude>
+    <ClInclude Include="GenerateRegion.h">
+      <Filter>Source Files\World\WorldGen.h</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

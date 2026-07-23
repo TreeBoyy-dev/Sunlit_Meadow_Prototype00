@@ -1,21 +1,54 @@
 #include "Region.h"
 #include "Chunk.h"
 #include "Globals.h"
+#include "WorldGenRegistry.h"
+#include "WorldGenSampler.h"
 
 #include <utility>
 
-Region::Region(RegionCoord regionCoordinates, BlockManager* blockManager, FastNoiseLite* standartNoise)
+// Floor division for cell math. lbx / BIOME_CELL truncates toward zero in
+// C++, so lbx = -1 would land in cell 0 instead of apron cell -1 — every
+// block->cell conversion in this file must go through here.
+static int floorDivCell(int v) {
+    return (v >= 0) ? (v / BIOME_CELL) : ((v - (BIOME_CELL - 1)) / BIOME_CELL);
+}
+
+Region::Region(RegionCoord regionCoordinates, BlockManager* blockManager, FastNoiseLite* standartNoise,
+    const WorldGenRegistry* worldGenRegistry, Uint64 worldSeed)
     : regionCoordinates(regionCoordinates),
     m_blockManager(blockManager),
-    m_standartNoise(standartNoise)
-{
-    g_worker.start(m_blockManager, m_standartNoise, regionCoordinates.z * REGION_SIZE_Z);
-    m_worker.start(m_blockManager);
-}
+    m_standartNoise(standartNoise),
+    m_worldSeed(worldSeed)
+{}
 
 Region::~Region() {
     g_worker.stop();
     m_worker.stop();
+}
+
+void Region::setShape(RegionShape* shape) {
+    // Order matters here: layer, then maps, then workers. The workers get
+    // raw pointers into m_layer/zoneMap/biomeMap, so those must be fully
+    // built (and never mutated again) before the first worker thread runs.
+
+    // 1) Resolve which layer this region belongs to (by region z).
+    m_layer = std::move(shape->m_layer);
+
+    // 2) Build both maps synchronously. Every cell — including the apron
+    //    cells past the region edge — is computed by the same pure sampler
+    //    (world cell coords + layer + seed), so neighboring regions agree
+    //    on the overlap by construction. No neighbor-region access, ever.
+    zoneMap  = std::move(shape->zoneMap);
+    biomeMap = std::move(shape->biomeMap);
+
+    // 3) Only now start the workers. The maps and layer are immutable from
+    //    here on, so handing the generator worker raw const pointers is a
+    //    safe lock-free share; the region stops the worker before dying
+    //    (~Region / destroyRegion), so lifetime is covered too.
+    g_worker.start(m_blockManager, m_standartNoise,
+        regionCoordinates.z * REGION_SIZE_Z,
+        m_layer, &zoneMap, &biomeMap);
+    m_worker.start(m_blockManager);
 }
 
 Chunk* Region::getChunk(ChunkCoord chunkCoordinates) {
@@ -145,6 +178,45 @@ bool Region::collectMeshResults(AppState* state,
 
 RegionCoord Region::getCoordinates() {
     return regionCoordinates;
+}
+
+// ---------------------------------------------------------------------
+//  Layer / zone / biome reads.
+//
+//  Block coords in, ids out. Valid range is the region interior PLUS the
+//  one-chunk apron: [-CHUNK_SIZE, 512 + CHUNK_SIZE). The apron exists so
+//  feature generation near a region edge can sample "past" the edge —
+//  those cells hold the same values the neighbor computed for itself.
+//
+//  Safe to call from the generator worker without a lock: the maps are
+//  immutable after the constructor (see the member comments in Region.h).
+// ---------------------------------------------------------------------
+Uint16 Region::getZoneIdLocal(int lbx, int lby) const {
+    const int REGION_BLOCKS = CHUNK_SIZE * REGION_SIZE_YX;
+    if (lbx < -CHUNK_SIZE || lbx >= REGION_BLOCKS + CHUNK_SIZE ||
+        lby < -CHUNK_SIZE || lby >= REGION_BLOCKS + CHUNK_SIZE) {
+        SDL_Log("[Region] getZoneIdLocal out of range: %d|%d in region %d|%d|%d",
+            lbx, lby, regionCoordinates.x, regionCoordinates.y, regionCoordinates.z);
+        return 0;
+    }
+    return zoneMap.get(floorDivCell(lbx) + MAP_APRON_CELLS,
+                       floorDivCell(lby) + MAP_APRON_CELLS);
+}
+
+Uint16 Region::getBiomeIdLocal(int lbx, int lby) const {
+    const int REGION_BLOCKS = CHUNK_SIZE * REGION_SIZE_YX;
+    if (lbx < -CHUNK_SIZE || lbx >= REGION_BLOCKS + CHUNK_SIZE ||
+        lby < -CHUNK_SIZE || lby >= REGION_BLOCKS + CHUNK_SIZE) {
+        SDL_Log("[Region] getBiomeIdLocal out of range: %d|%d in region %d|%d|%d",
+            lbx, lby, regionCoordinates.x, regionCoordinates.y, regionCoordinates.z);
+        return 0;
+    }
+    return biomeMap.get(floorDivCell(lbx) + MAP_APRON_CELLS,
+                        floorDivCell(lby) + MAP_APRON_CELLS);
+}
+
+const LayerDef* Region::getLayer() const {
+    return m_layer;
 }
 
 void Region::destroyRegion(AppState* state) {
