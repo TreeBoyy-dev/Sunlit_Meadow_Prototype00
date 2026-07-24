@@ -55,11 +55,14 @@
     <Filter Include="Source Files\UIRendering\Menus">
       <UniqueIdentifier>{0fb1c83d-c05d-4c5b-a23d-14d8591e8d6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\World\WorldGen.h\Workers">
+      <UniqueIdentifier>{0b96e1a1-0bbd-48f0-a011-820846944c08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\World\WorldGen.h\WorldGenSteps">
+      <UniqueIdentifier>{f2f08f8b-0857-49b0-b2c9-6bae5dcd260f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GenerateChunk.h">
-      <Filter>Source Files\World\WorldGen.h</Filter>
-    </ClCompile>
     <ClCompile Include="Block.cpp">
       <Filter>Source Files\World\Blocks</Filter>
     </ClCompile>
@@ -81,16 +84,7 @@
     <ClCompile Include="WorldManager.cpp">
       <Filter>Source Files\World\worldData</Filter>
     </ClCompile>
-    <ClCompile Include="GenerateChunk.cpp">
-      <Filter>Source Files\World\WorldGen.h</Filter>
-    </ClCompile>
     <ClCompile Include="GenerateColumn.cpp">
-      <Filter>Source Files\World\WorldGen.h</Filter>
-    </ClCompile>
-    <ClCompile Include="ChunkGeneratorWorker.cpp">
-      <Filter>Source Files\World\WorldGen.h</Filter>
-    </ClCompile>
-    <ClCompile Include="ChunkMeshWorker.cpp">
       <Filter>Source Files\World\WorldGen.h</Filter>
     </ClCompile>
     <ClCompile Include="Entity.cpp">
@@ -180,11 +174,26 @@
     <ClCompile Include="WorldGenRegistry.cpp">
       <Filter>Source Files\World\WorldGen.h</Filter>
     </ClCompile>
+    <ClCompile Include="WorldGenNoise.cpp">
+      <Filter>Source Files\World\WorldGen.h</Filter>
+    </ClCompile>
     <ClCompile Include="WorldGenSampler.cpp">
       <Filter>Source Files\World\WorldGen.h</Filter>
     </ClCompile>
+    <ClCompile Include="ChunkGeneratorWorker.cpp">
+      <Filter>Source Files\World\WorldGen.h\Workers</Filter>
+    </ClCompile>
     <ClCompile Include="RegionGeneratorWorker.cpp">
-      <Filter>Source Files\World\WorldGen.h</Filter>
+      <Filter>Source Files\World\WorldGen.h\Workers</Filter>
+    </ClCompile>
+    <ClCompile Include="ChunkMeshWorker.cpp">
+      <Filter>Source Files\World\WorldGen.h\Workers</Filter>
+    </ClCompile>
+    <ClCompile Include="GenerateShape.cpp">
+      <Filter>Source Files\World\WorldGen.h\WorldGenSteps</Filter>
+    </ClCompile>
+    <ClCompile Include="GenerateFeatures.cpp">
+      <Filter>Source Files\World\WorldGen.h\WorldGenSteps</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -241,12 +250,6 @@
     </ClInclude>
     <ClInclude Include="EntityManager.h">
       <Filter>Source Files\Entity</Filter>
-    </ClInclude>
-    <ClInclude Include="ChunkGeneratorWorker.h">
-      <Filter>Source Files\World\WorldGen.h</Filter>
-    </ClInclude>
-    <ClInclude Include="ChunkMeshWorker.h">
-      <Filter>Source Files\World\WorldGen.h</Filter>
     </ClInclude>
     <ClInclude Include="EntityAssets.h">
       <Filter>Source Files\Entity</Filter>
@@ -344,17 +347,35 @@
     <ClInclude Include="WorldGenRegistry.h">
       <Filter>Source Files\World\WorldGen.h</Filter>
     </ClInclude>
+    <ClInclude Include="WorldGenNoise.h">
+      <Filter>Source Files\World\WorldGen.h</Filter>
+    </ClInclude>
     <ClInclude Include="WorldGenSampler.h">
       <Filter>Source Files\World\WorldGen.h</Filter>
     </ClInclude>
     <ClInclude Include="WorldGenTypes.h">
       <Filter>Source Files\World\WorldGen.h</Filter>
     </ClInclude>
-    <ClInclude Include="RegionGeneratorWorker.h">
-      <Filter>Source Files\World\WorldGen.h</Filter>
-    </ClInclude>
     <ClInclude Include="GenerateRegion.h">
       <Filter>Source Files\World\WorldGen.h</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkGeneratorWorker.h">
+      <Filter>Source Files\World\WorldGen.h\Workers</Filter>
+    </ClInclude>
+    <ClInclude Include="RegionGeneratorWorker.h">
+      <Filter>Source Files\World\WorldGen.h\Workers</Filter>
+    </ClInclude>
+    <ClInclude Include="ChunkMeshWorker.h">
+      <Filter>Source Files\World\WorldGen.h\Workers</Filter>
+    </ClInclude>
+    <ClInclude Include="Spline.h">
+      <Filter>Source Files\World\WorldGen.h\WorldGenSteps</Filter>
+    </ClInclude>
+    <ClInclude Include="GenerateShape.h">
+      <Filter>Source Files\World\WorldGen.h\WorldGenSteps</Filter>
+    </ClInclude>
+    <ClInclude Include="GenerateFeatures.h">
+      <Filter>Source Files\World\WorldGen.h\WorldGenSteps</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

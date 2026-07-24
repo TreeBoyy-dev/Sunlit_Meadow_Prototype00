@@ -14,10 +14,11 @@ static int floorDivCell(int v) {
 }
 
 Region::Region(RegionCoord regionCoordinates, BlockManager* blockManager, FastNoiseLite* standartNoise,
-    const WorldGenRegistry* worldGenRegistry, Uint64 worldSeed)
+    const WorldGenNoise* worldGenNoise, const WorldGenRegistry* worldGenRegistry, Uint64 worldSeed)
     : regionCoordinates(regionCoordinates),
     m_blockManager(blockManager),
     m_standartNoise(standartNoise),
+    m_worldGenNoise(worldGenNoise),
     m_worldSeed(worldSeed)
 {}
 
@@ -45,7 +46,7 @@ void Region::setShape(RegionShape* shape) {
     //    here on, so handing the generator worker raw const pointers is a
     //    safe lock-free share; the region stops the worker before dying
     //    (~Region / destroyRegion), so lifetime is covered too.
-    g_worker.start(m_blockManager, m_standartNoise,
+    g_worker.start(m_blockManager, m_standartNoise, m_worldGenNoise,
         regionCoordinates.z * REGION_SIZE_Z,
         m_layer, &zoneMap, &biomeMap);
     m_worker.start(m_blockManager);

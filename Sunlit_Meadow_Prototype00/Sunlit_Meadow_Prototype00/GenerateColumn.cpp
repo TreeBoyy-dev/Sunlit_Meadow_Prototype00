@@ -1,6 +1,9 @@
 #include "GenerateColumn.h"
-#include "GenerateChunk.h"   // reuse generateShape / generateFeatures
+#include "GenerateShape.h"
+#include "GenerateFeatures.h"
 #include "Globals.h"
+
+#include <chrono>
 
 std::vector<GeneratedChunkData> generateColumn(
 	ColumnCoord columnCoordinates,
@@ -9,12 +12,15 @@ std::vector<GeneratedChunkData> generateColumn(
 	const PalettedGrid2D& zoneMap,
 	const PalettedGrid2D& biomeMap,
 	BlockManager& blockManager,
-	FastNoiseLite& noise
+	const WorldGenNoise& worldGenNoise
 ) {
-	// TODO worldgen: layer selects the terrain generator, zoneMap/biomeMap
-	// drive per-cell surface blocks & features. Received but unused this
-	// pass so generated chunks stay byte-for-byte identical.
-	(void)layer; (void)zoneMap; (void)biomeMap;
+	using clock = std::chrono::steady_clock;
+	auto t0 = clock::now();
+
+	// layer now selects the shape generator (see generateShape's switch).
+	// TODO worldgen: zoneMap/biomeMap will drive per-cell surface blocks
+	// & features — received but unused this pass.
+	(void)zoneMap; (void)biomeMap;
 
 	std::vector<GeneratedChunkData> column;
 	column.reserve(REGION_SIZE_Z);
@@ -24,14 +30,16 @@ std::vector<GeneratedChunkData> generateColumn(
 	Uint16 dense[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT];
 	float  heightmap[CHUNK_SIZE][CHUNK_SIZE] = { 0.0f };
 
-	// generate shape: air/stone
-	generateShape(dense, columnCoordinates, regionChunkZStart, heightmap, blockManager, noise);
+	// generate shape: air/stone (layer-dispatched, spline + caves)
+	generateShape(dense, columnCoordinates, regionChunkZStart, heightmap, blockManager, layer, worldGenNoise);
+	auto t1 = clock::now();
 
 	// generate biomes
-	//TODO
+	//TODO -> actually do that in the region
 
 	// generate features: grass, vegitation, structures
 	generateFeatures(dense, columnCoordinates, regionChunkZStart, heightmap, blockManager);
+	auto t2 = clock::now();
 
 	// Split the tall column into REGION_SIZE_Z separate chunks.
 	for (int k = 0; k < REGION_SIZE_Z; k++) {
@@ -48,6 +56,17 @@ std::vector<GeneratedChunkData> generateColumn(
 
 		column.push_back(std::move(chunkData));
 	}
+	auto t3 = clock::now();
+	//Logger to display time usage:
+///*
+	using us = std::chrono::microseconds;
+	SDL_Log("time usage Collumn generation: step1=%lldus step2=%lldus step3=%lldus (total=%lldus)",
+		(long long)std::chrono::duration_cast<us>(t1 - t0).count(),
+		(long long)std::chrono::duration_cast<us>(t2 - t1).count(),
+		(long long)std::chrono::duration_cast<us>(t3 - t2).count(),
+		(long long)std::chrono::duration_cast<us>(t3 - t0).count());
+	//*/
+
 
 	return column;
 }

@@ -7,6 +7,7 @@
 #include "MenuManager.h"
 #include "MenuFactory.h"
 #include "PlacementState.h"
+#include "Globals.h"
 
 void playerUse(AppState* state);
 void playerAttack(AppState* state);
@@ -49,6 +50,17 @@ SDL_AppResult App_Event(void* appstate, SDL_Event* event)
             }
             else
                 renderDebugUI = true;
+            break;
+
+        case SDL_SCANCODE_UP:
+            RENDER_DISTANCE += 4;
+            SDL_Log("[Event] render distance: %d", RENDER_DISTANCE);
+            worldManager.calcVisibleChunksList(RENDER_DISTANCE);
+            break;
+        case SDL_SCANCODE_DOWN:
+            if(RENDER_DISTANCE>4) RENDER_DISTANCE -= 4;
+            SDL_Log("[Event] render distance: %d", RENDER_DISTANCE);
+            worldManager.calcVisibleChunksList(RENDER_DISTANCE);
             break;
 
         default:

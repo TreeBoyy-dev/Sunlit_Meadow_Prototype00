@@ -163,11 +163,12 @@ bool WorldManager::init(
 
     initNoise(&standartNoise);
 
-    // Worldgen: hardcoded seed for now (matches the noise seed by
-    // coincidence, not by wiring — FastNoiseLite still seeds itself in
-    // initNoise; hooking m_worldSeed into it is a later worldgen pass).
+    // Worldgen: hardcoded seed for now. It now drives WorldGenNoise
+    // (the shape pass); standartNoise still seeds itself to 1337 in
+    // initNoise so the feature pass stays byte-identical.
     m_worldSeed = 69420;
     worldGenRegistry.init();
+    worldGenNoise.init(m_worldSeed);
 
     regionWorker.start(m_worldSeed, &standartNoise, &worldGenRegistry);
 
@@ -373,7 +374,7 @@ Region* WorldManager::getRegion(RegionCoord regionCoordinates) {
     auto [newIt, inserted] = regions.emplace(
         regionCoordinates,
         std::make_unique<Region>(regionCoordinates, blockManager, &standartNoise,
-            &worldGenRegistry, m_worldSeed)
+            &worldGenNoise, &worldGenRegistry, m_worldSeed)
     );
     regionWorker.requestRegion(regionCoordinates);
     return newIt->second.get();

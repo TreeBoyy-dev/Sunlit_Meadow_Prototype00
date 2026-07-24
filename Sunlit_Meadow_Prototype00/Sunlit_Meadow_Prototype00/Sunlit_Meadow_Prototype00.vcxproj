@@ -131,6 +131,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="GenerateFeatures.cpp" />
+    <ClCompile Include="GenerateShape.cpp" />
     <ClCompile Include="PlacementState.cpp" />
     <ClCompile Include="RegionGeneratorWorker.cpp" />
     <ClCompile Include="StateLayout.cpp" />
@@ -146,8 +148,6 @@
     <ClCompile Include="EntityData.h" />
     <ClCompile Include="EntityManager.cpp" />
     <ClCompile Include="EntityTypes.cpp" />
-    <ClCompile Include="GenerateChunk.cpp" />
-    <ClCompile Include="GenerateChunk.h" />
     <ClCompile Include="GenerateColumn.cpp" />
     <ClCompile Include="Globals.cpp" />
     <ClCompile Include="GreedyMeshing.cpp" />
@@ -173,6 +173,7 @@
     <ClCompile Include="Vectors.cpp" />
     <ClCompile Include="Widget.cpp" />
     <ClCompile Include="WorldGenRegistry.cpp" />
+    <ClCompile Include="WorldGenNoise.cpp" />
     <ClCompile Include="WorldGenSampler.cpp" />
     <ClCompile Include="WorldManager.cpp" />
   </ItemGroup>
@@ -182,7 +183,9 @@
     <ClInclude Include="App_Render.h" />
     <ClInclude Include="App_Update.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="GenerateFeatures.h" />
     <ClInclude Include="GenerateRegion.h" />
+    <ClInclude Include="GenerateShape.h" />
     <ClInclude Include="PlacementState.h" />
     <ClInclude Include="RegionGeneratorWorker.h" />
     <ClInclude Include="StateLayout.h" />
@@ -213,6 +216,8 @@
     <ClInclude Include="UITypes.h" />
     <ClInclude Include="Widget.h" />
     <ClInclude Include="WorldGenRegistry.h" />
+    <ClInclude Include="Spline.h" />
+    <ClInclude Include="WorldGenNoise.h" />
     <ClInclude Include="WorldGenSampler.h" />
     <ClInclude Include="WorldGenTypes.h" />
     <ClInclude Include="WorldTypes.h" />

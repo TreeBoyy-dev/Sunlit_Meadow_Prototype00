@@ -1,47 +1,7 @@
 #include "Globals.h"
 #include "BlockManager.h"
-#include "GenerateChunk.h"
+#include "GenerateFeatures.h"
 #include "Materials.h"
-
-#include <cmath>
-
-void generateShape(
-	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
-	ColumnCoord columnCoordinates,
-	int regionChunkZStart,
-	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
-	BlockManager& blockManager,
-	FastNoiseLite& noise
-) {
-	int columnZStartBlocks = regionChunkZStart * CHUNK_SIZE;
-
-	// Look the two base blocks up once for the whole column.
-	Block* cobble = blockManager.getByName("cobble_stone");
-	Block* air = blockManager.getByName("air");
-	if (cobble == nullptr || air == nullptr) {
-		SDL_Log("Block = nullptr in Chunk generation!!!");
-		return;
-	}
-	Uint16 cobbleID = cobble->getID();
-	Uint16 airID = air->getID();
-
-	for (int x = 0; x < CHUNK_SIZE; x++) {
-		int xAbs = columnCoordinates.x * CHUNK_SIZE + x;
-		for (int y = 0; y < CHUNK_SIZE; y++) {
-			int yAbs = columnCoordinates.y * CHUNK_SIZE + y;
-
-			// Surface height for this (x, y) - computed once for the whole column.
-			float zGenerated = noise.GetNoise((float)xAbs, (float)yAbs);
-			float zShape = 60 + zGenerated * 10;
-			heightmap[x][y] = zShape;
-
-			for (int z = 0; z < COLUMN_HEIGHT; z++) {
-				int zAbs = columnZStartBlocks + z;
-				blockIDs[x][y][z] = ((float)zAbs <= zShape) ? cobbleID : airID;
-			}
-		}
-	}
-}
 
 void generateFeatures(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
@@ -241,7 +201,7 @@ void generateFeatures_Boulders(
 			}
 		}
 	}
-	blockIDs[bx][by][zGround+3] = flowerBlock->getID();
+	blockIDs[bx][by][zGround + 3] = flowerBlock->getID();
 }
 
 void generateFeatures_BlockPallette(

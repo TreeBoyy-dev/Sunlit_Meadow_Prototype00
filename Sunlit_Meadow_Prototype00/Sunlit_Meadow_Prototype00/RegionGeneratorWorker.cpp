@@ -44,7 +44,7 @@ void RegionGeneratorWorker::workerLoop() {
             s += dt - times[totalRegionsGenerated % 100];
             times[totalRegionsGenerated % 100] = dt;
 
-            float mspc = s / 100.0f;
+            float mspc = totalRegionsGenerated > 100 ? s /100.0f : s/totalRegionsGenerated;
 
             SDL_Log("[RegionGeneratorWorker] region %6d generated: %3d|%3d|%3d (avr time/Region: %2.4fms)",
                 totalRegionsGenerated, regionCoord.x, regionCoord.y, regionCoord.z, mspc);

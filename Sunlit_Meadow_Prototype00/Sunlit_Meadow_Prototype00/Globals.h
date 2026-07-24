@@ -55,7 +55,7 @@ extern EntityManager entityManager;
 extern BlockManager blockManager;
 
 extern WorldManager worldManager;
-extern const int RENDER_DISTANCE;
+extern int RENDER_DISTANCE;
 extern bool doRemeshingSeperately;
 
 extern ChunkCoord prevPlayerChunkCoords;

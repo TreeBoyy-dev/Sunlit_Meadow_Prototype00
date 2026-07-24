@@ -11,6 +11,7 @@
 #include "PalettedGrid2D.h"
 #include "BlockManager.h"
 #include "FastNoiseLite.h"
+#include "WorldGenNoise.h"
 
 class ChunkGeneratorWorker {
 public:
@@ -21,7 +22,10 @@ public:
     // immutable after Region's constructor and the region stops this
     // worker before they die, so reading them from the worker thread
     // without a lock is safe (see Region.h).
-    void start(BlockManager* blockManager, FastNoiseLite* standartNoise, int regionChunkZStart,
+    // worldGenNoise is WorldManager-owned, init-once/read-only — same
+    // lock-free sharing contract as the maps (see WorldGenNoise.h).
+    void start(BlockManager* blockManager, FastNoiseLite* standartNoise,
+        const WorldGenNoise* worldGenNoise, int regionChunkZStart,
         const LayerDef* layer, const PalettedGrid2D* zoneMap, const PalettedGrid2D* biomeMap);
     void stop();
 
@@ -41,7 +45,10 @@ private:
 
     int m_regionChunkZStart = 0;
     BlockManager* m_blockManager = nullptr;
+    // standartNoise no longer feeds the shape pass (WorldGenNoise does);
+    // kept plumbed for the upcoming features determinism pass.
     FastNoiseLite* m_standartNoise = nullptr;
+    const WorldGenNoise* m_worldGenNoise = nullptr;
 
     // Read-only worldgen context, owned by the Region (see start()).
     const LayerDef*       m_layer = nullptr;

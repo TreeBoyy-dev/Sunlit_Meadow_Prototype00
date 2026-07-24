@@ -10,6 +10,7 @@
 #include "BlockManager.h"
 #include "WorldTypes.h"
 #include "WorldGenRegistry.h"
+#include "WorldGenNoise.h"
 #include "RegionGeneratorWorker.h"
 
 enum BlockFace : int {
@@ -53,7 +54,14 @@ private:
     // read-only afterwards — regions hold raw pointers into it, so it must
     // outlive them (it does: same owner, destroyed after regions.clear()).
     WorldGenRegistry worldGenRegistry;
-    Uint64 m_worldSeed = 0;   // hardcoded in init() for now; not wired into FastNoiseLite yet
+
+    // Shape-generation noise bundle. init-once from m_worldSeed, then
+    // read-only — worker threads sample it lock-free (WorldGenNoise.h).
+    // standartNoise stays on its hardcoded 1337 seed so the feature pass
+    // is untouched; this is the first real consumer of the world seed.
+    WorldGenNoise worldGenNoise;
+
+    Uint64 m_worldSeed = 0;   // hardcoded in init() for now
 
 public:
     WorldManager();

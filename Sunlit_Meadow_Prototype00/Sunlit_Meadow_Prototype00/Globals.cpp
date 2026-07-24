@@ -42,7 +42,7 @@ EntityManager entityManager;
 BlockManager blockManager;
 
 WorldManager worldManager;
-const int RENDER_DISTANCE = 2;
+int RENDER_DISTANCE = 4;
 bool doRemeshingSeperately = false;
 
 ChunkCoord prevPlayerChunkCoords = { 0,0,0 };

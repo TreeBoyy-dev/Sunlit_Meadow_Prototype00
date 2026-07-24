@@ -13,6 +13,7 @@
 #include "ChunkMeshWorker.h"
 
 class WorldGenRegistry;
+class WorldGenNoise;
 
 class Region {
 private:
@@ -29,6 +30,7 @@ private:
 
     BlockManager* m_blockManager = nullptr;
     FastNoiseLite* m_standartNoise = nullptr;
+    const WorldGenNoise* m_worldGenNoise = nullptr;   // WorldManager-owned, read-only
 
     // ---- layer / zone / biome ----
     // All three are IMMUTABLE after the constructor finishes, and the
@@ -45,6 +47,7 @@ public:
         RegionCoord regionCoordinates,
         BlockManager* blockManager,
         FastNoiseLite* standartNoise,
+        const WorldGenNoise* worldGenNoise,
         const WorldGenRegistry* worldGenRegistry,
         Uint64 worldSeed);
     ~Region();
