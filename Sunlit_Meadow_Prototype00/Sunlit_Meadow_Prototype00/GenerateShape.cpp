@@ -54,13 +54,13 @@ static const float CAVE_TAPER_MIN_SCALE = 0.35f;
 //   c= 0.55..  0.85: highland plateau (~Z130) drifting up
 //   c= 0.85..  1.0 : peaks climbing toward ~Z190
 static const Spline MEADOW_SHAPE_SPLINE = {
-	{ -1.00f,  44.6f,   0.0f },
-	{ -0.50f,  52.0f,  40.0f },
-	{ -0.20f,  68.6f,   0.0f },
-	{  0.35f,  68.6f,   0.0f },
-	{  0.55f, 130.6f,   0.0f },
-	{  0.85f, 140.6f,  60.0f },
-	{  1.00f, 190.6f, 120.0f },
+	{ -0.99f,    10.0f,   0.00f },
+	{ -0.55f,    58.0f,   40.0f },
+	{ -0.37f,    68.0f,   0.00f },
+	{  0.07f,    78.0f,   0.00f },
+	{  0.55f,   130.0f,   0.00f },
+	{  0.76f,   256.0f,   20.0f },
+	{  1.02f,   500.0f,  120.0f },
 };
 
 void generateShape(

@@ -2,13 +2,16 @@
 
 #include "FastNoiseLite.h"
 
+static const float BASE_FREQUENCY = 0.002f;
+static const int   BASE_OCTAVES = 4;
+
 void initNoise_standard(FastNoiseLite* noise, int worldSeed)
 {
     // -- General --
     // noise->SetNoiseType(FastNoiseLite::NoiseType_OpenSimplex2);
     // noise->SetRotationType3D(FastNoiseLite::RotationType3D_None);
     noise->SetSeed(worldSeed);
-    // noise->SetFrequency(0.010f);
+    // noise->SetFrequency(BASE_FREQUENCY);
 
     // -- Fractal --
     // noise->SetFractalType(FastNoiseLite::FractalType_None);
@@ -36,9 +39,14 @@ void initNoise_standard(FastNoiseLite* noise, int worldSeed)
 void initNoise_layer_0(FastNoiseLite* noise, int worldSeed)
 {
     noise->SetSeed(worldSeed);
-    noise->SetFrequency(0.001f);
+    noise->SetFrequency(BASE_FREQUENCY);
 
     noise->SetFractalType(FastNoiseLite::FractalType_FBm);
-    noise->SetFractalOctaves(4);
+    noise->SetFractalOctaves(BASE_OCTAVES);
     noise->SetDomainWarpAmp(-3.500f);
+
+    noise->SetFractalLacunarity(2);
+    noise->SetFractalGain(0.5f);
+    noise->SetFractalWeightedStrength(0);
+
 }
