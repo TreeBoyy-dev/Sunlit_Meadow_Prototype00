@@ -161,12 +161,12 @@ bool WorldManager::init(
         return false;
     }
 
-    initNoise(&standartNoise);
-
     // Worldgen: hardcoded seed for now. It now drives WorldGenNoise
     // (the shape pass); standartNoise still seeds itself to 1337 in
     // initNoise so the feature pass stays byte-identical.
     m_worldSeed = 69420;
+    initNoise_layer_0(&standartNoise, m_worldSeed);
+
     worldGenRegistry.init();
     worldGenNoise.init(m_worldSeed);
 

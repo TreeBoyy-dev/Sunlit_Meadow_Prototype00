@@ -54,13 +54,13 @@ SDL_AppResult App_Event(void* appstate, SDL_Event* event)
 
         case SDL_SCANCODE_UP:
             RENDER_DISTANCE += 4;
-            SDL_Log("[Event] render distance: %d", RENDER_DISTANCE);
             worldManager.calcVisibleChunksList(RENDER_DISTANCE);
+            worldManager.onPlayerChunkChanged();
             break;
         case SDL_SCANCODE_DOWN:
             if(RENDER_DISTANCE>4) RENDER_DISTANCE -= 4;
-            SDL_Log("[Event] render distance: %d", RENDER_DISTANCE);
             worldManager.calcVisibleChunksList(RENDER_DISTANCE);
+            worldManager.onPlayerChunkChanged();
             break;
 
         default:

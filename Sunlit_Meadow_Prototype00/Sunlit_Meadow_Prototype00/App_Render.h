@@ -14,7 +14,7 @@ void drawDebugUI(void* appstate) {
     float y = 8.0f;
     const SDL_FColor white = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-    snprintf(buffer, sizeof(buffer), "FPS: %4.1f", fps);
+    snprintf(buffer, sizeof(buffer), "Render distance: %d   FPS: %4.1f", RENDER_DISTANCE, fps);
     ui.drawText(buffer, 8.0f, y, white); y += lineH;
 
     snprintf(buffer, sizeof(buffer), "Pos: %3.1f  %3.1f  %3.1f",

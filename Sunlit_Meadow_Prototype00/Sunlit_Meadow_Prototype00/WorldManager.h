@@ -76,6 +76,7 @@ public:
     void    draw(AppState*, SDL_GPUCommandBuffer*, SDL_GPURenderPass*, const UBO&);
 
     void    calcVisibleChunksList(int renderDistance);
+    void    onPlayerChunkChanged();
 
     bool    isBlockSolid(int bx, int by, int bz);
     void    setBlockIdAt(AppState* state, Vec3 pos, Uint16 id, Uint16 blockState = 0);
@@ -100,5 +101,4 @@ private:
     void    drawChunks(AppState*, SDL_GPUCommandBuffer*, SDL_GPURenderPass*, const UBO&);
 
     Region* getRegion(RegionCoord regionCoordinates);
-    void    onPlayerChunkChanged();
 };
