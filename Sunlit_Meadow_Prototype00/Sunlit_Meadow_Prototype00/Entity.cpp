@@ -62,8 +62,8 @@ void Entity::update(float dt, WorldManager* worldManager)
         if (physics.velocity.z != 0) physics.velocity.z = 0;
     }
     else {
-        // passable medium. Phase 1 keeps slowdown on ACCELERATION to match old feel
-        // (air 100 -> *1.0, water 70 -> *0.7). Phase 2 moves this onto velocity.
+        // passable medium. keeps slowdown on ACCELERATION to match old feel
+        // (air 100 -> *1.0, water 70 -> *0.7).
         physics.acceleration.z *= 1.0f - (col->slowdown / 100.0f);
     }
 

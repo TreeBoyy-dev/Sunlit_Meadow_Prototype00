@@ -14,6 +14,22 @@
 class ChunkMesh
 {
 public:
+    // Filled by buildMesh() / optimizeMesh(); read via stats(). One struct per
+    // mesh (opaque / transparent), reset at the start of every buildMesh.
+    struct BuildStats {
+        double   buildMs      = 0.0;  // buildMesh wall time
+        double   cullMs       = 0.0;  // faceCulling wall time
+        double   greedyMs     = 0.0;  // greedyMeshing wall time
+        uint32_t vertsEmitted = 0;    // vertices after buildMesh
+        uint32_t indsEmitted  = 0;    // indices after buildMesh
+        uint32_t cellsEmitted = 0;    // cells that reached generateMeshFromModel
+        uint32_t emptyEmits   = 0;    // fully-visible cells that produced ZERO vertices
+        uint32_t unknownIds   = 0;    // cells whose id getById() didn't know
+        uint32_t quadsCulled  = 0;    // quads removed by (residual) faceCulling
+        uint32_t facesHidden  = 0;    
+    };
+    const BuildStats& stats() const { return m_stats; }
+
     void destroy(AppState* state);
 
     void draw(
@@ -40,9 +56,6 @@ private:
     void faceCulling();
     void greedyMeshing();
 
-    Uint16 getNeighborId(int x, int y, int z) const;
-    bool neighborObstructs(Uint16 id, int faceIndex, BlockManager& blockManager);
-
 private:
     bool isTranperentMesh = false;
 
@@ -54,4 +67,6 @@ private:
     SDL_GPUTexture* textureArray = nullptr;
     ChunkCoord m_chunkCoord = { 0, 0, 0 };
     uint32_t numIndices = 0;
+
+    BuildStats m_stats;
 };

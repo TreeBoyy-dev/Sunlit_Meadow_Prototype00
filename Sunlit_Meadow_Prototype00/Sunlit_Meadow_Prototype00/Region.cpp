@@ -140,8 +140,9 @@ void Region::queueMeshUpdate(ChunkCoord coord) {
 
         auto it = chunks.find(c);
         pendingMeshChunks.insert(c);
-        Chunk chunkCopy = Chunk(it->second.get());
-        m_worker.requestChunk(chunkCopy);
+        // exactly ONE snapshot copy, then ownership moves through
+        // the worker (the old path copied the chunk three times).
+        m_worker.requestChunk(std::make_unique<Chunk>(it->second.get()));
     }
 }
 
@@ -159,13 +160,14 @@ bool Region::collectMeshResults(AppState* state,
         auto result = m_worker.tryGetChunk();
         if (!result) break;
 
-        ChunkCoord coord = result->getChunkCoordinates();
+        std::unique_ptr<Chunk> remeshed = std::move(*result);
+        ChunkCoord coord = remeshed->getChunkCoordinates();
         pendingMeshChunks.erase(coord);
 
         auto it = chunks.find(coord);
         if (it == chunks.end()) continue; // unloaded while meshing
 
-        it->second->transferMeshesFrom(state, *result);
+        it->second->transferMeshesFrom(state, *remeshed);
         it->second->uploadMeshes(state, textureArray);
         meshedChunks.insert(coord);
         outNewlyReady.push_back(coord);   // <-- report drawable

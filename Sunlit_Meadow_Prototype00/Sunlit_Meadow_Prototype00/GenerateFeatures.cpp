@@ -211,19 +211,16 @@ void generateFeatures_BlockPallette(
 	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
 	BlockManager& blockManager
 ) {
-	if (columnCoordinates.y != 0)
+	if (columnCoordinates.x < 0 || columnCoordinates.y != 0)
 		return;
 
-	int blocks = columnCoordinates.x * 256 + 1;
+	int blocks = columnCoordinates.x * 256;   // last id written by the previous column
 
 	for (int x = 0; x < CHUNK_SIZE; x++) {
-		int xAbs = columnCoordinates.x * CHUNK_SIZE + x;
 		for (int y = 0; y < CHUNK_SIZE; y++) {
-			int yAbs = columnCoordinates.x * CHUNK_SIZE + y;
-			if (blocks >= blockManager.getNumberOfBlocks())
+			if (++blocks >= blockManager.getNumberOfBlocks())
 				return;
-			blocks++;
-			blockIDs[x][y][80] = blocks;
+			blockIDs[x][y][80] = (Uint16)blocks;
 		}
 	}
 }

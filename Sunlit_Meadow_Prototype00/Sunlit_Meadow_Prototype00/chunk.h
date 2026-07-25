@@ -68,6 +68,13 @@ public:
 
     void createMeshes(BlockManager& blockManager);
     void optimizeMeshes();
+
+    // Prints ONE line combining storage shape (palette size, bits/index) with
+    // both meshes' BuildStats. Called by the workers after create+optimize,
+    // gated by the logMeshStats global.
+    void logMeshStats() const;
+    size_t  getPaletteSize() const { return storage.paletteSize(); }
+    uint8_t getStorageBits() const { return storage.bitsPerIndex(); }
     bool uploadMeshes(
         AppState* state,
         SDL_GPUTexture* textureArray

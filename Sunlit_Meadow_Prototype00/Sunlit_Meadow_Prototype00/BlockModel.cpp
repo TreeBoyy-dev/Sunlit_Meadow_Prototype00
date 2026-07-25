@@ -3,6 +3,8 @@
 #include "ObjParser.h"
 
 #include <unordered_map>
+#include <algorithm>
+#include <cmath>
 
 static const char* baseModelPath = "Models/";
 
@@ -136,6 +138,151 @@ struct ObjCache {
     }
 };
 
+// =====================================================================
+//  Phase 2: bake-time face classification.
+//
+//  Splits a baked mesh into the "always" bucket + six per-direction
+//  boundary buckets, and computes coverMask (see BakedMesh.h). Runs once
+//  per variant/part at init — cost is irrelevant, faithfulness is not.
+// =====================================================================
+
+// Strict on-plane tolerance — MUST match faceCulling's kEps, because
+// coverMask claims "faceCulling would cull the face touching this plane".
+constexpr float kCoverEps = 1e-4f;
+// Loose boundary tolerance for bucket assignment: catches the 0.001-offset
+// overlay copies (grass sides) that sit just off the plane. Anything a
+// covering neighbor hides geometrically, even if faceCulling's exact-plane
+// test never removed it (it was invisible behind the neighbor regardless).
+constexpr float kBoundaryEps = 2.5e-3f;
+
+inline float axisComp(const Vec3& p, int axis) {
+    return axis == 0 ? p.x : (axis == 1 ? p.y : p.z);
+}
+
+// Classify one triangle: FaceDir index if it is an outward-facing,
+// axis-aligned face lying on (or overlay-close to) a cell boundary plane
+// and within the cell footprint; -1 -> "always" bucket.
+int triBoundaryDir(const WorldVertex& a, const WorldVertex& b, const WorldVertex& c) {
+    const WorldVertex* v[3] = { &a, &b, &c };
+
+    const Vec3& n = a.normal;
+    float ax = std::fabs(n.x), ay = std::fabs(n.y), az = std::fabs(n.z);
+    int axis = (ax >= ay && ax >= az) ? 0 : (ay >= az ? 1 : 2);
+    float nc = axisComp(n, axis);
+    if (std::fabs(nc) < 0.5f) return -1;
+    int sign = (nc > 0.0f) ? 1 : -1;
+    const float boundary = (sign > 0) ? 1.0f : 0.0f;
+
+    int u = (axis == 0) ? 1 : 0;
+    int w = (axis == 2) ? 1 : 2;
+
+    for (int k = 0; k < 3; ++k) {
+        float wn = axisComp(v[k]->normal, axis);
+        if (std::fabs(wn) < 0.5f || ((wn > 0.0f) ? 1 : -1) != sign)
+            return -1;                                   // mixed normals
+        if (std::fabs(axisComp(v[k]->position, axis) - boundary) > kBoundaryEps)
+            return -1;                                   // not on the plane
+        float pu = axisComp(v[k]->position, u);
+        float pw = axisComp(v[k]->position, w);
+        if (pu < -kBoundaryEps || pu > 1.0f + kBoundaryEps ||
+            pw < -kBoundaryEps || pw > 1.0f + kBoundaryEps)
+            return -1;                                   // outside footprint
+    }
+    return axis * 2 + (sign > 0 ? 0 : 1);                // FaceDir index
+}
+
+// coverMask: walk the index stream EXACTLY like faceCulling::tryMakeQuad
+// does (6-index rects, advance 6 on success / 3 on failure) and set bit d
+// when a rect sits strictly on boundary plane d and spans the full [0,1]^2
+// footprint. Partial faces and split faces set no bit — those pairs are
+// left for the residual faceCulling pass, matching today's output.
+Uint8 computeCoverMask(const std::vector<WorldVertex>& verts,
+                       const std::vector<Uint16>& indices)
+{
+    Uint8 mask = 0;
+    size_t i = 0;
+    while (i + 6 <= indices.size()) {
+        const Vec3& n = verts[indices[i]].normal;
+        float ax = std::fabs(n.x), ay = std::fabs(n.y), az = std::fabs(n.z);
+        int axis = (ax >= ay && ax >= az) ? 0 : (ay >= az ? 1 : 2);
+        float nc = axisComp(n, axis);
+        if (std::fabs(nc) < 0.5f) { i += 3; continue; }
+        int sign = (nc > 0.0f) ? 1 : -1;
+
+        int u = (axis == 0) ? 1 : 0;
+        int w = (axis == 2) ? 1 : 2;
+
+        float plane = axisComp(verts[indices[i]].position, axis);
+        float uMin = 1e30f, uMax = -1e30f, wMin = 1e30f, wMax = -1e30f;
+        bool ok = true;
+        for (int k = 0; k < 6 && ok; ++k) {
+            const WorldVertex& v = verts[indices[i + k]];
+            if (std::fabs(axisComp(v.position, axis) - plane) > kCoverEps) { ok = false; break; }
+            float wn = axisComp(v.normal, axis);
+            if (std::fabs(wn) < 0.5f || ((wn > 0.0f) ? 1 : -1) != sign) { ok = false; break; }
+            float pu = axisComp(v.position, u);
+            float pw = axisComp(v.position, w);
+            uMin = std::min(uMin, pu); uMax = std::max(uMax, pu);
+            wMin = std::min(wMin, pw); wMax = std::max(wMax, pw);
+        }
+        if (!ok || uMax - uMin < kCoverEps || wMax - wMin < kCoverEps) { i += 3; continue; }
+
+        const float boundary = (sign > 0) ? 1.0f : 0.0f;
+        if (std::fabs(plane - boundary) <= kCoverEps &&
+            uMin <= kCoverEps && uMax >= 1.0f - kCoverEps &&
+            wMin <= kCoverEps && wMax >= 1.0f - kCoverEps)
+            mask |= (Uint8)(1u << (axis * 2 + (sign > 0 ? 0 : 1)));
+
+        i += 6;   // consumed as one rect, same as faceCulling's walk
+    }
+    return mask;
+}
+
+// Split a freshly converted BakedMesh into the always bucket + six
+// per-direction boundary buckets. Triangle order inside each bucket is
+// preserved, so the 6-index quad structure greedyMeshing and faceCulling
+// rely on survives the split (both tris of a coplanar quad classify alike).
+void classifyBakedFaces(BakedMesh& m) {
+    m.coverMask = computeCoverMask(m.vertices, m.indices);
+
+    std::vector<WorldVertex> srcVerts;
+    std::vector<Uint16>      srcIdx;
+    srcVerts.swap(m.vertices);
+    srcIdx.swap(m.indices);
+    for (int d = 0; d < 6; ++d) {
+        m.boundaryFaces[d].vertices.clear();
+        m.boundaryFaces[d].indices.clear();
+    }
+
+    // remap[bucket][srcVertex] -> vertex index inside that bucket (7 = always)
+    std::vector<int> remap[7];
+    for (int b = 0; b < 7; ++b) remap[b].assign(srcVerts.size(), -1);
+
+    auto bucketOf = [&](int dir) -> BakedMesh::FaceSet* {
+        return dir < 0 ? nullptr : &m.boundaryFaces[dir];
+    };
+
+    for (size_t t = 0; t + 2 < srcIdx.size(); t += 3) {
+        Uint16 ia = srcIdx[t], ib = srcIdx[t + 1], ic = srcIdx[t + 2];
+        int dir = triBoundaryDir(srcVerts[ia], srcVerts[ib], srcVerts[ic]);
+
+        std::vector<WorldVertex>* dstV;
+        std::vector<Uint16>*      dstI;
+        int bucket;
+        if (BakedMesh::FaceSet* fs = bucketOf(dir)) {
+            dstV = &fs->vertices; dstI = &fs->indices; bucket = dir;
+        } else {
+            dstV = &m.vertices;   dstI = &m.indices;   bucket = 6;
+        }
+
+        for (Uint16 src : { ia, ib, ic }) {
+            int& r = remap[bucket][src];
+            if (r < 0) { r = (int)dstV->size(); dstV->push_back(srcVerts[src]); }
+            dstI->push_back((Uint16)r);
+        }
+    }
+}
+
 } // namespace
 
 // ---------------------------------------------------------------------
@@ -249,6 +396,7 @@ bool BlockModel::bake(const BlockDef& def, const StateLayout& layout) {
 
             convertToBaked(verts, idx, cells, false,
                            topMaterial, bottomMaterial, sideMaterial, part.mesh);
+            classifyBakedFaces(part.mesh);
 
             // ---- compile the "when" condition into (mask, value) ----
             if (!mp.whenProp.empty()) {
@@ -432,44 +580,62 @@ bool BlockModel::bake(const BlockDef& def, const StateLayout& layout) {
 
         convertToBaked(verts, idx, cells, flipped,
                        topMaterial, bottomMaterial, sideMaterial, variants[combo]);
+        classifyBakedFaces(variants[combo]);
     }
 
     return true;
 }
 
 // ---------------------------------------------------------------------
-static void appendBaked(
-    const BakedMesh& mesh,
+static void appendGeometry(
+    const std::vector<WorldVertex>& srcVertices,
+    const std::vector<Uint16>& srcIndices,
     std::vector<WorldVertex>& outVertices,
     std::vector<Uint32>& outIndices,
     int x, int y, int z
 ) {
-    // Indices are relative to where this mesh's vertices land in the buffer.
+    if (srcIndices.empty()) return;
+
+    // Indices are relative to where these vertices land in the buffer.
     const Uint32 base = static_cast<Uint32>(outVertices.size());
 
-    for (const WorldVertex& v : mesh.vertices) {
+    for (const WorldVertex& v : srcVertices) {
         WorldVertex moved = v;
         moved.position.x += static_cast<float>(x);
         moved.position.y += static_cast<float>(y);
         moved.position.z += static_cast<float>(z);
         outVertices.push_back(moved);
     }
-    for (const Uint16 index : mesh.indices) {
+    for (const Uint16 index : srcIndices) {
         outIndices.push_back(base + index);
     }
+}
+
+// emit the always bucket plus only the VISIBLE boundary buckets.
+static void appendBaked(
+    const BakedMesh& mesh,
+    std::vector<WorldVertex>& outVertices,
+    std::vector<Uint32>& outIndices,
+    int x, int y, int z, Uint8 visMask
+) {
+    appendGeometry(mesh.vertices, mesh.indices, outVertices, outIndices, x, y, z);
+    for (int d = 0; d < 6; ++d)
+        if (visMask & (1u << d))
+            appendGeometry(mesh.boundaryFaces[d].vertices, mesh.boundaryFaces[d].indices,
+                           outVertices, outIndices, x, y, z);
 }
 
 void BlockModel::getMesh(
     std::vector<WorldVertex>& outVertices,
     std::vector<Uint32>& outIndices,
-    int x, int y, int z, Uint16 state) const
+    int x, int y, int z, Uint16 state, Uint8 visMask) const
 {
     if (multipart) {
         // Emit every part whose condition matches. 2^n combos are assembled
         // here from a handful of baked parts — appends are cheap.
         for (const Part& p : parts) {
             if ((state & p.conditionMask) == p.conditionValue)
-                appendBaked(p.mesh, outVertices, outIndices, x, y, z);
+                appendBaked(p.mesh, outVertices, outIndices, x, y, z, visMask);
         }
         return;
     }
@@ -478,9 +644,20 @@ void BlockModel::getMesh(
     // bits) and index straight into the baked set.
     const Uint16 modelState = (Uint16)(state & modelMask);
     if (modelState < variants.size())
-        appendBaked(variants[modelState], outVertices, outIndices, x, y, z);
+        appendBaked(variants[modelState], outVertices, outIndices, x, y, z, visMask);
     else if (!variants.empty())
-        appendBaked(variants[0], outVertices, outIndices, x, y, z);
+        appendBaked(variants[0], outVertices, outIndices, x, y, z, visMask);
+}
+
+// which boundary planes this block's CURRENT variant fully covers
+// (see BakedMesh::coverMask). Multipart models return 0 — their parts are
+// conditional and none (fences, walls) have full-cell faces, so claiming no
+// coverage keeps every neighbor face, exactly like today.
+Uint8 BlockModel::getCoverMask(Uint16 state) const {
+    if (multipart) return 0;
+    const Uint16 modelState = (Uint16)(state & modelMask);
+    if (modelState < variants.size()) return variants[modelState].coverMask;
+    return variants.empty() ? 0 : variants[0].coverMask;
 }
 
 ModelFace BlockModel::getTopMaterial() {

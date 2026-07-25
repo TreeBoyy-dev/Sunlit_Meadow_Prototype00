@@ -37,8 +37,14 @@ private:
     void workerLoop();
     
     int totalChunksGenerated;
-    Uint64 times[100] = { 0 };
-    float s;
+    // the old average stored dt in SECONDS, divided by a fixed
+    // 100, and indexed the ring by totalChunksGenerated (which jumps +32 per
+    // column) — the printed "ms" was wrong in unit AND window. Now: samples
+    // are per-COLUMN milliseconds, ring indexed by columns generated, divided
+    // by how many samples the ring actually holds.
+    int   totalColumnsGenerated = 0;
+    float times[100] = { 0.0f };
+    float s = 0.0f;
 
     std::atomic<bool>  m_running;
     std::thread        m_thread;

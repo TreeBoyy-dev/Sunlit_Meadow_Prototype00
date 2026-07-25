@@ -42,9 +42,11 @@ bool BlockManager::registerBlock(const BlockDef& def) {
         std::move(model),
         std::move(layout),
         def.collision,
-        def.obstructs,
         def.transparent
     );
+    // def.obstructs is no longer consumed — face occlusion is
+    // derived from baked geometry (BakedMesh::coverMask).
+    // The JSON field is still parsed and tolerated for older block files.
     Block* ptr = newBlock.get();
 
     blocksById[def.id] = ptr;

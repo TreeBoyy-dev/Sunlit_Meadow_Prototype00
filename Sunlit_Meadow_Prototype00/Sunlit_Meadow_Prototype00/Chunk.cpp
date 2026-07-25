@@ -57,6 +57,33 @@ void Chunk::optimizeMeshes() {
 	transparentMesh.optimizeMesh();
 }
 
+// ---------------------------------------------------------------------
+//  instrumentation. One line per chunk:
+//
+//  [MeshStats] 3|-2|12 pal=7 bits=4 create=52.10ms opt=61.30ms
+//      | opq: b=50.20 v=98304 i=147456 cells=4096 empty=0 unk=0 cull=45.10(512) greedy=16.20
+//      | trs: b=1.90  v=0     i=0      cells=0    empty=0 unk=0 cull=0.00(0)    greedy=0.00
+//
+//  Tier diagnosis cheat-sheet:
+//    create big + v==0 + unk>0    -> the old per-cell unknown-id log (fixed)
+//    create big + v==0 + empty>0  -> blocks whose baked variant is EMPTY
+//    create big + v==0 + both 0   -> cost is the bare 2x4096 loop itself
+// ---------------------------------------------------------------------
+void Chunk::logMeshStats() const {
+	const ChunkMesh::BuildStats& o = opaqueMesh.stats();
+	const ChunkMesh::BuildStats& t = transparentMesh.stats();
+
+	SDL_Log("[MeshStats] %d|%d|%d pal=%u bits=%u create=%.2fms opt=%.2fms"
+		" | opq: b=%.2f v=%u i=%u cells=%u hid=%u empty=%u unk=%u cull=%.2f(%u) greedy=%.2f"
+		" | trs: b=%.2f v=%u i=%u cells=%u hid=%u empty=%u unk=%u cull=%.2f(%u) greedy=%.2f",
+		chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z,
+		(unsigned)storage.paletteSize(), (unsigned)storage.bitsPerIndex(),
+		o.buildMs + t.buildMs,
+		o.cullMs + o.greedyMs + t.cullMs + t.greedyMs,
+		o.buildMs, o.vertsEmitted, o.indsEmitted, o.cellsEmitted, o.facesHidden, o.emptyEmits, o.unknownIds, o.cullMs, o.quadsCulled, o.greedyMs,
+		t.buildMs, t.vertsEmitted, t.indsEmitted, t.cellsEmitted, t.facesHidden, t.emptyEmits, t.unknownIds, t.cullMs, t.quadsCulled, t.greedyMs);
+}
+
 bool Chunk::uploadMeshes(AppState* state, SDL_GPUTexture* textureArray) {
 	if (drawOpaque) {
 		if (!opaqueMesh.uploadToGPU(state, textureArray)) {
@@ -114,11 +141,13 @@ bool Chunk::getIsGenerated() {
 Uint16 Chunk::getBlockId(int x, int y, int z) {
 	if (x < 0 || x > 15 ||
 		y < 0 || y > 15 ||
-		z < 0 || z > 15)
+		z < 0 || z > 15) {
 		SDL_Log("[Chunk] couldn't get BlockID at: %d:%d:%d in chunk %d:%d:%d",
 			x, y, z, chunkCoordinates.x, chunkCoordinates.y, chunkCoordinates.z);
-	else
-		return storage.getId(x, y, z);
+		return 0;   // this path previously fell off the end of a
+		            // non-void function — undefined behavior. Air is the safe answer.
+	}
+	return storage.getId(x, y, z);
 }
 
 void Chunk::setBlockId(int x, int y, int z, Uint16 id, Uint16 blockState) {
@@ -164,11 +193,12 @@ void Chunk::setFluid(int x, int y, int z, Uint16 fluidId, Uint16 level) {
 
 	// 2) mirror it into bit 15 of the block state, preserving the template
 	//    bits (rotation, connections, ...) below it.
-	Uint16 id = storage.getId(x, y, z);
-	Uint16 state = storage.getState(x, y, z);
+	//    one getCell() unpack instead of separate getId + getState.
+	PaletteEntry cell = storage.getCell(x, y, z);
+	Uint16 state = cell.state;
 	if (fluidId != 0) state = (Uint16)(state | STATE_FLUID_MASK);
 	else              state = (Uint16)(state & ~STATE_FLUID_MASK);
-	storage.set(x, y, z, id, state);
+	storage.set(x, y, z, cell.id, state);
 }
 
 FluidCell Chunk::getFluid(int x, int y, int z) {
@@ -185,8 +215,10 @@ FluidCell Chunk::getFluid(int x, int y, int z) {
 	if ((storage.getState(x, y, z) & STATE_FLUID_MASK) == 0)
 		return cell;
 
-	cell.fluidId = fluidStorage.getId(x, y, z);
-	cell.level   = fluidStorage.getState(x, y, z);
+	// one getCell() unpack for (fluidId, level) instead of two.
+	PaletteEntry f = fluidStorage.getCell(x, y, z);
+	cell.fluidId = f.id;
+	cell.level   = f.state;
 	return cell;
 }
 

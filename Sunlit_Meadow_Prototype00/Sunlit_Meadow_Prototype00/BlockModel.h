@@ -68,11 +68,19 @@ public:
     // Appends the baked mesh for `state` into the given buffers, offset to
     // (x, y, z). The fluid bit (and any future non-model bits) are stripped
     // by the modelMask.
+    // visMask (FaceDir bits) selects which boundary-face buckets
+    // are emitted; hidden faces are simply never appended. Pass
+    // FaceDir::AllVisible for the old emit-everything behavior.
     void getMesh(
         std::vector<WorldVertex>& outVertices,
         std::vector<Uint32>& outIndices,
-        int x, int y, int z, Uint16 state
+        int x, int y, int z, Uint16 state, Uint8 visMask
     ) const;
+
+    // coverMask of the variant selected by `state` (0 for
+    // multipart models). Bit d set means this variant fully covers its own
+    // boundary plane d and therefore hides the touching neighbor face.
+    Uint8 getCoverMask(Uint16 state) const;
 
     ModelFace getTopMaterial();
     ModelFace getBottomMaterial();

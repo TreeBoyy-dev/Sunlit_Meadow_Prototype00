@@ -3,7 +3,7 @@
 #include <cmath>
 #include <cstdint>
 #include <algorithm>
-#include <unordered_map>
+#include <cstdint>
 #include <vector> 
 
 // ============================================================================
@@ -84,18 +84,9 @@ namespace {
         bool       used = false;
     };
 
-    // All faces that live on one plane, face one way, and wind one way.
-    struct Layer {
-        std::unordered_map<long long, int> grid;  // packed (iu,iv) -> face index
-        std::vector<int>                   faces;
-    };
-
-    inline long long packCoord(int iu, int iv) {
-        // World block coords can be negative; bias into unsigned space.
-        return (((long long)(iu + (1 << 24))) << 26) |
-            ((long long)(iv + (1 << 24)));
-    }
-
+    // All faces of one layer share: axis, facing, winding, quantised plane.
+    // (the old Layer struct with per-layer hash maps is gone —
+    // layers are now contiguous runs of a single sorted order.)
     inline long long layerKey(const UnitFace& f) {
         // 2 bits axis | 1 bit sign | 1 bit winding | quantised plane.
         return ((long long)f.axis << 61) |
@@ -206,6 +197,25 @@ namespace {
             sameVec2(a.duvV, b.duvV);
     }
 
+    struct MergedQuad {
+        int axis, sign, crossSign;
+        float plane;
+        int iu, iv, w, h;
+        float materialIndex;
+        SDL_FColor color;
+        Vec2 uv00, duvU, duvV;
+    };
+
+    // per-worker-thread scratch buffers, reused across calls. On
+    // MSVC Debug every fresh vector goes through the debug heap; reuse keeps
+    // the capacity warm. Safe: each mesh worker thread gets its own set.
+    thread_local std::vector<UnitFace>   tlsFaces;
+    thread_local std::vector<Uint32>     tlsPassthrough;
+    thread_local std::vector<long long>  tlsKeys;
+    thread_local std::vector<int>        tlsOrder;
+    thread_local std::vector<int>        tlsGrid;
+    thread_local std::vector<MergedQuad> tlsMerged;
+
     inline Vec3 buildPos(int axis, float plane, int u, int v,
         float uVal, float vVal) {
         Vec3 p{ 0.0f, 0.0f, 0.0f };
@@ -226,8 +236,10 @@ void ChunkMesh::greedyMeshing()
     const int initialIndices = (int)indices.size();
 
     // ---- 1. Split geometry into mergeable unit faces and passthrough. ----
-    std::vector<UnitFace> faces;
-    std::vector<Uint32>   passthrough;      // original indices, kept verbatim
+    tlsFaces.clear();
+    tlsPassthrough.clear();
+    std::vector<UnitFace>& faces = tlsFaces;
+    std::vector<Uint32>&   passthrough = tlsPassthrough;   // original indices, kept verbatim
     faces.reserve(indices.size() / 6 + 1);
 
     size_t i = 0;
@@ -249,49 +261,84 @@ void ChunkMesh::greedyMeshing()
     if (faces.empty())
         return;                              // nothing mergeable at all
 
-    // ---- 2. Bucket faces into layers: same plane, facing, winding. ----
-    std::unordered_map<long long, Layer> layers;
-    for (int fi = 0; fi < (int)faces.size(); ++fi) {
-        const UnitFace& f = faces[fi];
-        Layer& layer = layers[layerKey(f)];
-        layer.grid[packCoord(f.iu, f.iv)] = fi;
-        layer.faces.push_back(fi);
-    }
+    // ---- 2. One sort replaces the layer hash map AND the per-layer sweep
+    //         sort: order faces by (layerKey, iv, iu). Faces of one layer
+    //         become one contiguous run, already in deterministic row-major
+    //         sweep order. (the old per-layer unordered_maps were
+    //         the dominant cost of this function in Debug builds.) ----
+    tlsKeys.assign(faces.size(), 0);
+    std::vector<long long>& keys = tlsKeys;
+    for (size_t f = 0; f < faces.size(); ++f) keys[f] = layerKey(faces[f]);
 
-    // ---- 3. Greedy rectangle expansion inside each layer. ----
-    struct MergedQuad {
-        int axis, sign, crossSign;
-        float plane;
-        int iu, iv, w, h;
-        float materialIndex;
-        SDL_FColor color;
-        Vec2 uv00, duvU, duvV;
-    };
-    std::vector<MergedQuad> merged;
+    tlsOrder.assign(faces.size(), 0);
+    std::vector<int>& order = tlsOrder;
+    for (size_t f = 0; f < faces.size(); ++f) order[f] = (int)f;
+    std::sort(order.begin(), order.end(), [&](int a, int b) {
+        if (keys[a] != keys[b]) return keys[a] < keys[b];
+        if (faces[a].iv != faces[b].iv) return faces[a].iv < faces[b].iv;
+        return faces[a].iu < faces[b].iu;
+        });
+
+    // ---- 3. Greedy rectangle expansion inside each layer run. ----
+    tlsMerged.clear();
+    std::vector<MergedQuad>& merged = tlsMerged;
     merged.reserve(faces.size() / 2);
 
-    for (auto& kv : layers) {
-        Layer& layer = kv.second;
+    auto emitAsIs = [&](const UnitFace& f) {          // 1x1, unmerged
+        merged.push_back({ f.axis, f.sign, f.crossSign, f.plane,
+                           f.iu, f.iv, 1, 1,
+                           f.materialIndex, f.color, f.uv00, f.duvU, f.duvV });
+    };
 
-        // Deterministic sweep order: row by row (v), then along u.
-        std::sort(layer.faces.begin(), layer.faces.end(),
-            [&](int a, int b) {
-                const UnitFace& fa = faces[a];
-                const UnitFace& fb = faces[b];
-                return fa.iv != fb.iv ? fa.iv < fb.iv : fa.iu < fb.iu;
-            });
+    std::vector<int>& grid = tlsGrid;                 // reused across layers & calls
 
-        for (int fi : layer.faces) {
-            UnitFace& base = faces[fi];
+    size_t runStart = 0;
+    while (runStart < order.size()) {
+        size_t runEnd = runStart + 1;
+        while (runEnd < order.size() && keys[order[runEnd]] == keys[order[runStart]])
+            ++runEnd;
+
+        // Layer bounds -> flat W x H occupancy grid (in-chunk layers are at
+        // most 16x16; the guard only trips on degenerate out-of-cell
+        // geometry, which then just skips merging — same visual output).
+        int minIu = INT32_MAX, maxIu = INT32_MIN, minIv = INT32_MAX, maxIv = INT32_MIN;
+        for (size_t k = runStart; k < runEnd; ++k) {
+            const UnitFace& f = faces[order[k]];
+            minIu = std::min(minIu, f.iu); maxIu = std::max(maxIu, f.iu);
+            minIv = std::min(minIv, f.iv); maxIv = std::max(maxIv, f.iv);
+        }
+        const int W = maxIu - minIu + 1;
+        const int H = maxIv - minIv + 1;
+        if ((long long)W * (long long)H > 64 * 64) {
+            for (size_t k = runStart; k < runEnd; ++k) emitAsIs(faces[order[k]]);
+            runStart = runEnd;
+            continue;
+        }
+
+        grid.assign((size_t)W * H, -1);
+        auto cell = [&](int iu, int iv) -> int& {
+            return grid[(size_t)(iv - minIv) * W + (iu - minIu)];
+        };
+        for (size_t k = runStart; k < runEnd; ++k) {
+            const UnitFace& f = faces[order[k]];
+            cell(f.iu, f.iv) = order[k];              // last write wins, like the old map
+        }
+
+        auto faceAt = [&](int iu, int iv) -> UnitFace* {
+            if (iu < minIu || iu > maxIu || iv < minIv || iv > maxIv) return nullptr;
+            int fi = cell(iu, iv);
+            return fi < 0 ? nullptr : &faces[fi];
+        };
+
+        for (size_t k = runStart; k < runEnd; ++k) {
+            UnitFace& base = faces[order[k]];
             if (base.used) continue;
 
             // Grow the run along u as far as compatible neighbours exist.
             int w = 1;
             for (;;) {
-                auto it = layer.grid.find(packCoord(base.iu + w, base.iv));
-                if (it == layer.grid.end()) break;
-                UnitFace& nb = faces[it->second];
-                if (nb.used || !mergeable(base, nb)) break;
+                UnitFace* nb = faceAt(base.iu + w, base.iv);
+                if (!nb || nb->used || !mergeable(base, *nb)) break;
                 ++w;
             }
 
@@ -300,10 +347,8 @@ void ChunkMesh::greedyMeshing()
             for (;;) {
                 bool rowOk = true;
                 for (int du = 0; du < w; ++du) {
-                    auto it = layer.grid.find(packCoord(base.iu + du, base.iv + h));
-                    if (it == layer.grid.end()) { rowOk = false; break; }
-                    UnitFace& nb = faces[it->second];
-                    if (nb.used || !mergeable(base, nb)) { rowOk = false; break; }
+                    UnitFace* nb = faceAt(base.iu + du, base.iv + h);
+                    if (!nb || nb->used || !mergeable(base, *nb)) { rowOk = false; break; }
                 }
                 if (!rowOk) break;
                 ++h;
@@ -311,11 +356,9 @@ void ChunkMesh::greedyMeshing()
 
             // Claim the whole w x h rectangle.
             for (int dv = 0; dv < h; ++dv)
-                for (int du = 0; du < w; ++du) {
-                    auto it = layer.grid.find(packCoord(base.iu + du, base.iv + dv));
-                    if (it != layer.grid.end())
-                        faces[it->second].used = true;
-                }
+                for (int du = 0; du < w; ++du)
+                    if (UnitFace* nb = faceAt(base.iu + du, base.iv + dv))
+                        nb->used = true;
 
             MergedQuad q;
             q.axis = base.axis; q.sign = base.sign; q.crossSign = base.crossSign;
@@ -326,6 +369,8 @@ void ChunkMesh::greedyMeshing()
             q.uv00 = base.uv00; q.duvU = base.duvU; q.duvV = base.duvV;
             merged.push_back(q);
         }
+
+        runStart = runEnd;
     }
 
     // ---- 4. Rebuild the vertex / index buffers. ----

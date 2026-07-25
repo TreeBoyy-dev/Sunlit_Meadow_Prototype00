@@ -57,21 +57,27 @@ void ChunkGeneratorWorker::workerLoop() {
                     chunk->optimizeMeshes();
                 totalChunksGenerated++;
 
+                if (logMeshStats)
+                    chunk->logMeshStats();
+
                 m_outputQueue.push(std::move(chunk));
             }
 
-            //calc avr time per chunk
+            // Rolling average, per COLUMN, in MILLISECONDS
             Uint64 now = SDL_GetTicks();
-            float  dt = (float)(now - lastTicks) / 1000.0f;
+            float  dtMs = (float)(now - lastTicks);
 
-            s += dt - times[totalChunksGenerated % 100];
-            times[totalChunksGenerated % 100] = dt;
+            totalColumnsGenerated++;
+            const int slot = totalColumnsGenerated % 100;
+            s += dtMs - times[slot];
+            times[slot] = dtMs;
 
-            float mspc = s / 100.0f;
+            const int   window = totalColumnsGenerated < 100 ? totalColumnsGenerated : 100;
+            const float msPerColumn = s / (float)window;
 
-            SDL_Log("[ChunkGeneratorWorker] collumn %6d generated: %3d|%3d (avr time/collumn: %2.4fms)",
-                totalChunksGenerated,
-                columnCoord.x, columnCoord.y, mspc);
+            //SDL_Log("[ChunkGeneratorWorker] column %6d generated: %3d|%3d (avg time/column: %.2fms)",
+            //    totalColumnsGenerated,
+            //    columnCoord.x, columnCoord.y, msPerColumn);
 
         }
         else {

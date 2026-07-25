@@ -20,7 +20,6 @@ private:
     Collision   collision;
 
     std::unique_ptr<BlockModel> model;   // fully baked at init
-    std::array<bool, 6> obstructs;
 
 public:
     Block(
@@ -30,17 +29,24 @@ public:
         std::unique_ptr<BlockModel> model,
         StateLayout layout,
         Collision collision,
-        std::array<bool, 6> obstructs,
         bool transparent = false
     );
 
     // Appends the baked mesh variant for `state` (fluid bit is masked off
-    // inside BlockModel) at (x, y, z).
+    // inside BlockModel) at (x, y, z). visMask (FaceDir bits)
+    // controls which cell-boundary faces are emitted — hidden ones are
+    // skipped at the source instead of being culled afterwards.
     void generateMeshFromModel(
         std::vector<WorldVertex>& vertices,
         std::vector<Uint32>&   indices,
-        int x, int y, int z, Uint16 state
+        int x, int y, int z, Uint16 state, Uint8 visMask
     );
+
+    // boundary planes fully covered by this block's `state`
+    // variant, derived from baked geometry at init (NOT from the JSON
+    // 'obstructs' flags, which were never validated). Safe from any thread
+    // after init. See BakedMesh::coverMask.
+    Uint8 getCoverMask(Uint16 state) const;
 
     // Builds a render-ready inventory-icon mesh for this block.
     // Re-parses the block's .obj (so MODEL_ROTATION is baked in, exactly like
@@ -66,7 +72,6 @@ public:
     ModelFace getTopMaterial();
     ModelFace getBottomMaterial();
     ModelFace getSideMaterial();
-    bool getObstructs(int faceIndex);
 
     SDL_GPUTexture* getIcon();
 };

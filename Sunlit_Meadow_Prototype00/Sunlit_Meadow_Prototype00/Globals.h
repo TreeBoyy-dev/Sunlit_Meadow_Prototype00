@@ -57,6 +57,9 @@ extern BlockManager blockManager;
 extern WorldManager worldManager;
 extern int RENDER_DISTANCE;
 extern bool doRemeshingSeperately;
+// per-chunk [MeshStats] line from the mesh workers. Flip off once
+// the baseline table is recorded — the logging itself costs time in Debug.
+extern bool logMeshStats;
 
 extern ChunkCoord prevPlayerChunkCoords;
 

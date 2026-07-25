@@ -44,6 +44,7 @@ BlockManager blockManager;
 WorldManager worldManager;
 int RENDER_DISTANCE = 4;
 bool doRemeshingSeperately = false;
+bool logMeshStats = false;
 
 ChunkCoord prevPlayerChunkCoords = { 0,0,0 };
 

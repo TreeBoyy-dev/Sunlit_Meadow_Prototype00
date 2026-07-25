@@ -8,14 +8,12 @@ Block::Block(
     std::unique_ptr<BlockModel> model,
     StateLayout layout,
     Collision collision,
-    std::array<bool, 6> obstructs,
     bool transparent)
     : id(id),
     name(std::move(name)),
     modelFileName(std::move(modelFileName)),
     model(std::move(model)),
     layout(std::move(layout)),
-    obstructs(obstructs),
     transparent(transparent),
     collision(collision)
 {
@@ -24,12 +22,16 @@ Block::Block(
 void Block::generateMeshFromModel(
     std::vector<WorldVertex>& vertices,
     std::vector<Uint32>& indices,
-    int x, int y, int z, Uint16 state
+    int x, int y, int z, Uint16 state, Uint8 visMask
 ) {
     // All variants were baked at BlockManager::init() (on the main thread,
     // before the mesh workers spin up) — this is a pure read-only lookup and
     // safe to call from any thread.
-    model->getMesh(vertices, indices, x, y, z, state);
+    model->getMesh(vertices, indices, x, y, z, state, visMask);
+}
+
+Uint8 Block::getCoverMask(Uint16 state) const {
+    return model->getCoverMask(state);
 }
 
 bool Block::buildItemModel(
@@ -77,7 +79,6 @@ Uint16 Block::getID() {
 ModelFace Block::getTopMaterial() { return model->getTopMaterial(); }
 ModelFace Block::getBottomMaterial() { return model->getBottomMaterial(); }
 ModelFace Block::getSideMaterial() { return model->getSideMaterial(); }
-bool Block::getObstructs(int faceIndex) { return obstructs[faceIndex]; }
 
 SDL_GPUTexture* Block::getIcon() {
     return nullptr;

@@ -2,7 +2,7 @@
 
 #include <cmath>
 #include <algorithm>
-#include <unordered_map>
+#include <vector>
 
 // One reconstructed axis-aligned rectangular face (a quad = 2 triangles).
 struct Quad {
@@ -16,6 +16,13 @@ struct Quad {
 };
 
 constexpr float kEps = 1e-4f;
+
+// per-worker-thread scratch, reused across calls (see the note in
+// GreedyMeshing.cpp — MSVC Debug heap makes fresh vectors expensive).
+thread_local std::vector<Quad>     tlsQuads;
+thread_local std::vector<Uint32>   tlsPassthrough;
+thread_local std::vector<uint64_t> tlsKeys;
+thread_local std::vector<int>      tlsOrder;
 
 // For a normal pointing along `axis`, pick the two in-plane axes (u, v).
 inline void planeAxes(int axis, int& u, int& v) {
@@ -95,8 +102,10 @@ void ChunkMesh::faceCulling()
 
     // 1. Reconstruct quads from the triangle list. Anything we can't read as a
     //    clean axis-aligned rectangle is kept untouched (passthrough tris).
-    std::vector<Quad>   quads;
-    std::vector<Uint32> passthrough;
+    tlsQuads.clear();
+    tlsPassthrough.clear();
+    std::vector<Quad>&   quads = tlsQuads;
+    std::vector<Uint32>& passthrough = tlsPassthrough;
     quads.reserve(indices.size() / 6 + 1);
 
     size_t i = 0;
@@ -113,28 +122,40 @@ void ChunkMesh::faceCulling()
         }
     }
 
-    // 2. Bucket quads by (axis, plane) so we only ever compare faces that could
-    //    actually line up. The key packs axis + a quantized plane coordinate.
+    // 2. Group quads by (axis, quantized plane) so we only compare faces
+    //    that could line up. sort-based runs instead of an
+    //    unordered_map of vectors — identical grouping (same key, same
+    //    quantization), no hashing or per-bucket allocations.
     auto keyOf = [](const Quad& q) -> uint64_t {
         uint64_t p = (uint64_t)(int64_t)(std::llround(q.plane * 1000.0f) + (1LL << 40));
         return ((uint64_t)q.axis << 56) | (p & 0xFFFFFFFFFFFFULL);
         };
-    std::unordered_map<uint64_t, std::vector<int>> buckets;
-    for (int qi = 0; qi < (int)quads.size(); ++qi)
-        buckets[keyOf(quads[qi])].push_back(qi);
+    tlsKeys.assign(quads.size(), 0);
+    std::vector<uint64_t>& keys = tlsKeys;
+    for (size_t qi = 0; qi < quads.size(); ++qi) keys[qi] = keyOf(quads[qi]);
+
+    tlsOrder.assign(quads.size(), 0);
+    std::vector<int>& order = tlsOrder;
+    for (size_t qi = 0; qi < quads.size(); ++qi) order[qi] = (int)qi;
+    std::sort(order.begin(), order.end(),
+        [&](int a, int b) { return keys[a] < keys[b]; });
 
     // 3. A quad dies if an opposing-facing quad on the same plane fully covers
     //    it. Equal faces cover each other -> both go. A smaller face inside a
     //    bigger one -> only the smaller goes (the big one still shows the rest,
     //    e.g. a slab against a full block).
     int removedCount = 0;
-    for (auto& kv : buckets) {
-        std::vector<int>& group = kv.second;
-        for (int a : group) {
-            Quad& qa = quads[a];
-            for (int b : group) {
-                if (a == b) continue;
-                Quad& qb = quads[b];
+    size_t runStart = 0;
+    while (runStart < order.size()) {
+        size_t runEnd = runStart + 1;
+        while (runEnd < order.size() && keys[order[runEnd]] == keys[order[runStart]])
+            ++runEnd;
+
+        for (size_t ia = runStart; ia < runEnd; ++ia) {
+            Quad& qa = quads[order[ia]];
+            for (size_t ib = runStart; ib < runEnd; ++ib) {
+                if (ia == ib) continue;
+                Quad& qb = quads[order[ib]];
                 if (qb.axis != qa.axis || qb.sign == qa.sign) continue;
                 if (std::fabs(qb.plane - qa.plane) > kEps) continue;
                 if (contains(qb, qa)) {
@@ -143,10 +164,15 @@ void ChunkMesh::faceCulling()
                 }
             }
         }
+        runStart = runEnd;
     }
 
+    m_stats.quadsCulled = (uint32_t)removedCount;
+
     if (removedCount == 0) {
-        SDL_Log("[ChunkMesh] optimizeMesh: no quads removed");
+        // this used to SDL_Log unconditionally — it fired for
+        // essentially every transparent mesh and polluted timing. The count
+        // now lives in stats() and shows up in the per-chunk summary line.
         return;
     }
 

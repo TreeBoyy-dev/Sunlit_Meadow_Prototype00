@@ -45,10 +45,14 @@ std::vector<GeneratedChunkData> generateColumn(
 	for (int k = 0; k < REGION_SIZE_Z; k++) {
 		Uint16 chunkDense[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
 
+		// z is the innermost, contiguous axis in BOTH layouts, so
+		// each (x, y) row is one 16-cell memcpy out of the 512-tall column
+		// instead of 16 individually-indexed copies.
 		for (int x = 0; x < CHUNK_SIZE; x++)
 			for (int y = 0; y < CHUNK_SIZE; y++)
-				for (int z = 0; z < CHUNK_SIZE; z++)
-					chunkDense[x][y][z] = dense[x][y][k * CHUNK_SIZE + z];
+				SDL_memcpy(&chunkDense[x][y][0],
+					&dense[x][y][k * CHUNK_SIZE],
+					CHUNK_SIZE * sizeof(Uint16));
 
 		GeneratedChunkData chunkData;
 		chunkData.coordinates = { columnCoordinates.x, columnCoordinates.y, regionChunkZStart + k };
@@ -58,7 +62,7 @@ std::vector<GeneratedChunkData> generateColumn(
 	}
 	auto t3 = clock::now();
 	//Logger to display time usage:
-///*
+	/*
 	using us = std::chrono::microseconds;
 	SDL_Log("time usage Collumn generation: step1=%lldus step2=%lldus step3=%lldus (total=%lldus)",
 		(long long)std::chrono::duration_cast<us>(t1 - t0).count(),
