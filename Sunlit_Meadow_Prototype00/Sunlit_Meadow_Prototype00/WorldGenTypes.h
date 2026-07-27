@@ -23,7 +23,7 @@
 // =====================================================================
 
 struct LayerDef {
-    Uint16              id;
+    Uint16              id; //same as Region Coord Z
     std::string         name;
     std::vector<Uint16> allowedZoneIds;
 };

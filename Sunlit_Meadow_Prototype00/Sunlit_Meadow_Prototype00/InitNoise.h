@@ -2,8 +2,8 @@
 
 #include "FastNoiseLite.h"
 
-static const float BASE_FREQUENCY = 0.002f;
-static const int   BASE_OCTAVES = 4;
+static const float BASE_FREQUENCY = 0.0025f;
+static const int   BASE_OCTAVES = 3;
 
 void initNoise_standard(FastNoiseLite* noise, int worldSeed)
 {
@@ -45,8 +45,8 @@ void initNoise_layer_0(FastNoiseLite* noise, int worldSeed)
     noise->SetFractalOctaves(BASE_OCTAVES);
     noise->SetDomainWarpAmp(-3.500f);
 
-    noise->SetFractalLacunarity(2);
-    noise->SetFractalGain(0.5f);
-    noise->SetFractalWeightedStrength(0);
+    noise->SetFractalLacunarity(2.5f);
+    noise->SetFractalGain(0.4f);
+    noise->SetFractalWeightedStrength(0.1f);
 
 }
