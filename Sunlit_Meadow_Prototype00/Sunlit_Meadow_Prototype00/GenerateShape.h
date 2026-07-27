@@ -24,11 +24,22 @@ void generateShape(
 );
 
 // Meadow layer: noise -> spline -> heightmap, then a 3D cave carve.
-void generateShape_Meadow(
+void generateShape_layer0(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
 	ColumnCoord columnCoordinates,
 	int regionChunkZStart,
 	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
 	BlockManager& blockManager,
 	const WorldGenNoise& worldGenNoise
+);
+
+// Meadow layer: default sky -> all air
+void generateShape_defaultSky(
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
+	BlockManager& blockManager
+);
+// Meadow layer: default underground -> all stone
+void generateShape_defaultUnderground(
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
+	BlockManager& blockManager
 );

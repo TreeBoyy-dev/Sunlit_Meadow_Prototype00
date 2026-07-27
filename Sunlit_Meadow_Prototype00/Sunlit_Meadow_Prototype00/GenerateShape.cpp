@@ -81,19 +81,24 @@ void generateShape(
 	// a shapeGenId to LayerDef and switch on that instead).
 	switch (layer.id) {
 	case 0:
-		generateShape_Meadow(blockIDs, columnCoordinates, regionChunkZStart,
+		generateShape_layer0(blockIDs, columnCoordinates, regionChunkZStart,
 			heightmap, blockManager, worldGenNoise);
 		break;
 	default:
-		SDL_Log("[generateShape] no shape generator for layer %u (%s), using meadow",
-			layer.id, layer.name.c_str());
-		generateShape_Meadow(blockIDs, columnCoordinates, regionChunkZStart,
-			heightmap, blockManager, worldGenNoise);
+		if (layer.id > 0) {
+			SDL_Log("[generateShape] no shape generator for layer %u (%s), using default Sky",
+				layer.id, layer.name.c_str());
+			generateShape_defaultSky(blockIDs, blockManager);
+		} else {
+			SDL_Log("[generateShape] no shape generator for layer %u (%s), using default Underground",
+				layer.id, layer.name.c_str());
+			generateShape_defaultUnderground(blockIDs, blockManager);
+		}
 		break;
 	}
 }
 
-void generateShape_Meadow(
+void generateShape_layer0(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
 	ColumnCoord columnCoordinates,
 	int regionChunkZStart,
@@ -183,6 +188,31 @@ void generateShape_Meadow(
 			}
 		}
 	}
+}
+
+void generateShape_defaultSky(
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
+	BlockManager& blockManager
+) {
+	// Look the two base blocks up once for the whole column.
+	Block* air = blockManager.getByName("air");
+	if (air == nullptr) {
+		SDL_Log("Block = nullptr in Chunk generation!!!");
+		return;
+	}
+	std::fill_n(&blockIDs[0][0][0], CHUNK_SIZE * CHUNK_SIZE * COLUMN_HEIGHT, air->getID());
+}
+void generateShape_defaultUnderground(
+	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
+	BlockManager& blockManager
+) {
+	// Look the two base blocks up once for the whole column.
+	Block* stone = blockManager.getByName("cobble_stone");
+	if (stone == nullptr) {
+		SDL_Log("Block = nullptr in Chunk generation!!!");
+		return;
+	}
+	std::fill_n(&blockIDs[0][0][0], CHUNK_SIZE * CHUNK_SIZE * COLUMN_HEIGHT, stone->getID());
 }
 
 #if 0
