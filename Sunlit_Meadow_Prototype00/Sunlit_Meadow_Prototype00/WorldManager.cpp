@@ -167,7 +167,9 @@ bool WorldManager::init(
     m_worldSeed = 69420;
     initNoise_layer_0(&standartNoise, m_worldSeed);
 
-    worldGenRegistry.init();
+    // Loads Assets/WorldGen/**.json and resolves every block name in it
+    // against blockManager, which App_Init has already populated.
+    worldGenRegistry.init(blockManager);
     worldGenNoise.init(m_worldSeed);
 
     regionWorker.start(m_worldSeed, &standartNoise, &worldGenRegistry);

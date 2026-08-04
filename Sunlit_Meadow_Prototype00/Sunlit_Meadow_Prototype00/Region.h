@@ -30,7 +30,8 @@ private:
 
     BlockManager* m_blockManager = nullptr;
     FastNoiseLite* m_standartNoise = nullptr;
-    const WorldGenNoise* m_worldGenNoise = nullptr;   // WorldManager-owned, read-only
+    const WorldGenNoise* m_worldGenNoise = nullptr;         // WorldManager-owned, read-only
+    const WorldGenRegistry* m_worldGenRegistry = nullptr;   // WorldManager-owned, read-only
 
     // ---- layer / zone / biome ----
     // All three are IMMUTABLE after the constructor finishes, and the

@@ -3,6 +3,8 @@
 
 #include "WorldGenTypes.h"
 
+class WorldGenRegistry;
+
 // =====================================================================
 //  WorldGenSampler
 //  Pure, deterministic functions of (world cell coords, layer, seed).
@@ -16,8 +18,16 @@
 //
 //  worldCellX/Y are in CELL units (world block / BIOME_CELL), so the
 //  functions are region-agnostic.
+//
+//  The registry is read-only here (it is fully built before any region
+//  generates) and is needed to reach the zone's allowedBiomeIds and the
+//  per-def selection weights.
 // =====================================================================
 
-Uint16 sampleZoneId (int worldCellX, int worldCellY, const LayerDef& layer, Uint64 worldSeed);
-Uint16 sampleBiomeId(int worldCellX, int worldCellY, const LayerDef& layer, Uint64 worldSeed,
-                     Uint16 zoneId /* result of sampleZoneId for this cell */);
+Uint16 sampleZoneId(int worldCellX, int worldCellY, const LayerDef& layer,
+                    Uint64 worldSeed, const WorldGenRegistry& registry);
+
+Uint16 sampleBiomeId(int worldCellX, int worldCellY, const LayerDef& layer,
+                     Uint64 worldSeed,
+                     Uint16 zoneId /* result of sampleZoneId for this cell */,
+                     const WorldGenRegistry& registry);

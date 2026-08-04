@@ -28,8 +28,10 @@ std::unique_ptr<RegionShape> generateRegion(Uint64 worldSeed, RegionCoord coord,
                 int worldCellX = coord.x * MAP_CELLS_PER_REGION + (gx - MAP_APRON_CELLS);
                 int worldCellY = coord.y * MAP_CELLS_PER_REGION + (gy - MAP_APRON_CELLS);
 
-                Uint16 zoneId  = sampleZoneId (worldCellX, worldCellY, *shape->m_layer, worldSeed);
-                Uint16 biomeId = sampleBiomeId(worldCellX, worldCellY, *shape->m_layer, worldSeed, zoneId);
+                Uint16 zoneId  = sampleZoneId (worldCellX, worldCellY, *shape->m_layer,
+                                               worldSeed, *worldGenRegistry);
+                Uint16 biomeId = sampleBiomeId(worldCellX, worldCellY, *shape->m_layer,
+                                               worldSeed, zoneId, *worldGenRegistry);
 
                 int linear = gx * MAP_GRID_SIZE + gy;   // x-major, matches PalettedGrid2D
                 denseZone[linear] = zoneId;

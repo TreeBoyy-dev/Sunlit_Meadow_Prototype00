@@ -26,18 +26,6 @@ SDL_AppResult SDL_AppInit(void** appstate, int argc, char* argv[])
         return SDL_APP_FAILURE;
     }
 
-    int w, h;
-    SDL_GetWindowSize(state->window, &w, &h);
-
-    fovX = fovDeg * (float)SDL_PI_F / 180.0f;
-    aspect = (float)w / (float)h;
-    state->projMat = mat4Perspective(fovX, aspect, NEAR_PLANE, FAR_PLANE);
-
-    state->lastTicks = SDL_GetTicks();
-
-    SDL_SetWindowRelativeMouseMode(state->window, true);
-    menuManager.setWindow(state->window);
-
     return SDL_APP_CONTINUE;
 }
 

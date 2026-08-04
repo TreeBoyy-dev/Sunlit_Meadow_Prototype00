@@ -19,6 +19,7 @@ Region::Region(RegionCoord regionCoordinates, BlockManager* blockManager, FastNo
     m_blockManager(blockManager),
     m_standartNoise(standartNoise),
     m_worldGenNoise(worldGenNoise),
+    m_worldGenRegistry(worldGenRegistry),
     m_worldSeed(worldSeed)
 {}
 
@@ -46,8 +47,11 @@ void Region::setShape(RegionShape* shape) {
     //    here on, so handing the generator worker raw const pointers is a
     //    safe lock-free share; the region stops the worker before dying
     //    (~Region / destroyRegion), so lifetime is covered too.
-    g_worker.start(m_blockManager, m_standartNoise, m_worldGenNoise,
-        regionCoordinates.z * REGION_SIZE_Z,
+    g_worker.start(m_blockManager, m_standartNoise, m_worldGenNoise, m_worldGenRegistry,
+        { regionCoordinates.x * REGION_SIZE_YX,
+          regionCoordinates.y * REGION_SIZE_YX,
+          regionCoordinates.z * REGION_SIZE_Z },
+        m_worldSeed,
         m_layer, &zoneMap, &biomeMap);
     m_worker.start(m_blockManager);
 }

@@ -46,6 +46,9 @@ SDL_AppResult App_Init(void* appstate)
         return SDL_APP_FAILURE;
     }
 
+    SDL_GPUSamplerCreateInfo sampler_info = {};
+    state->sampler = SDL_CreateGPUSampler(state->gpu, &sampler_info);
+
     int w, h;
     SDL_GetWindowSize(state->window, &w, &h);
 
@@ -84,8 +87,13 @@ SDL_AppResult App_Init(void* appstate)
     skybox.upload(state->gpu, uploadCmd);
     SDL_SubmitGPUCommandBuffer(uploadCmd);
 
-    SDL_GPUSamplerCreateInfo sampler_info = {};
-    state->sampler = SDL_CreateGPUSampler(state->gpu, &sampler_info);
+
+    fovX = fovDeg * (float)SDL_PI_F / 180.0f;
+    aspect = (float)w / (float)h;
+    state->projMat = mat4Perspective(fovX, aspect, NEAR_PLANE, FAR_PLANE);
+
+    SDL_SetWindowRelativeMouseMode(state->window, true);
+    menuManager.setWindow(state->window);
 
     return SDL_APP_CONTINUE;
 }

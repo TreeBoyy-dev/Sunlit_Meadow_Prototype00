@@ -3,6 +3,7 @@
 #include <SDL3/SDL.h>
 #include <vector>
 #include <initializer_list>
+#include <utility>
 
 // =====================================================================
 //  Spline
@@ -43,15 +44,14 @@ public:
 	// and the Hermite basis assumes x1 > x0. We log AND assert instead
 	// of silently sorting: an unsorted list is always an authoring bug,
 	// and silently reordering would hide it.
-	Spline(std::initializer_list<SplineKnot> knots) : m_knots(knots) {
-		for (size_t i = 1; i < m_knots.size(); i++) {
-			if (m_knots[i].x <= m_knots[i - 1].x) {
-				SDL_Log("[Spline] knots not sorted ascending by x (knot %zu: %f <= %f)!",
-					i, m_knots[i].x, m_knots[i - 1].x);
-				SDL_assert(false && "Spline knots must be sorted ascending by x");
-			}
-		}
-	}
+	Spline(std::initializer_list<SplineKnot> knots) : m_knots(knots) { validate(); }
+
+	// Same contract, for knots that came out of a JSON layer file. The
+	// loader hands over a vector it built at runtime, so this cannot be
+	// an initializer_list — but a bad knot list is still an authoring
+	// bug and still has to be loud (WorldGenDefLoader logs the file name
+	// alongside it).
+	explicit Spline(std::vector<SplineKnot> knots) : m_knots(std::move(knots)) { validate(); }
 
 	float eval(float x) const {
 		if (m_knots.empty())
@@ -92,5 +92,15 @@ public:
 	// the single-control pipeline has to prove itself first.
 
 private:
+	void validate() const {
+		for (size_t i = 1; i < m_knots.size(); i++) {
+			if (m_knots[i].x <= m_knots[i - 1].x) {
+				SDL_Log("[Spline] knots not sorted ascending by x (knot %zu: %f <= %f)!",
+					i, m_knots[i].x, m_knots[i - 1].x);
+				SDL_assert(false && "Spline knots must be sorted ascending by x");
+			}
+		}
+	}
+
 	std::vector<SplineKnot> m_knots;
 };

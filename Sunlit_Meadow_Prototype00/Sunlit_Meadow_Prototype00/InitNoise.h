@@ -2,7 +2,7 @@
 
 #include "FastNoiseLite.h"
 
-static const float BASE_FREQUENCY = 0.0025f;
+static const float BASE_FREQUENCY = 0.0005f;
 static const int   BASE_OCTAVES = 3;
 
 void initNoise_standard(FastNoiseLite* noise, int worldSeed)

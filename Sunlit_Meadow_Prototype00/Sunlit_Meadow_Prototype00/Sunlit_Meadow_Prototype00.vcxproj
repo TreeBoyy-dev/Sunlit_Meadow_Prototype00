@@ -177,9 +177,11 @@
     <ClCompile Include="UI_Renderer.cpp" />
     <ClCompile Include="Vectors.cpp" />
     <ClCompile Include="Widget.cpp" />
+    <ClCompile Include="WorldGenDefLoader.cpp" />
     <ClCompile Include="WorldGenRegistry.cpp" />
     <ClCompile Include="WorldGenNoise.cpp" />
     <ClCompile Include="WorldGenSampler.cpp" />
+    <ClCompile Include="WorldGenTypes.cpp" />
     <ClCompile Include="WorldManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -220,6 +222,8 @@
     <ClInclude Include="UIAction.h" />
     <ClInclude Include="UITypes.h" />
     <ClInclude Include="Widget.h" />
+    <ClInclude Include="WorldGenDefLoader.h" />
+    <ClInclude Include="WorldGenRandom.h" />
     <ClInclude Include="WorldGenRegistry.h" />
     <ClInclude Include="Spline.h" />
     <ClInclude Include="WorldGenNoise.h" />

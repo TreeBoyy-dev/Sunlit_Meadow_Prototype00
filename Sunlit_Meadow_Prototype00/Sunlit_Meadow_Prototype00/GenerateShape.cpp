@@ -2,68 +2,35 @@
 #include "BlockManager.h"
 #include "GenerateShape.h"
 #include "Materials.h"
-#include "Spline.h"
 
+#include <algorithm>
 #include <cmath>
 
 // =====================================================================
-//  Meadow shape tunables — TUNE HERE.
-//  (Raw noise field frequencies/octaves live in WorldGenNoise.cpp.)
+//  Shape generation.
 //
-//  Everything below is a pure function of (world coords, world seed):
-//  no rand(), no shared mutable state, no neighbor reads. That purity
-//  is what keeps region aprons valid and columns byte-reproducible —
-//  same contract as the zone/biome sampler (WorldGenSampler.h).
+//  There are NO tunables in this file any more — spline knots, sea
+//  level, vertical bounds, base block and every cave constant come off
+//  the LayerDef, i.e. out of Assets/WorldGen/Layers/*.json. (Raw noise
+//  field frequencies/octaves still live in WorldGenNoise.cpp.)
+//
+//  Everything below stays a pure function of (world coords, layer,
+//  world seed): no rand(), no shared mutable state, no neighbor reads.
+//  That purity is what keeps region aprons valid and columns
+//  byte-reproducible — same contract as the zone/biome sampler
+//  (WorldGenSampler.h).
+//
+//  Notes for whoever tunes the JSON:
+//   - Knot .z fractional parts should be >= .5 on plateaus so the
+//     surface pass places FULL blocks there (it switches to the biome's
+//     surfaceSlab palette below .5); cliff flanks sweep through all
+//     fractions and get the slab treatment, which reads nicely as
+//     broken terrain.
+//   - Caves are carved where |caveField| < threshold — a BAND around
+//     zero, not a one-sided cut. The zero-level-set of 3D noise is a
+//     connected sheet snaking through space, so a band around it gives
+//     connected wormy tunnels; "value > t" would give isolated blobs.
 // =====================================================================
-
-// Nominal sea level. No water yet — the deep-basin knot below dips
-// under this so future lakes have somewhere to pool.
-static const float MEADOW_SEA_LEVEL = 64.0f;
-
-// Hard vertical bounds the shape must respect: surface stays within
-// [10, COLUMN_HEIGHT - 10], caves within [1, COLUMN_HEIGHT - 10]
-// (absolute world Z, ground-level region).
-static const float SHAPE_MIN_Z = 10.0f;
-static const float SHAPE_MAX_Z = (float)(COLUMN_HEIGHT - 10);
-static const int   CAVE_FLOOR_Z = 1;                  // never carve below
-static const int   CAVE_CEIL_Z = COLUMN_HEIGHT - 10; // never carve above
-
-// Cave carve. We carve where |caveField| < threshold — a BAND around
-// zero, not a one-sided cut. The zero-level-set of 3D noise is a
-// connected sheet snaking through space, so a band around it gives
-// connected wormy tunnels; "value > t" would give isolated blobs.
-static const float CAVE_THRESHOLD = 0.06f;
-
-// Partial surface taper: within TAPER blocks of the surface the
-// threshold shrinks linearly toward TAPER_MIN_SCALE * CAVE_THRESHOLD.
-// Not to zero — a strong tunnel can still punch through and make an
-// occasional cave mouth, but the surface stops being swiss cheese.
-static const float CAVE_SURFACE_TAPER_BLOCKS = 8.0f;
-static const float CAVE_TAPER_MIN_SCALE = 0.35f;
-
-// The meadow terrain shaper: control noise in ~[-1, 1] -> world Z.
-// Knot .y fractional parts are deliberately >= .5 on the plateaus so
-// generateFeatures_GrassAndDirt places FULL grass blocks there (its
-// decimalPart >= 0.5 branch); cliff flanks sweep through all fractions
-// and get the slab treatment, which reads nicely as broken terrain.
-//
-//   c=-1.0 .. -0.5 : deep basin plateau (~Z44, below sea level 64)
-//   c=-0.5 .. -0.2 : rise out of the basin
-//   c=-0.2 ..  0.35: WIDE flat plains plateau (~Z68) — the meadow
-//   c= 0.35..  0.55: the cliff (dydx 0 at both ends -> smooth S-jump)
-//   c= 0.55..  0.85: highland plateau (~Z130) drifting up
-//   c= 0.85..  1.0 : peaks climbing toward ~Z190
-static const Spline MEADOW_SHAPE_SPLINE = {
-	{ -0.99f,    10.0f,   0.00f },
-	{ -0.55f,    58.0f,   40.0f },
-	{ -0.37f,    68.0f,   0.00f },
-	{  0.07f,    78.0f,   0.00f },
-	{  0.27f,   110.0f,   0.00f },
-	{  0.55f,  193.10f,   20.0f },
-	{  0.85f,   363.0f,  120.0f },
-	{  0.95f,   500.0f,   0.00f },
-	{  1.00f,   480.0f,   60.0f },
-};
 
 void generateShape(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
@@ -74,51 +41,57 @@ void generateShape(
 	const LayerDef& layer,
 	const WorldGenNoise& worldGenNoise
 ) {
-	// Dispatch on the layer: each layer OWNS its shape generation. Only
-	// the meadow generator exists today — this switch is the seam where
-	// underground/sky/etc. layers plug in later (switching on layer.id
-	// for now; if the id<->generator mapping ever stops being 1:1, add
-	// a shapeGenId to LayerDef and switch on that instead).
-	switch (layer.id) {
-	case 0:
-		generateShape_layer0(blockIDs, columnCoordinates, regionChunkZStart,
-			heightmap, blockManager, worldGenNoise);
+	Block* air = blockManager.getByName("air");
+	if (air == nullptr) {
+		SDL_Log("[generateShape] 'air' block missing — cannot generate");
+		return;
+	}
+	const Uint16 airID = air->getID();
+
+	// Dispatch on the layer's declared shape generator. Which generator a
+	// layer uses is data now (LayerDef::shape), so a new layer only needs
+	// a JSON file — unless it needs a genuinely new algorithm, which is
+	// what adding a ShapeGenerator value is for.
+	switch (layer.shape) {
+	case ShapeGenerator::SplineTerrain:
+		generateShape_splineTerrain(blockIDs, columnCoordinates, regionChunkZStart,
+			heightmap, airID, layer, worldGenNoise);
 		break;
+
+	case ShapeGenerator::SolidFill:
+		generateShape_fill(blockIDs, heightmap, regionChunkZStart, layer.baseBlock.id);
+		break;
+
+	case ShapeGenerator::AirFill:
+		generateShape_fill(blockIDs, heightmap, regionChunkZStart, airID);
+		break;
+
 	default:
-		if (layer.id > 0) {
-			SDL_Log("[generateShape] no shape generator for layer %u (%s), using default Sky",
-				layer.id, layer.name.c_str());
-			generateShape_defaultSky(blockIDs, blockManager);
-		} else {
-			SDL_Log("[generateShape] no shape generator for layer %u (%s), using default Underground",
-				layer.id, layer.name.c_str());
-			generateShape_defaultUnderground(blockIDs, blockManager);
-		}
+		SDL_Log("[generateShape] layer %u ('%s') has no valid shape generator — "
+			"filling with air", layer.id, layer.name.c_str());
+		generateShape_fill(blockIDs, heightmap, regionChunkZStart, airID);
 		break;
 	}
 }
 
-void generateShape_layer0(
+void generateShape_splineTerrain(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
 	ColumnCoord columnCoordinates,
 	int regionChunkZStart,
 	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
-	BlockManager& blockManager,
+	Uint16 airID,
+	const LayerDef& layer,
 	const WorldGenNoise& worldGenNoise
 ) {
-	int columnZStartBlocks = regionChunkZStart * CHUNK_SIZE;
+	const int columnZStartBlocks = regionChunkZStart * CHUNK_SIZE;
+	const Uint16 baseID = layer.baseBlock.id;
 
-	// Look the two base blocks up once for the whole column.
-	Block* cobble = blockManager.getByName("cobble_stone");
-	Block* air = blockManager.getByName("air");
-	if (cobble == nullptr || air == nullptr) {
-		SDL_Log("Block = nullptr in Chunk generation!!!");
+	if (layer.shapeSpline.empty()) {
+		SDL_Log("[generateShape] layer '%s' has an empty spline — filling with air",
+			layer.name.c_str());
+		generateShape_fill(blockIDs, heightmap, regionChunkZStart, airID);
 		return;
 	}
-	Uint16 cobbleID = cobble->getID();
-	Uint16 airID = air->getID();
-
-	(void)MEADOW_SEA_LEVEL; // referenced by design comments; water is a later pass
 
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		int xAbs = columnCoordinates.x * CHUNK_SIZE + x;
@@ -129,56 +102,59 @@ void generateShape_layer0(
 			// One control sample per (x, y); the spline reshapes it
 			// into plateaus and cliffs (see Spline.h for the why).
 			float c = worldGenNoise.baseControl((float)xAbs, (float)yAbs);
-			float surfaceZ = MEADOW_SHAPE_SPLINE.eval(c);
+			float surfaceZ = layer.shapeSpline.eval(c);
 
-			// Safety clamp to the layer's vertical budget. The spline
-			// already lives inside these bounds; this guards future
-			// knot edits, not the current math.
-			if (surfaceZ < SHAPE_MIN_Z) surfaceZ = SHAPE_MIN_Z;
-			if (surfaceZ > SHAPE_MAX_Z) surfaceZ = SHAPE_MAX_Z;
+			// Safety clamp to the layer's vertical budget. A sane spline
+			// already lives inside these bounds; this guards JSON edits,
+			// not the current math.
+			if (surfaceZ < layer.minSurfaceZ) surfaceZ = layer.minSurfaceZ;
+			if (surfaceZ > layer.maxSurfaceZ) surfaceZ = layer.maxSurfaceZ;
 
 			// Absolute world Z — the existing heightmap contract that
-			// generateFeatures_* reads back. Do not localize here.
+			// the feature pass reads back. Do not localize here.
 			heightmap[x][y] = surfaceZ;
 
-			// --- 2) fill air/stone ----------------------------------
+			// --- 2) fill air/base -----------------------------------
 			// NOTE for the future 3D-density refactor: only this fill
 			// loop (and the carve below) changes when the spline output
 			// becomes a bias fed into a 3D density field
 			// (density > 0 -> stone). Spline/WorldGenNoise stay as-is.
 			for (int z = 0; z < COLUMN_HEIGHT; z++) {
 				int zAbs = columnZStartBlocks + z;
-				blockIDs[x][y][z] = ((float)zAbs <= surfaceZ) ? cobbleID : airID;
+				blockIDs[x][y][z] = ((float)zAbs <= surfaceZ) ? baseID : airID;
 			}
 
 			// --- 3) cave carve --------------------------------------
-			// Stone cells only, floored/ceiled, threshold tapered near
+			// Solid cells only, floored/ceiled, threshold tapered near
 			// the surface. Pure function of world coords + seed, so
 			// tunnels line up across chunk AND region borders with no
 			// neighbor access.
 			//
 			// PERF: this samples 3D FBm at FULL resolution for every
-			// stone cell (~surfaceZ * 256 samples per column). If
+			// solid cell (~surfaceZ * 256 samples per column). If
 			// ms/chunk regresses badly, the lever is the Minecraft
 			// Beta trick: sample the field on a coarse grid (e.g.
 			// every 4th cell in x/y/z) and trilinearly interpolate —
 			// caves tolerate the smoothing and it cuts samples ~64x.
+			if (!layer.caves)
+				continue;
+
 			int zTop = (int)surfaceZ - columnZStartBlocks;
 			if (zTop >= COLUMN_HEIGHT) zTop = COLUMN_HEIGHT - 1;
 			for (int z = 0; z <= zTop; z++) {
 				int zAbs = columnZStartBlocks + z;
-				if (zAbs < CAVE_FLOOR_Z || zAbs > CAVE_CEIL_Z)
+				if (zAbs < layer.caveFloorZ || zAbs > layer.caveCeilZ)
 					continue;
 				if (blockIDs[x][y][z] == airID)   // already air (above surface)
 					continue;
 
-				float threshold = CAVE_THRESHOLD;
+				float threshold = layer.caveThreshold;
 				float depth = surfaceZ - (float)zAbs;
-				if (depth < CAVE_SURFACE_TAPER_BLOCKS) {
+				if (depth < layer.caveSurfaceTaper && layer.caveSurfaceTaper > 0.0f) {
 					// Linear taper toward (not to!) zero at the surface,
 					// so cave mouths stay possible but rare.
-					float s = CAVE_TAPER_MIN_SCALE
-						+ (1.0f - CAVE_TAPER_MIN_SCALE) * (depth / CAVE_SURFACE_TAPER_BLOCKS);
+					float s = layer.caveTaperMinScale
+						+ (1.0f - layer.caveTaperMinScale) * (depth / layer.caveSurfaceTaper);
 					threshold *= s;
 				}
 
@@ -190,63 +166,17 @@ void generateShape_layer0(
 	}
 }
 
-void generateShape_defaultSky(
+void generateShape_fill(
 	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
-	BlockManager& blockManager
+	float heightmap[CHUNK_SIZE][CHUNK_SIZE],
+	int regionChunkZStart,
+	Uint16 blockID
 ) {
-	// Look the two base blocks up once for the whole column.
-	Block* air = blockManager.getByName("air");
-	if (air == nullptr) {
-		SDL_Log("Block = nullptr in Chunk generation!!!");
-		return;
-	}
-	std::fill_n(&blockIDs[0][0][0], CHUNK_SIZE * CHUNK_SIZE * COLUMN_HEIGHT, air->getID());
+	std::fill_n(&blockIDs[0][0][0], CHUNK_SIZE * CHUNK_SIZE * COLUMN_HEIGHT, blockID);
+
+	// One block below the column: every feature placement is bounds-checked
+	// against the column, so this reliably means "nothing to decorate here"
+	// without needing a separate "has surface" flag.
+	const float belowColumn = (float)(regionChunkZStart * CHUNK_SIZE) - 1.0f;
+	std::fill_n(&heightmap[0][0], CHUNK_SIZE * CHUNK_SIZE, belowColumn);
 }
-void generateShape_defaultUnderground(
-	Uint16 blockIDs[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT],
-	BlockManager& blockManager
-) {
-	// Look the two base blocks up once for the whole column.
-	Block* stone = blockManager.getByName("cobble_stone");
-	if (stone == nullptr) {
-		SDL_Log("Block = nullptr in Chunk generation!!!");
-		return;
-	}
-	std::fill_n(&blockIDs[0][0][0], CHUNK_SIZE * CHUNK_SIZE * COLUMN_HEIGHT, stone->getID());
-}
-
-#if 0
-// ---------------------------------------------------------------------
-//  Spline sanity test (acceptance check): call testMeadowSpline() once
-//  from init, watch the log, then flip this back off.
-// ---------------------------------------------------------------------
-static void testMeadowSpline() {
-	const Spline s = {
-		{ -1.0f, 10.0f, 0.0f },
-		{  0.0f, 10.0f, 0.0f },   // flat segment: -1..0 must hold 10
-		{  1.0f, 50.0f, 0.0f },
-	};
-
-	// 1) reproduces each knot's y at its x
-	SDL_assert(fabsf(s.eval(-1.0f) - 10.0f) < 0.001f);
-	SDL_assert(fabsf(s.eval(0.0f) - 10.0f) < 0.001f);
-	SDL_assert(fabsf(s.eval(1.0f) - 50.0f) < 0.001f);
-
-	// 2) flat between two flat knots (dead plateau, no Catmull-Rom sag)
-	SDL_assert(fabsf(s.eval(-0.5f) - 10.0f) < 0.001f);
-
-	// 3) monotonically rising through the cliff segment
-	float prev = s.eval(0.0f);
-	for (float x = 0.05f; x <= 1.0f; x += 0.05f) {
-		float v = s.eval(x);
-		SDL_assert(v >= prev - 0.001f);
-		prev = v;
-	}
-
-	// 4) clamps (holds end values) outside [x0, xn]
-	SDL_assert(fabsf(s.eval(-5.0f) - 10.0f) < 0.001f);
-	SDL_assert(fabsf(s.eval(5.0f) - 50.0f) < 0.001f);
-
-	SDL_Log("[Spline] testMeadowSpline passed");
-}
-#endif

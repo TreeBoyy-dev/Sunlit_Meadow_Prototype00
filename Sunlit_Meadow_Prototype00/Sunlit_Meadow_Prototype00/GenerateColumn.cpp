@@ -2,25 +2,28 @@
 #include "GenerateShape.h"
 #include "GenerateFeatures.h"
 #include "Globals.h"
+#include "WorldGenRegistry.h"
 
 #include <chrono>
 
 std::vector<GeneratedChunkData> generateColumn(
 	ColumnCoord columnCoordinates,
+	ColumnCoord regionColumnStart,
 	int regionChunkZStart,
 	const LayerDef&       layer,
 	const PalettedGrid2D& zoneMap,
 	const PalettedGrid2D& biomeMap,
 	BlockManager& blockManager,
-	const WorldGenNoise& worldGenNoise
+	const WorldGenNoise& worldGenNoise,
+	const WorldGenRegistry& registry,
+	Uint64 worldSeed
 ) {
 	using clock = std::chrono::steady_clock;
 	auto t0 = clock::now();
 
-	// layer now selects the shape generator (see generateShape's switch).
-	// TODO worldgen: zoneMap/biomeMap will drive per-cell surface blocks
-	// & features — received but unused this pass.
-	(void)zoneMap; (void)biomeMap;
+	// The zone map is the biome map's parent and is read by the sampler,
+	// not here — the surface/feature passes only need the biome.
+	(void)zoneMap;
 
 	std::vector<GeneratedChunkData> column;
 	column.reserve(REGION_SIZE_Z);
@@ -30,15 +33,14 @@ std::vector<GeneratedChunkData> generateColumn(
 	Uint16 dense[CHUNK_SIZE][CHUNK_SIZE][COLUMN_HEIGHT];
 	float  heightmap[CHUNK_SIZE][CHUNK_SIZE] = { 0.0f };
 
-	// generate shape: air/stone (layer-dispatched, spline + caves)
-	generateShape(dense, columnCoordinates, regionChunkZStart, heightmap, blockManager, layer, worldGenNoise);
+	// generate shape: air/base block (layer-dispatched, spline + caves)
+	generateShape(dense, columnCoordinates, regionChunkZStart, heightmap,
+		blockManager, layer, worldGenNoise);
 	auto t1 = clock::now();
 
-	// generate biomes
-	//TODO -> actually do that in the region
-
-	// generate features: grass, vegitation, structures
-	generateFeatures(dense, columnCoordinates, regionChunkZStart, heightmap, blockManager);
+	// generate surface + features: driven by the biome under each cell
+	generateFeatures(dense, columnCoordinates, regionColumnStart, regionChunkZStart,
+		heightmap, blockManager, registry, biomeMap, worldSeed);
 	auto t2 = clock::now();
 
 	// Split the tall column into REGION_SIZE_Z separate chunks.

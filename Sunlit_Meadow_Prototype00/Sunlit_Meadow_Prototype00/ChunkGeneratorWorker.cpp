@@ -6,12 +6,15 @@ ChunkGeneratorWorker::ChunkGeneratorWorker() : m_running(false), totalChunksGene
 ChunkGeneratorWorker::~ChunkGeneratorWorker() { stop(); }
 
 void ChunkGeneratorWorker::start(BlockManager* blockManager, FastNoiseLite* standartNoise,
-    const WorldGenNoise* worldGenNoise, int regionChunkZStart,
+    const WorldGenNoise* worldGenNoise, const WorldGenRegistry* worldGenRegistry,
+    ChunkCoord regionChunkStart, Uint64 worldSeed,
     const LayerDef* layer, const PalettedGrid2D* zoneMap, const PalettedGrid2D* biomeMap) {
     m_blockManager = blockManager;
     m_standartNoise = standartNoise;
     m_worldGenNoise = worldGenNoise;
-    m_regionChunkZStart = regionChunkZStart;
+    m_worldGenRegistry = worldGenRegistry;
+    m_regionChunkStart = regionChunkStart;
+    m_worldSeed = worldSeed;
     m_layer = layer;
     m_zoneMap = zoneMap;
     m_biomeMap = biomeMap;
@@ -41,9 +44,11 @@ void ChunkGeneratorWorker::workerLoop() {
             Uint64 lastTicks = SDL_GetTicks();
 
             std::vector<GeneratedChunkData> column =
-                generateColumn(columnCoord, m_regionChunkZStart,
+                generateColumn(columnCoord,
+                    { m_regionChunkStart.x, m_regionChunkStart.y }, m_regionChunkStart.z,
                     *m_layer, *m_zoneMap, *m_biomeMap,   // lock-free: immutable, region outlives worker
-                    *m_blockManager, *m_worldGenNoise);  // lock-free: init-once, WorldManager outlives worker
+                    *m_blockManager, *m_worldGenNoise,   // lock-free: init-once, WorldManager outlives worker
+                    *m_worldGenRegistry, m_worldSeed);
 
             // Turn each returned PalettedContainer into a Chunk and queue it.
             for (auto& chunkData : column) {
